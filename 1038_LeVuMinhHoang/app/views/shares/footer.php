@@ -1,27 +1,24 @@
-<!-- Footer -->
-    <footer class="footer">
+</main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up">
-                    <h5 class="mb-3">
-                        <i class="fas fa-bolt me-2"></i>TechTafu
-                    </h5>
-                    <p class="text-light">
-                        Cửa hàng thiết bị điện tử hàng đầu với các sản phẩm chính hãng, 
-                        chất lượng cao và dịch vụ tận tâm.
-                    </p>
+                    <h5><i class="fas fa-bolt me-2"></i>TechTafu</h5>
+                    <p class="text-light">Cửa hàng thiết bị điện tử hàng đầu với các sản phẩm chất lượng cao và dịch vụ tốt nhất.</p>
                     <div class="social-links">
-                        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
-                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
                 
                 <div class="col-lg-2 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
-                    <h6 class="mb-3">Liên kết</h6>
+                    <h6>Liên kết nhanh</h6>
                     <ul class="list-unstyled">
-                        <li><a href="/Product" class="text-light text-decoration-none">Trang chủ</a></li>
+                        <li><a href="/" class="text-light text-decoration-none">Trang chủ</a></li>
                         <li><a href="/Product" class="text-light text-decoration-none">Sản phẩm</a></li>
                         <li><a href="/category/list" class="text-light text-decoration-none">Danh mục</a></li>
                         <li><a href="#" class="text-light text-decoration-none">Liên hệ</a></li>
@@ -29,70 +26,67 @@
                 </div>
                 
                 <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
-                    <h6 class="mb-3">Hỗ trợ</h6>
+                    <h6>Hỗ trợ khách hàng</h6>
                     <ul class="list-unstyled">
                         <li><a href="#" class="text-light text-decoration-none">Chính sách bảo hành</a></li>
-                        <li><a href="#" class="text-light text-decoration-none">Chính sách đổi trả</a></li>
                         <li><a href="#" class="text-light text-decoration-none">Hướng dẫn mua hàng</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Chính sách đổi trả</a></li>
                         <li><a href="#" class="text-light text-decoration-none">FAQ</a></li>
                     </ul>
                 </div>
                 
                 <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
-                    <h6 class="mb-3">Liên hệ</h6>
-                    <ul class="list-unstyled text-light">
-                        <li class="mb-2">
+                    <h6>Thông tin liên hệ</h6>
+                    <div class="contact-info">
+                        <p class="text-light mb-2">
                             <i class="fas fa-map-marker-alt me-2"></i>
                             123 Đường ABC, Quận 1, TP.HCM
-                        </li>
-                        <li class="mb-2">
+                        </p>
+                        <p class="text-light mb-2">
                             <i class="fas fa-phone me-2"></i>
                             (028) 1234 5678
-                        </li>
-                        <li class="mb-2">
+                        </p>
+                        <p class="text-light mb-2">
                             <i class="fas fa-envelope me-2"></i>
-                            info@techtafu.com
-                        </li>
-                        <li>
-                            <i class="fas fa-clock me-2"></i>
-                            T2-CN: 8:00 - 22:00
-                        </li>
-                    </ul>
+                            info@TechTafu.com
+                        </p>
+                    </div>
                 </div>
             </div>
             
-            <hr class="border-light">
+            <hr class="my-4">
             
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <p class="mb-0 text-light">
-                        &copy; <?php echo date('Y'); ?> TechTafu. Tất cả quyền được bảo lưu.
-                    </p>
+                    <p class="text-light mb-0">&copy; 2025 TechTafu. Tất cả quyền được bảo lưu.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <img src="https://via.placeholder.com/40x25/007bff/ffffff?text=VISA" alt="Visa" class="me-2">
-                    <img src="https://via.placeholder.com/40x25/ff6b35/ffffff?text=MC" alt="Mastercard" class="me-2">
-                    <img src="https://via.placeholder.com/40x25/00457c/ffffff?text=PP" alt="PayPal">
+                    <p class="text-light mb-0">Thiết kế bởi <strong>TechTafu Team</strong></p>
                 </div>
             </div>
         </div>
     </footer>
 
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="btn btn-primary position-fixed bottom-0 end-0 m-4 rounded-circle" style="display: none; z-index: 1000;">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <!-- Scripts -->
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <!-- jQuery UI -->
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <!-- AOS -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-    <!-- Toastr JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
     <script>
         // Initialize AOS
@@ -104,107 +98,37 @@
 
         // Toastr configuration
         toastr.options = {
-            closeButton: true,
-            debug: false,
-            newestOnTop: true,
-            progressBar: true,
-            positionClass: 'toast-top-right',
-            preventDuplicates: false,
-            onclick: null,
-            showDuration: '300',
-            hideDuration: '1000',
-            timeOut: '5000',
-            extendedTimeOut: '1000',
-            showEasing: 'swing',
-            hideEasing: 'linear',
-            showMethod: 'fadeIn',
-            hideMethod: 'fadeOut'
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
         };
 
-        // Loading overlay functions
-        function showLoading() {
-            $('#loading').fadeIn();
-        }
-
-        function hideLoading() {
-            $('#loading').fadeOut();
-        }
-
-        // Add to cart function with AJAX
-        function addToCart(productId) {
-            showLoading();
-            
-            $.ajax({
-                url: '/Product/addToCart',
-                type: 'POST',
-                data: {
-                    product_id: productId
-                },
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                success: function(response) {
-                    hideLoading();
-                    if (response.success) {
-                        toastr.success(response.message);
-                        // Update cart count in navbar
-                        updateCartCount(response.cart_count);
-                    } else {
-                        toastr.error(response.message);
-                    }
-                },
-                error: function() {
-                    hideLoading();
-                    toastr.error('Có lỗi xảy ra. Vui lòng thử lại!');
-                }
-            });
-        }
-
-        // Update cart count in navbar
-        function updateCartCount(count) {
-            const cartLink = $('.nav-link[href="/Product/cart"]');
-            const existingBadge = cartLink.find('.cart-badge');
-            
-            if (count > 0) {
-                if (existingBadge.length) {
-                    existingBadge.text(count);
-                } else {
-                    cartLink.find('i').after('<span class="cart-badge">' + count + '</span>');
-                }
+        // Back to top button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 100) {
+                $('#backToTop').fadeIn();
             } else {
-                existingBadge.remove();
+                $('#backToTop').fadeOut();
             }
-        }
+        });
 
-        // Confirm delete function
-        function confirmDelete(url, message = 'Bạn có chắc chắn muốn xóa?') {
-            Swal.fire({
-                title: 'Xác nhận xóa',
-                text: message,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#dc3545',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Xóa',
-                cancelButtonText: 'Hủy',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    showLoading();
-                    window.location.href = url;
-                }
-            });
-        }
+        $('#backToTop').click(function() {
+            $('html, body').animate({scrollTop: 0}, 800);
+        });
 
-        // Format currency
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('vi-VN', {
-                style: 'currency',
-                currency: 'VND'
-            }).format(amount);
-        }
-
-        // Smooth scroll for anchor links
+        // Smooth scrolling for anchor links
         $('a[href^="#"]').on('click', function(event) {
             var target = $(this.getAttribute('href'));
             if (target.length) {
@@ -215,62 +139,112 @@
             }
         });
 
-        // Auto-hide alerts after 5 seconds
-        setTimeout(function() {
-            $('.alert').fadeOut();
-        }, 5000);
+        // Loading animation for buttons
+        $('.btn').on('click', function() {
+            var $btn = $(this);
+            if (!$btn.hasClass('no-loading')) {
+                $btn.addClass('disabled');
+                var originalText = $btn.html();
+                $btn.html('<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...');
+                
+                setTimeout(function() {
+                    $btn.removeClass('disabled').html(originalText);
+                }, 2000);
+            }
+        });
+
+        // Auto-hide alerts
+        $('.alert').each(function() {
+            var $alert = $(this);
+            setTimeout(function() {
+                $alert.fadeOut('slow');
+            }, 5000);
+        });
+
+        // Card hover effects
+        $('.card').hover(
+            function() {
+                $(this).addClass('shadow-lg');
+            },
+            function() {
+                $(this).removeClass('shadow-lg');
+            }
+        );
 
         // Form validation enhancement
         $('form').on('submit', function() {
-            const submitBtn = $(this).find('button[type="submit"]');
-            if (submitBtn.length) {
-                submitBtn.prop('disabled', true);
-                const originalText = submitBtn.text();
-                submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...');
-                
-                setTimeout(function() {
-                    submitBtn.prop('disabled', false);
-                    submitBtn.text(originalText);
-                }, 3000);
+            var $form = $(this);
+            var $submitBtn = $form.find('button[type="submit"]');
+            
+            $submitBtn.prop('disabled', true);
+            $submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...');
+        });
+
+        // Price formatting
+        $('.price').each(function() {
+            var price = parseFloat($(this).text().replace(/[^\d.-]/g, ''));
+            if (!isNaN(price)) {
+                $(this).text(new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND'
+                }).format(price));
             }
         });
 
-        // Price formatting on page load
-        $(document).ready(function() {
-            $('.price').each(function() {
-                const price = parseFloat($(this).text().replace(/[^\d]/g, ''));
-                if (!isNaN(price)) {
-                    $(this).text(formatCurrency(price));
-                }
-            });
-        });
-
-        // Back to top button
-        $(window).scroll(function() {
-            if ($(this).scrollTop() > 100) {
-                if ($('#backToTop').length === 0) {
-                    $('body').append(`
-                        <button id="backToTop" class="btn btn-primary rounded-circle position-fixed" 
-                                style="bottom: 30px; right: 30px; z-index: 1000; width: 50px; height: 50px;">
-                            <i class="fas fa-arrow-up"></i>
-                        </button>
-                    `);
-                }
+        // Search functionality enhancement
+        $('.search-box').on('input', function() {
+            var query = $(this).val();
+            if (query.length > 2) {
+                // Add search suggestions or live search here
+                $(this).addClass('border-primary');
             } else {
-                $('#backToTop').remove();
+                $(this).removeClass('border-primary');
             }
         });
 
-        // Back to top click handler
-        $(document).on('click', '#backToTop', function() {
-            $('html, body').animate({scrollTop: 0}, 'slow');
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
         });
 
-        // Image lazy loading fallback
-        $('img').on('error', function() {
-            $(this).attr('src', 'https://via.placeholder.com/300x200/f8f9fa/6c757d?text=No+Image');
+        // Initialize popovers
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl);
         });
 
+        // Custom delete confirmation
+        function confirmDelete(message = 'Bạn có chắc chắn muốn xóa?') {
+            return Swal.fire({
+                title: 'Xác nhận xóa',
+                text: message,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            });
+        }
+
+        // Add to cart animation
+        function addToCartAnimation(button) {
+            var $btn = $(button);
+            var originalText = $btn.html();
+            
+            $btn.html('<i class="fas fa-check me-2"></i>Đã thêm!');
+            $btn.removeClass('btn-primary').addClass('btn-success');
+            
+            setTimeout(function() {
+                $btn.html(originalText);
+                $btn.removeClass('btn-success').addClass('btn-primary');
+            }, 2000);
+        }
     </script>
+
+    <?php if (isset($additional_scripts)): ?>
+        <?php echo $additional_scripts; ?>
+    <?php endif; ?>
 </body>
 </html>

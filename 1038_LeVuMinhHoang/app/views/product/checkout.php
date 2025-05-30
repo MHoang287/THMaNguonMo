@@ -1,232 +1,316 @@
-<?php
-$title = "Thanh toán";
-include_once 'app/views/shares/header.php';
+<?php 
+$title = "Thanh toán - TechTafu";
+include 'app/views/shares/header.php'; 
 
-// Calculate cart total
-$cart = $_SESSION['cart'] ?? [];
+// Get cart data
+$cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
 $total = 0;
 foreach ($cart as $item) {
     $total += $item['price'] * $item['quantity'];
 }
 ?>
 
-<!-- Page Header -->
-<div class="page-header">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-2">
-                        <li class="breadcrumb-item"><a href="/Product" class="text-white-50">Trang chủ</a></li>
-                        <li class="breadcrumb-item"><a href="/Product/cart" class="text-white-50">Giỏ hàng</a></li>
-                        <li class="breadcrumb-item active text-white" aria-current="page">Thanh toán</li>
-                    </ol>
-                </nav>
-                <h1 class="h2 mb-0 animate__animated animate__fadeInLeft">
-                    <i class="fas fa-credit-card me-2"></i>Thanh toán đơn hàng
-                </h1>
-            </div>
-            <div class="col-md-6 text-md-end">
-                <a href="/Product/cart" class="btn btn-outline-light animate__animated animate__fadeInRight">
-                    <i class="fas fa-arrow-left me-2"></i>Quay lại giỏ hàng
-                </a>
-            </div>
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" data-aos="fade-right">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="/Product" class="text-decoration-none">Sản phẩm</a></li>
+            <li class="breadcrumb-item"><a href="/Product/cart" class="text-decoration-none">Giỏ hàng</a></li>
+            <li class="breadcrumb-item active">Thanh toán</li>
+        </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-1" data-aos="fade-right">
+                <i class="fas fa-credit-card text-success me-2"></i>
+                Thanh toán đơn hàng
+            </h2>
+            <p class="text-muted mb-0" data-aos="fade-right" data-aos-delay="100">
+                Vui lòng kiểm tra thông tin và hoàn tất đơn hàng
+            </p>
         </div>
     </div>
-</div>
 
-<?php if (empty($cart)): ?>
-    <!-- Empty Cart Redirect -->
-    <div class="container my-5">
-        <div class="row">
-            <div class="col-12">
-                <div class="text-center py-5" data-aos="fade-up">
-                    <i class="fas fa-shopping-cart text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
-                    <h3 class="text-muted mt-3 mb-3">Giỏ hàng trống</h3>
-                    <p class="text-muted mb-4">Vui lòng thêm sản phẩm vào giỏ hàng trước khi thanh toán</p>
+    <?php if (empty($cart)): ?>
+        <!-- Empty Cart Redirect -->
+        <div class="text-center py-5" data-aos="fade-up">
+            <div class="card shadow-sm">
+                <div class="card-body py-5">
+                    <i class="fas fa-exclamation-triangle fa-5x text-warning mb-4"></i>
+                    <h3 class="text-muted mb-3">Giỏ hàng trống</h3>
+                    <p class="text-muted mb-4">Bạn cần thêm sản phẩm vào giỏ hàng trước khi thanh toán</p>
                     <a href="/Product" class="btn btn-primary btn-lg">
-                        <i class="fas fa-shopping-bag me-2"></i>Tiếp tục mua sắp
+                        <i class="fas fa-shopping-bag me-2"></i>Tiếp tục mua sắm
                     </a>
                 </div>
             </div>
         </div>
-    </div>
-<?php else: ?>
-    <!-- Checkout Form -->
-    <div class="container my-5">
-        <form action="/Product/processCheckout" method="POST" id="checkoutForm">
+    <?php else: ?>
+        <form method="POST" action="/Product/processCheckout" id="checkoutForm" class="needs-validation" novalidate>
             <div class="row">
                 <!-- Customer Information -->
                 <div class="col-lg-7">
-                    <div class="card border-0 shadow-lg mb-4" data-aos="fade-right">
-                        <div class="card-header bg-primary text-white py-3">
+                    <!-- Delivery Information -->
+                    <div class="card shadow-sm border-0 mb-4" data-aos="fade-up">
+                        <div class="card-header bg-primary text-white">
                             <h5 class="card-title mb-0">
-                                <i class="fas fa-user me-2"></i>Thông tin khách hàng
+                                <i class="fas fa-user me-2"></i>
+                                Thông tin giao hàng
                             </h5>
                         </div>
-                        
                         <div class="card-body p-4">
-                            <div class="row g-3">
-                                <div class="col-12">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
                                     <label for="name" class="form-label fw-bold">
-                                        <i class="fas fa-user me-1 text-primary"></i>Họ và tên *
+                                        <i class="fas fa-user text-primary me-2"></i>
+                                        Họ và tên <span class="text-danger">*</span>
                                     </label>
-                                    <input type="text" class="form-control form-control-lg" 
-                                           id="name" name="name" 
-                                           placeholder="Nhập họ và tên đầy đủ..." required>
+                                    <input type="text" class="form-control form-control-lg" id="name" name="name" 
+                                           placeholder="Nhập họ và tên..." required>
+                                    <div class="invalid-feedback">
+                                        Vui lòng nhập họ và tên
+                                    </div>
                                 </div>
-                                
-                                <div class="col-md-6">
+                                <div class="col-md-6 mb-3">
                                     <label for="phone" class="form-label fw-bold">
-                                        <i class="fas fa-phone me-1 text-primary"></i>Số điện thoại *
+                                        <i class="fas fa-phone text-success me-2"></i>
+                                        Số điện thoại <span class="text-danger">*</span>
                                     </label>
-                                    <input type="tel" class="form-control form-control-lg" 
-                                           id="phone" name="phone" 
-                                           placeholder="0123456789" required>
+                                    <input type="tel" class="form-control form-control-lg" id="phone" name="phone" 
+                                           placeholder="Nhập số điện thoại..." required>
+                                    <div class="invalid-feedback">
+                                        Vui lòng nhập số điện thoại hợp lệ
+                                    </div>
                                 </div>
-                                
-                                <div class="col-md-6">
-                                    <label for="email" class="form-label fw-bold">
-                                        <i class="fas fa-envelope me-1 text-primary"></i>Email
-                                    </label>
-                                    <input type="email" class="form-control form-control-lg" 
-                                           id="email" name="email" 
-                                           placeholder="email@example.com">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label fw-bold">
+                                    <i class="fas fa-envelope text-info me-2"></i>
+                                    Email (tùy chọn)
+                                </label>
+                                <input type="email" class="form-control form-control-lg" id="email" name="email" 
+                                       placeholder="Nhập email để nhận thông báo...">
+                            </div>
+                            <div class="mb-3">
+                                <label for="address" class="form-label fw-bold">
+                                    <i class="fas fa-map-marker-alt text-warning me-2"></i>
+                                    Địa chỉ giao hàng <span class="text-danger">*</span>
+                                </label>
+                                <textarea class="form-control" id="address" name="address" rows="3" 
+                                          placeholder="Nhập địa chỉ chi tiết (số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố)..." required></textarea>
+                                <div class="invalid-feedback">
+                                    Vui lòng nhập địa chỉ giao hàng
                                 </div>
-                                
-                                <div class="col-12">
-                                    <label for="address" class="form-label fw-bold">
-                                        <i class="fas fa-map-marker-alt me-1 text-primary"></i>Địa chỉ giao hàng *
-                                    </label>
-                                    <textarea class="form-control" id="address" name="address" 
-                                              rows="3" placeholder="Nhập địa chỉ giao hàng chi tiết..." required></textarea>
+                            </div>
+                            
+                            <!-- Quick Address Selection -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-map text-secondary me-2"></i>
+                                    Chọn nhanh địa chỉ
+                                </label>
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <select class="form-select" id="province">
+                                            <option value="">Chọn tỉnh/thành</option>
+                                            <option value="Ho Chi Minh">TP. Hồ Chí Minh</option>
+                                            <option value="Ha Noi">Hà Nội</option>
+                                            <option value="Da Nang">Đà Nẵng</option>
+                                            <option value="Can Tho">Cần Thơ</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <select class="form-select" id="district">
+                                            <option value="">Chọn quận/huyện</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <select class="form-select" id="ward">
+                                            <option value="">Chọn phường/xã</option>
+                                        </select>
+                                    </div>
                                 </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="note" class="form-label fw-bold">
+                                    <i class="fas fa-sticky-note text-secondary me-2"></i>
+                                    Ghi chú đơn hàng
+                                </label>
+                                <textarea class="form-control" id="note" name="note" rows="2" 
+                                          placeholder="Ghi chú thêm cho đơn hàng (tùy chọn)..."></textarea>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Payment Method -->
-                    <div class="card border-0 shadow-lg mb-4" data-aos="fade-right" data-aos-delay="100">
-                        <div class="card-header bg-success text-white py-3">
+                    <div class="card shadow-sm border-0 mb-4" data-aos="fade-up" data-aos-delay="200">
+                        <div class="card-header bg-success text-white">
                             <h5 class="card-title mb-0">
-                                <i class="fas fa-credit-card me-2"></i>Phương thức thanh toán
+                                <i class="fas fa-credit-card me-2"></i>
+                                Phương thức thanh toán
                             </h5>
                         </div>
-                        
                         <div class="card-body p-4">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="form-check form-check-card">
-                                        <input class="form-check-input" type="radio" name="payment_method" 
-                                               id="payment_cod" value="cod" checked>
-                                        <label class="form-check-label" for="payment_cod">
-                                            <div class="card h-100">
-                                                <div class="card-body text-center py-3">
-                                                    <i class="fas fa-money-bill-wave fa-2x text-success mb-2"></i>
-                                                    <h6 class="mb-1">Thanh toán khi nhận hàng</h6>
-                                                    <small class="text-muted">Trả tiền mặt khi nhận hàng</small>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check p-3 border rounded payment-option">
+                                        <input class="form-check-input" type="radio" name="payment_method" id="cod" value="cod" checked>
+                                        <label class="form-check-label w-100" for="cod">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-money-bill-wave fa-2x text-success me-3"></i>
+                                                <div>
+                                                    <strong>Thanh toán khi nhận hàng (COD)</strong>
+                                                    <small class="d-block text-muted">Thanh toán bằng tiền mặt khi nhận hàng</small>
                                                 </div>
                                             </div>
                                         </label>
                                     </div>
                                 </div>
-                                
-                                <div class="col-md-6">
-                                    <div class="form-check form-check-card">
-                                        <input class="form-check-input" type="radio" name="payment_method" 
-                                               id="payment_bank" value="bank">
-                                        <label class="form-check-label" for="payment_bank">
-                                            <div class="card h-100">
-                                                <div class="card-body text-center py-3">
-                                                    <i class="fas fa-university fa-2x text-primary mb-2"></i>
-                                                    <h6 class="mb-1">Chuyển khoản ngân hàng</h6>
-                                                    <small class="text-muted">Chuyển khoản trước khi giao</small>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check p-3 border rounded payment-option">
+                                        <input class="form-check-input" type="radio" name="payment_method" id="bank_transfer" value="bank_transfer">
+                                        <label class="form-check-label w-100" for="bank_transfer">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-university fa-2x text-primary me-3"></i>
+                                                <div>
+                                                    <strong>Chuyển khoản ngân hàng</strong>
+                                                    <small class="d-block text-muted">Chuyển khoản trước khi giao hàng</small>
                                                 </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check p-3 border rounded payment-option">
+                                        <input class="form-check-input" type="radio" name="payment_method" id="momo" value="momo">
+                                        <label class="form-check-label w-100" for="momo">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fab fa-cc-paypal fa-2x text-danger me-3"></i>
+                                                <div>
+                                                    <strong>Ví điện tử MoMo</strong>
+                                                    <small class="d-block text-muted">Thanh toán qua ví MoMo</small>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check p-3 border rounded payment-option">
+                                        <input class="form-check-input" type="radio" name="payment_method" id="credit_card" value="credit_card">
+                                        <label class="form-check-label w-100" for="credit_card">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-credit-card fa-2x text-info me-3"></i>
+                                                <div>
+                                                    <strong>Thẻ tín dụng/ghi nợ</strong>
+                                                    <small class="d-block text-muted">Visa, MasterCard, JCB</small>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Options -->
+                    <div class="card shadow-sm border-0" data-aos="fade-up" data-aos-delay="300">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-shipping-fast me-2"></i>
+                                Tùy chọn giao hàng
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check p-3 border rounded shipping-option">
+                                        <input class="form-check-input" type="radio" name="shipping_method" id="standard" value="standard" checked>
+                                        <label class="form-check-label w-100" for="standard">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <strong>Giao hàng tiêu chuẩn</strong>
+                                                    <small class="d-block text-muted">2-3 ngày làm việc</small>
+                                                </div>
+                                                <span class="badge bg-success">Miễn phí</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check p-3 border rounded shipping-option">
+                                        <input class="form-check-input" type="radio" name="shipping_method" id="express" value="express">
+                                        <label class="form-check-label w-100" for="express">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <strong>Giao hàng nhanh</strong>
+                                                    <small class="d-block text-muted">1-2 ngày làm việc</small>
+                                                </div>
+                                                <span class="badge bg-warning">30.000đ</span>
                                             </div>
                                         </label>
                                     </div>
                                 </div>
                             </div>
                             
-                            <!-- Bank Transfer Info (Hidden by default) -->
-                            <div id="bankInfo" class="mt-3" style="display: none;">
-                                <div class="alert alert-info">
-                                    <h6><i class="fas fa-info-circle me-2"></i>Thông tin chuyển khoản:</h6>
-                                    <p class="mb-1"><strong>Ngân hàng:</strong> Vietcombank</p>
-                                    <p class="mb-1"><strong>Số tài khoản:</strong> 1234567890</p>
-                                    <p class="mb-1"><strong>Chủ tài khoản:</strong> CONG TY TECHTAFU</p>
-                                    <p class="mb-0"><strong>Nội dung:</strong> Thanh toan don hang [Số điện thoại]</p>
-                                </div>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Lưu ý:</strong> Đơn hàng từ 1.000.000đ được miễn phí giao hàng nhanh
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Special Instructions -->
-                    <div class="card border-0 shadow-lg" data-aos="fade-right" data-aos-delay="200">
-                        <div class="card-header bg-info text-white py-3">
-                            <h5 class="card-title mb-0">
-                                <i class="fas fa-sticky-note me-2"></i>Ghi chú đặc biệt
-                            </h5>
-                        </div>
-                        
-                        <div class="card-body p-4">
-                            <textarea class="form-control" name="notes" rows="3" 
-                                      placeholder="Ghi chú về đơn hàng (thời gian giao hàng, yêu cầu đặc biệt...)"></textarea>
-                        </div>
-                    </div>
                 </div>
-                
+
                 <!-- Order Summary -->
                 <div class="col-lg-5">
-                    <div class="card border-0 shadow-lg sticky-top" data-aos="fade-left" style="top: 100px;">
-                        <div class="card-header bg-warning text-dark py-3">
+                    <div class="card shadow-lg border-0 sticky-top" data-aos="fade-up" data-aos-delay="400" style="top: 20px;">
+                        <div class="card-header bg-warning text-dark">
                             <h5 class="card-title mb-0">
-                                <i class="fas fa-receipt me-2"></i>Tóm tắt đơn hàng
+                                <i class="fas fa-receipt me-2"></i>
+                                Tóm tắt đơn hàng
                             </h5>
                         </div>
-                        
-                        <div class="card-body p-0">
-                            <!-- Cart Items -->
-                            <div class="p-4 border-bottom">
-                                <h6 class="mb-3">Sản phẩm đã chọn:</h6>
+                        <div class="card-body">
+                            <!-- Order Items -->
+                            <div class="order-items mb-4" style="max-height: 300px; overflow-y: auto;">
                                 <?php foreach ($cart as $productId => $item): ?>
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="flex-shrink-0 me-3">
-                                            <?php if (!empty($item['image']) && file_exists($item['image'])): ?>
+                                    <div class="d-flex align-items-center mb-3 p-2 bg-light rounded">
+                                        <div class="product-image me-3">
+                                            <?php if (!empty($item['image'])): ?>
                                                 <img src="/<?php echo htmlspecialchars($item['image']); ?>" 
-                                                     class="rounded" style="width: 50px; height: 50px; object-fit: cover;"
-                                                     alt="<?php echo htmlspecialchars($item['name']); ?>">
+                                                     alt="<?php echo htmlspecialchars($item['name']); ?>" 
+                                                     class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
                                             <?php else: ?>
-                                                <div class="bg-light rounded d-flex align-items-center justify-content-center" 
-                                                     style="width: 50px; height: 50px;">
-                                                    <i class="fas fa-image text-muted"></i>
+                                                <div class="bg-secondary rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                    <i class="fas fa-image text-white"></i>
                                                 </div>
                                             <?php endif; ?>
                                         </div>
                                         <div class="flex-grow-1">
                                             <h6 class="mb-1 small"><?php echo htmlspecialchars($item['name']); ?></h6>
-                                            <p class="mb-0 small text-muted">
-                                                <?php echo $item['quantity']; ?> × <?php echo number_format($item['price'], 0, ',', '.'); ?>₫
-                                            </p>
-                                        </div>
-                                        <div class="text-end">
-                                            <span class="fw-bold text-success">
-                                                <?php echo number_format($item['price'] * $item['quantity'], 0, ',', '.'); ?>₫
-                                            </span>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">SL: <?php echo $item['quantity']; ?></small>
+                                                <strong class="text-primary small">
+                                                    <?php echo number_format($item['price'] * $item['quantity'], 0, ',', '.'); ?>đ
+                                                </strong>
+                                            </div>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
-                            
-                            <!-- Order Calculation -->
-                            <div class="p-4">
+
+                            <!-- Price Breakdown -->
+                            <div class="price-breakdown">
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Tạm tính:</span>
-                                    <span class="fw-bold"><?php echo number_format($total, 0, ',', '.'); ?>₫</span>
+                                    <span><?php echo number_format($total, 0, ',', '.'); ?>đ</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Phí vận chuyển:</span>
-                                    <span class="text-success fw-bold">Miễn phí</span>
+                                    <span id="shippingFee" class="text-success">Miễn phí</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Thuế VAT:</span>
@@ -234,235 +318,254 @@ foreach ($cart as $item) {
                                 </div>
                                 <hr>
                                 <div class="d-flex justify-content-between mb-3">
-                                    <h6 class="mb-0">Tổng thanh toán:</h6>
-                                    <h4 class="mb-0 text-danger">
-                                        <?php echo number_format($total, 0, ',', '.'); ?>₫
-                                    </h4>
-                                </div>
-                                
-                                <!-- Checkout Button -->
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-success btn-lg">
-                                        <i class="fas fa-check-circle me-2"></i>Đặt hàng ngay
-                                    </button>
-                                </div>
-                                
-                                <div class="text-center mt-3">
-                                    <small class="text-muted">
-                                        <i class="fas fa-shield-alt me-1"></i>
-                                        Thông tin của bạn được bảo mật tuyệt đối
-                                    </small>
+                                    <strong>Tổng cộng:</strong>
+                                    <strong class="text-primary h5" id="grandTotal">
+                                        <?php echo number_format($total, 0, ',', '.'); ?>đ
+                                    </strong>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Policies -->
-                    <div class="card border-0 shadow-sm mt-3" data-aos="fade-left" data-aos-delay="100">
-                        <div class="card-body">
-                            <h6 class="card-title">
-                                <i class="fas fa-info-circle me-2 text-primary"></i>Chính sách mua hàng
-                            </h6>
-                            <ul class="list-unstyled small mb-0">
-                                <li class="mb-2">
-                                    <i class="fas fa-check text-success me-2"></i>
-                                    Miễn phí giao hàng toàn quốc
-                                </li>
-                                <li class="mb-2">
-                                    <i class="fas fa-check text-success me-2"></i>
-                                    Đổi trả trong 7 ngày nếu lỗi
-                                </li>
-                                <li class="mb-2">
-                                    <i class="fas fa-check text-success me-2"></i>
-                                    Bảo hành chính hãng đầy đủ
-                                </li>
-                                <li>
-                                    <i class="fas fa-check text-success me-2"></i>
-                                    Hỗ trợ kỹ thuật 24/7
-                                </li>
-                            </ul>
+
+                            <!-- Order Actions -->
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-success btn-lg" id="placeOrderBtn">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    Đặt hàng ngay
+                                </button>
+                                <a href="/Product/cart" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>
+                                    Quay lại giỏ hàng
+                                </a>
+                            </div>
+
+                            <!-- Security Info -->
+                            <div class="mt-4 text-center">
+                                <small class="text-muted d-block mb-2">
+                                    <i class="fas fa-shield-alt text-success me-1"></i>
+                                    Thông tin của bạn được bảo mật 100%
+                                </small>
+                                <div class="security-badges">
+                                    <i class="fab fa-cc-visa fa-2x text-primary me-2"></i>
+                                    <i class="fab fa-cc-mastercard fa-2x text-warning me-2"></i>
+                                    <i class="fas fa-shield-alt fa-2x text-success"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </form>
-    </div>
-<?php endif; ?>
+    <?php endif; ?>
+</div>
 
 <script>
-    // Payment method toggle
+    // Form validation
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        toastr.error('Vui lòng kiểm tra lại thông tin!');
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+
+    // Phone number validation
+    document.getElementById('phone').addEventListener('input', function() {
+        const phone = this.value.replace(/\D/g, '');
+        this.value = phone;
+        
+        if (phone.length >= 10 && phone.length <= 11) {
+            this.setCustomValidity('');
+        } else {
+            this.setCustomValidity('Số điện thoại phải có 10-11 chữ số');
+        }
+    });
+
+    // Payment method change
     document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
         radio.addEventListener('change', function() {
-            const bankInfo = document.getElementById('bankInfo');
-            if (this.value === 'bank') {
-                bankInfo.style.display = 'block';
-                bankInfo.classList.add('animate__animated', 'animate__fadeIn');
-            } else {
-                bankInfo.style.display = 'none';
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.classList.remove('border-primary', 'bg-light');
+            });
+            
+            if (this.checked) {
+                this.closest('.payment-option').classList.add('border-primary', 'bg-light');
             }
         });
     });
 
-    // Form validation
+    // Shipping method change
+    document.querySelectorAll('input[name="shipping_method"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            document.querySelectorAll('.shipping-option').forEach(option => {
+                option.classList.remove('border-primary', 'bg-light');
+            });
+            
+            if (this.checked) {
+                this.closest('.shipping-option').classList.add('border-primary', 'bg-light');
+            }
+            
+            updateShippingFee();
+        });
+    });
+
+    // Update shipping fee
+    function updateShippingFee() {
+        const express = document.getElementById('express').checked;
+        const subtotal = <?php echo $total; ?>;
+        const freeShippingThreshold = 1000000;
+        
+        let shippingFee = 0;
+        if (express && subtotal < freeShippingThreshold) {
+            shippingFee = 30000;
+        }
+        
+        const shippingFeeElement = document.getElementById('shippingFee');
+        if (shippingFee > 0) {
+            shippingFeeElement.textContent = new Intl.NumberFormat('vi-VN').format(shippingFee) + 'đ';
+            shippingFeeElement.className = 'text-warning';
+        } else {
+            shippingFeeElement.textContent = 'Miễn phí';
+            shippingFeeElement.className = 'text-success';
+        }
+        
+        const grandTotal = subtotal + shippingFee;
+        document.getElementById('grandTotal').textContent = new Intl.NumberFormat('vi-VN').format(grandTotal) + 'đ';
+    }
+
+    // Address auto-complete simulation
+    document.getElementById('province').addEventListener('change', function() {
+        const district = document.getElementById('district');
+        district.innerHTML = '<option value="">Chọn quận/huyện</option>';
+        
+        if (this.value === 'Ho Chi Minh') {
+            district.innerHTML += `
+                <option value="Quan 1">Quận 1</option>
+                <option value="Quan 3">Quận 3</option>
+                <option value="Quan 5">Quận 5</option>
+                <option value="Quan 7">Quận 7</option>
+                <option value="Quan 10">Quận 10</option>
+            `;
+        } else if (this.value === 'Ha Noi') {
+            district.innerHTML += `
+                <option value="Ba Dinh">Ba Đình</option>
+                <option value="Hoan Kiem">Hoàn Kiếm</option>
+                <option value="Dong Da">Đống Đa</option>
+                <option value="Hai Ba Trung">Hai Bà Trưng</option>
+            `;
+        }
+    });
+
+    document.getElementById('district').addEventListener('change', function() {
+        const ward = document.getElementById('ward');
+        ward.innerHTML = '<option value="">Chọn phường/xã</option>';
+        
+        if (this.value) {
+            ward.innerHTML += `
+                <option value="Phuong 1">Phường 1</option>
+                <option value="Phuong 2">Phường 2</option>
+                <option value="Phuong 3">Phường 3</option>
+            `;
+        }
+    });
+
+    // Auto-fill address from selections
+    function updateFullAddress() {
+        const province = document.getElementById('province').selectedOptions[0]?.text || '';
+        const district = document.getElementById('district').selectedOptions[0]?.text || '';
+        const ward = document.getElementById('ward').selectedOptions[0]?.text || '';
+        
+        if (province && district && ward) {
+            const currentAddress = document.getElementById('address').value;
+            const addressParts = currentAddress.split(',');
+            
+            if (addressParts.length <= 1) {
+                document.getElementById('address').value = `${currentAddress}, ${ward}, ${district}, ${province}`.replace(/^,\s*/, '');
+            }
+        }
+    }
+
+    document.getElementById('ward').addEventListener('change', updateFullAddress);
+
+    // Form submission
     document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+        const btn = document.getElementById('placeOrderBtn');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...';
+        btn.disabled = true;
         
-        const name = document.getElementById('name').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const address = document.getElementById('address').value.trim();
-        
-        // Validation
-        if (!name) {
-            toastr.error('Vui lòng nhập họ và tên');
-            document.getElementById('name').focus();
-            return;
-        }
-        
-        if (!phone) {
-            toastr.error('Vui lòng nhập số điện thoại');
-            document.getElementById('phone').focus();
-            return;
-        }
-        
-        if (!/^[0-9]{10,11}$/.test(phone)) {
-            toastr.error('Số điện thoại không hợp lệ');
-            document.getElementById('phone').focus();
-            return;
-        }
-        
-        if (!address) {
-            toastr.error('Vui lòng nhập địa chỉ giao hàng');
-            document.getElementById('address').focus();
-            return;
-        }
-        
-        // Confirmation dialog
-        const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
-        const paymentText = paymentMethod === 'cod' ? 'thanh toán khi nhận hàng' : 'chuyển khoản ngân hàng';
-        
+        // Show loading
         Swal.fire({
-            title: 'Xác nhận đặt hàng',
-            html: `
-                <div class="text-start">
-                    <p><strong>Họ tên:</strong> ${name}</p>
-                    <p><strong>Số điện thoại:</strong> ${phone}</p>
-                    <p><strong>Địa chỉ:</strong> ${address}</p>
-                    <p><strong>Tổng tiền:</strong> <span class="text-danger"><?php echo number_format($total, 0, ',', '.'); ?>₫</span></p>
-                    <p><strong>Thanh toán:</strong> ${paymentText}</p>
-                </div>
-            `,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#28a745',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Xác nhận đặt hàng',
-            cancelButtonText: 'Kiểm tra lại',
-            width: '500px'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                showLoading();
-                
-                // Submit form
-                const formData = new FormData(this);
-                
-                fetch('/Product/processCheckout', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    if (response.ok) {
-                        window.location.href = '/Product/orderConfirmation';
-                    } else {
-                        throw new Error('Network response was not ok');
-                    }
-                })
-                .catch(error => {
-                    hideLoading();
-                    toastr.error('Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!');
-                    console.error('Error:', error);
-                });
+            title: 'Đang xử lý đơn hàng...',
+            html: 'Vui lòng đợi trong giây lát',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
             }
         });
     });
 
-    // Phone number formatting
-    document.getElementById('phone').addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length > 11) {
-            value = value.slice(0, 11);
-        }
-        e.target.value = value;
-    });
+    // Initialize payment method highlighting
+    document.getElementById('cod').closest('.payment-option').classList.add('border-primary', 'bg-light');
+    document.getElementById('standard').closest('.shipping-option').classList.add('border-primary', 'bg-light');
 
-    // Auto-focus next field on Enter
-    const formInputs = document.querySelectorAll('#checkoutForm input, #checkoutForm textarea');
-    formInputs.forEach((input, index) => {
-        input.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && index < formInputs.length - 1) {
-                e.preventDefault();
-                formInputs[index + 1].focus();
-            }
-        });
-    });
-
-    // Save form data to sessionStorage for recovery
-    const saveFormData = () => {
-        const formData = {
-            name: document.getElementById('name').value,
-            phone: document.getElementById('phone').value,
-            email: document.getElementById('email').value,
-            address: document.getElementById('address').value
-        };
-        sessionStorage.setItem('checkoutForm', JSON.stringify(formData));
-    };
-
-    // Load saved form data
-    const loadFormData = () => {
-        const savedData = sessionStorage.getItem('checkoutForm');
-        if (savedData) {
-            const data = JSON.parse(savedData);
-            document.getElementById('name').value = data.name || '';
-            document.getElementById('phone').value = data.phone || '';
-            document.getElementById('email').value = data.email || '';
-            document.getElementById('address').value = data.address || '';
-        }
-    };
-
-    // Auto-save form data on input
-    formInputs.forEach(input => {
-        input.addEventListener('input', saveFormData);
-    });
-
-    // Load form data on page load
-    document.addEventListener('DOMContentLoaded', loadFormData);
-
-    // Clear saved data on successful submission
-    document.getElementById('checkoutForm').addEventListener('submit', function() {
-        sessionStorage.removeItem('checkoutForm');
-    });
-
-    // Estimate delivery time
-    document.getElementById('address').addEventListener('blur', function() {
-        const address = this.value.toLowerCase();
-        let deliveryTime = '2-3 ngày';
-        
-        if (address.includes('hồ chí minh') || address.includes('tp hcm') || address.includes('sài gòn')) {
-            deliveryTime = '1-2 ngày';
-        } else if (address.includes('hà nội') || address.includes('đà nẵng')) {
-            deliveryTime = '1-2 ngày';
-        }
-        
-        // Show delivery estimation
-        let deliveryInfo = document.getElementById('deliveryInfo');
-        if (!deliveryInfo) {
-            deliveryInfo = document.createElement('small');
-            deliveryInfo.id = 'deliveryInfo';
-            deliveryInfo.className = 'text-info mt-1 d-block';
-            this.parentNode.appendChild(deliveryInfo);
-        }
-        
-        deliveryInfo.innerHTML = `<i class="fas fa-truck me-1"></i>Dự kiến giao hàng: ${deliveryTime}`;
-    });
+    // Auto-focus first input
+    document.getElementById('name').focus();
 </script>
 
-<?php include_once 'app/views/shares/footer.php'; ?>
+<style>
+    .payment-option, .shipping-option {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .payment-option:hover, .shipping-option:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+    
+    .order-items::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .order-items::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    
+    .order-items::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+    
+    .order-items::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+    
+    .security-badges i {
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+    }
+    
+    .security-badges i:hover {
+        opacity: 1;
+    }
+    
+    .sticky-top {
+        z-index: 1020;
+    }
+    
+    @media (max-width: 768px) {
+        .sticky-top {
+            position: static !important;
+        }
+    }
+</style>
+
+<?php include 'app/views/shares/footer.php'; ?>

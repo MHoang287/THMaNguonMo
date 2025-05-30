@@ -1,228 +1,280 @@
-<?php
-$title = "Giỏ hàng";
-include_once 'app/views/shares/header.php';
+<?php 
+$title = "Giỏ hàng - TechTafu";
+include 'app/views/shares/header.php'; 
 ?>
 
-<!-- Page Header -->
-<div class="page-header">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-2">
-                        <li class="breadcrumb-item"><a href="/Product" class="text-white-50">Trang chủ</a></li>
-                        <li class="breadcrumb-item active text-white" aria-current="page">Giỏ hàng</li>
-                    </ol>
-                </nav>
-                <h1 class="h2 mb-0 animate__animated animate__fadeInLeft">
-                    <i class="fas fa-shopping-cart me-2"></i>Giỏ hàng của bạn
-                </h1>
-            </div>
-            <div class="col-md-6 text-md-end">
-                <a href="/Product" class="btn btn-outline-light animate__animated animate__fadeInRight">
-                    <i class="fas fa-arrow-left me-2"></i>Tiếp tục mua sắm
-                </a>
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" data-aos="fade-right">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="/Product" class="text-decoration-none">Sản phẩm</a></li>
+            <li class="breadcrumb-item active">Giỏ hàng</li>
+        </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-1" data-aos="fade-right">
+                        <i class="fas fa-shopping-cart text-primary me-2"></i>
+                        Giỏ hàng của bạn
+                    </h2>
+                    <p class="text-muted mb-0" data-aos="fade-right" data-aos-delay="100">
+                        <?php echo count($cart); ?> sản phẩm trong giỏ hàng
+                    </p>
+                </div>
+                <div data-aos="fade-left">
+                    <a href="/Product" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-2"></i>Tiếp tục mua sắm
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="container my-5">
     <?php if (empty($cart)): ?>
         <!-- Empty Cart -->
-        <div class="row">
-            <div class="col-12">
-                <div class="text-center py-5" data-aos="fade-up">
-                    <div class="mb-4">
-                        <i class="fas fa-shopping-cart text-muted" style="font-size: 6rem; opacity: 0.3;"></i>
+        <div class="text-center py-5" data-aos="fade-up">
+            <div class="card shadow-sm">
+                <div class="card-body py-5">
+                    <div class="empty-cart-animation mb-4">
+                        <i class="fas fa-shopping-cart fa-5x text-muted animate__animated animate__bounce"></i>
                     </div>
-                    <h3 class="text-muted mb-3">Giỏ hàng của bạn đang trống</h3>
+                    <h3 class="text-muted mb-3">Giỏ hàng trống</h3>
                     <p class="text-muted mb-4">Hãy thêm một số sản phẩm vào giỏ hàng để tiếp tục mua sắm</p>
                     <a href="/Product" class="btn btn-primary btn-lg">
-                        <i class="fas fa-shopping-bag me-2"></i>Bắt đầu mua sắm
+                        <i class="fas fa-shopping-bag me-2"></i>Khám phá sản phẩm
                     </a>
                 </div>
             </div>
         </div>
     <?php else: ?>
-        <!-- Cart Items -->
         <div class="row">
+            <!-- Cart Items -->
             <div class="col-lg-8">
-                <div class="card border-0 shadow-lg" data-aos="fade-right">
-                    <div class="card-header bg-primary text-white py-3">
+                <div class="card shadow-sm border-0 mb-4" data-aos="fade-up">
+                    <div class="card-header bg-primary text-white">
                         <h5 class="card-title mb-0">
-                            <i class="fas fa-list me-2"></i>Sản phẩm trong giỏ hàng (<?php echo count($cart); ?> sản phẩm)
+                            <i class="fas fa-list me-2"></i>
+                            Sản phẩm đã chọn
                         </h5>
                     </div>
-                    
                     <div class="card-body p-0">
-                        <?php 
-                        $total = 0;
-                        foreach ($cart as $productId => $item): 
-                            $subtotal = $item['price'] * $item['quantity'];
-                            $total += $subtotal;
-                        ?>
-                            <div class="cart-item border-bottom p-4" data-product-id="<?php echo $productId; ?>">
-                                <div class="row align-items-center">
-                                    <div class="col-md-2">
-                                        <?php if (!empty($item['image']) && file_exists($item['image'])): ?>
-                                            <img src="/<?php echo htmlspecialchars($item['image']); ?>" 
-                                                 class="img-thumbnail" 
-                                                 alt="<?php echo htmlspecialchars($item['name']); ?>"
-                                                 style="width: 80px; height: 80px; object-fit: cover;">
-                                        <?php else: ?>
-                                            <div class="bg-light d-flex align-items-center justify-content-center" 
-                                                 style="width: 80px; height: 80px;">
-                                                <i class="fas fa-image text-muted"></i>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                    
-                                    <div class="col-md-4">
-                                        <h6 class="mb-1 fw-bold">
-                                            <?php echo htmlspecialchars($item['name']); ?>
-                                        </h6>
-                                        <p class="text-muted small mb-0">
-                                            Đơn giá: <span class="fw-bold text-primary">
-                                                <?php echo number_format($item['price'], 0, ',', '.'); ?>₫
-                                            </span>
-                                        </p>
-                                    </div>
-                                    
-                                    <div class="col-md-3">
-                                        <div class="input-group input-group-sm">
-                                            <button class="btn btn-outline-secondary" type="button" 
-                                                    onclick="updateQuantity(<?php echo $productId; ?>, -1)">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                            <input type="text" class="form-control text-center quantity-input" 
-                                                   value="<?php echo $item['quantity']; ?>" 
-                                                   data-product-id="<?php echo $productId; ?>"
-                                                   onchange="updateQuantity(<?php echo $productId; ?>, 0, this.value)"
-                                                   readonly>
-                                            <button class="btn btn-outline-secondary" type="button" 
-                                                    onclick="updateQuantity(<?php echo $productId; ?>, 1)">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-2">
-                                        <div class="text-end">
-                                            <div class="fw-bold text-success mb-1">
-                                                <?php echo number_format($subtotal, 0, ',', '.'); ?>₫
-                                            </div>
-                                            <button class="btn btn-outline-danger btn-sm" 
-                                                    onclick="removeFromCart(<?php echo $productId; ?>)"
-                                                    title="Xóa khỏi giỏ hàng">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col" width="60">
+                                            <input type="checkbox" id="selectAll" class="form-check-input">
+                                        </th>
+                                        <th scope="col">Sản phẩm</th>
+                                        <th scope="col" width="120">Đơn giá</th>
+                                        <th scope="col" width="150">Số lượng</th>
+                                        <th scope="col" width="120">Thành tiền</th>
+                                        <th scope="col" width="80">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php 
+                                    $total = 0;
+                                    foreach ($cart as $productId => $item): 
+                                        $itemTotal = $item['price'] * $item['quantity'];
+                                        $total += $itemTotal;
+                                    ?>
+                                        <tr class="cart-item animate__animated animate__fadeIn" data-product-id="<?php echo $productId; ?>">
+                                            <td>
+                                                <input type="checkbox" class="form-check-input item-checkbox" value="<?php echo $productId; ?>">
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="product-image me-3">
+                                                        <?php if (!empty($item['image'])): ?>
+                                                            <img src="/<?php echo htmlspecialchars($item['image']); ?>" 
+                                                                 alt="<?php echo htmlspecialchars($item['name']); ?>" 
+                                                                 class="rounded" style="width: 60px; height: 60px; object-fit: cover;"
+                                                                 onerror="this.src='/assets/images/no-image.svg'">
+                                                        <?php else: ?>
+                                                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                                                <i class="fas fa-image text-muted"></i>
+                                                            </div>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1"><?php echo htmlspecialchars($item['name']); ?></h6>
+                                                        <small class="text-muted">Còn hàng</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="fw-bold text-primary">
+                                                    <?php echo number_format($item['price'], 0, ',', '.'); ?>đ
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="input-group input-group-sm" style="width: 120px;">
+                                                    <button class="btn btn-outline-secondary btn-decrease" type="button" data-product-id="<?php echo $productId; ?>">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                    <input type="number" class="form-control text-center quantity-input" 
+                                                           value="<?php echo $item['quantity']; ?>" 
+                                                           min="1" max="99"
+                                                           data-product-id="<?php echo $productId; ?>">
+                                                    <button class="btn btn-outline-secondary btn-increase" type="button" data-product-id="<?php echo $productId; ?>">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="fw-bold text-success item-total">
+                                                    <?php echo number_format($itemTotal, 0, ',', '.'); ?>đ
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-outline-danger btn-sm btn-remove" 
+                                                        data-product-id="<?php echo $productId; ?>"
+                                                        data-bs-toggle="tooltip" title="Xóa khỏi giỏ hàng">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    
-                    <div class="card-footer bg-light py-3">
+                    <div class="card-footer bg-light">
                         <div class="d-flex justify-content-between align-items-center">
-                            <button class="btn btn-outline-danger" onclick="clearCart()">
-                                <i class="fas fa-trash me-2"></i>Xóa toàn bộ giỏ hàng
-                            </button>
-                            <button class="btn btn-outline-primary" onclick="updateAllQuantities()">
-                                <i class="fas fa-sync me-2"></i>Cập nhật giỏ hàng
-                            </button>
+                            <div>
+                                <button class="btn btn-outline-danger btn-sm" id="removeSelected">
+                                    <i class="fas fa-trash me-1"></i>Xóa đã chọn
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm ms-2" id="clearCart">
+                                    <i class="fas fa-times me-1"></i>Xóa tất cả
+                                </button>
+                            </div>
+                            <div>
+                                <span class="text-muted me-3">Tổng cộng:</span>
+                                <span class="h5 text-primary mb-0" id="cartTotal">
+                                    <?php echo number_format($total, 0, ',', '.'); ?>đ
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Order Summary -->
             <div class="col-lg-4">
-                <div class="card border-0 shadow-lg sticky-top" data-aos="fade-left" style="top: 100px;">
-                    <div class="card-header bg-success text-white py-3">
+                <!-- Summary Card -->
+                <div class="card shadow-sm border-0 mb-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-header bg-success text-white">
                         <h5 class="card-title mb-0">
-                            <i class="fas fa-calculator me-2"></i>Tóm tắt đơn hàng
+                            <i class="fas fa-receipt me-2"></i>
+                            Tóm tắt đơn hàng
                         </h5>
                     </div>
-                    
                     <div class="card-body">
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Tạm tính:</span>
-                                <span class="fw-bold"><?php echo number_format($total, 0, ',', '.'); ?>₫</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Phí vận chuyển:</span>
-                                <span class="text-success fw-bold">Miễn phí</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Thuế VAT:</span>
-                                <span>Đã bao gồm</span>
-                            </div>
-                            <hr>
-                            <div class="d-flex justify-content-between mb-3">
-                                <h6 class="mb-0">Tổng cộng:</h6>
-                                <h5 class="mb-0 text-danger">
-                                    <?php echo number_format($total, 0, ',', '.'); ?>₫
-                                </h5>
-                            </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tạm tính:</span>
+                            <span id="subtotal"><?php echo number_format($total, 0, ',', '.'); ?>đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Phí vận chuyển:</span>
+                            <span class="text-success">Miễn phí</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Giảm giá:</span>
+                            <span class="text-danger" id="discount">0đ</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <strong>Tổng tiền:</strong>
+                            <strong class="text-primary h5" id="finalTotal">
+                                <?php echo number_format($total, 0, ',', '.'); ?>đ
+                            </strong>
                         </div>
                         
-                        <!-- Discount Code -->
+                        <!-- Coupon -->
                         <div class="mb-3">
-                            <label for="discountCode" class="form-label small">Mã giảm giá:</label>
-                            <div class="input-group input-group-sm">
-                                <input type="text" class="form-control" id="discountCode" 
-                                       placeholder="Nhập mã giảm giá">
-                                <button class="btn btn-outline-secondary" type="button" onclick="applyDiscount()">
+                            <label class="form-label small">Mã giảm giá:</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="couponCode" placeholder="Nhập mã...">
+                                <button class="btn btn-outline-primary" type="button" id="applyCoupon">
                                     Áp dụng
                                 </button>
                             </div>
                         </div>
                         
-                        <div class="d-grid gap-2">
-                            <a href="/Product/checkout" class="btn btn-success btn-lg">
-                                <i class="fas fa-credit-card me-2"></i>Thanh toán
-                            </a>
-                            <a href="/Product" class="btn btn-outline-primary">
-                                <i class="fas fa-plus me-2"></i>Thêm sản phẩm khác
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div class="card-footer bg-light text-center">
-                        <small class="text-muted">
-                            <i class="fas fa-shield-alt me-1"></i>
-                            Thanh toán an toàn & bảo mật
-                        </small>
+                        <a href="/Product/checkout" class="btn btn-success btn-lg w-100 mb-2">
+                            <i class="fas fa-credit-card me-2"></i>Thanh toán ngay
+                        </a>
+                        <a href="/Product" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-shopping-bag me-2"></i>Tiếp tục mua sắm
+                        </a>
                     </div>
                 </div>
-                
-                <!-- Delivery Info -->
-                <div class="card border-0 shadow-sm mt-3" data-aos="fade-left" data-aos-delay="100">
-                    <div class="card-body">
-                        <h6 class="card-title">
-                            <i class="fas fa-truck me-2 text-primary"></i>Thông tin giao hàng
+
+                <!-- Shipping Info -->
+                <div class="card shadow-sm border-0 mb-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-shipping-fast me-2"></i>
+                            Thông tin vận chuyển
                         </h6>
-                        <ul class="list-unstyled small mb-0">
-                            <li class="mb-1">
-                                <i class="fas fa-check text-success me-2"></i>
-                                Giao hàng miễn phí toàn quốc
-                            </li>
-                            <li class="mb-1">
-                                <i class="fas fa-check text-success me-2"></i>
-                                Giao hàng trong 1-3 ngày
-                            </li>
-                            <li class="mb-1">
-                                <i class="fas fa-check text-success me-2"></i>
-                                Kiểm tra hàng khi nhận
-                            </li>
-                            <li>
-                                <i class="fas fa-check text-success me-2"></i>
-                                Đổi trả trong 7 ngày
-                            </li>
-                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <small>Miễn phí vận chuyển toàn quốc</small>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-clock text-info me-2"></i>
+                            <small>Giao hàng trong 1-2 ngày</small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-shield-alt text-warning me-2"></i>
+                            <small>Đảm bảo chất lượng 100%</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recommended Products -->
+                <div class="card shadow-sm border-0" data-aos="fade-up" data-aos-delay="400">
+                    <div class="card-header bg-warning text-dark">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-star me-2"></i>
+                            Có thể bạn quan tâm
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <!-- Sample recommended products -->
+                        <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                            <div class="bg-light rounded me-3" style="width: 50px; height: 50px;">
+                                <i class="fas fa-mobile-alt fa-lg text-muted d-flex align-items-center justify-content-center h-100"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 small">iPhone 15 Pro Max</h6>
+                                <span class="text-primary small fw-bold">29.990.000đ</span>
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-light rounded me-3" style="width: 50px; height: 50px;">
+                                <i class="fas fa-laptop fa-lg text-muted d-flex align-items-center justify-content-center h-100"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 small">MacBook Air M2</h6>
+                                <span class="text-primary small fw-bold">28.990.000đ</span>
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -231,221 +283,233 @@ include_once 'app/views/shares/header.php';
 </div>
 
 <script>
-    // Update quantity function
-    function updateQuantity(productId, change, newValue = null) {
-        const quantityInput = document.querySelector(`input[data-product-id="${productId}"]`);
-        let currentQuantity = parseInt(quantityInput.value);
-        let newQuantity;
-        
-        if (newValue !== null) {
-            newQuantity = parseInt(newValue) || 1;
-        } else {
-            newQuantity = currentQuantity + change;
-        }
-        
-        if (newQuantity < 1) {
-            newQuantity = 1;
-        }
-        
-        if (newQuantity > 99) {
-            newQuantity = 99;
-            toastr.warning('Số lượng tối đa là 99');
-        }
-        
-        quantityInput.value = newQuantity;
-        
-        // Update cart via AJAX (if implemented)
-        // For now, just update the display
-        updateCartDisplay(productId, newQuantity);
-    }
-
-    // Update cart display
-    function updateCartDisplay(productId, quantity) {
-        const cartItem = document.querySelector(`[data-product-id="${productId}"]`);
-        const priceElement = cartItem.querySelector('.text-muted .fw-bold');
-        const subtotalElement = cartItem.querySelector('.text-success');
-        
-        if (priceElement && subtotalElement) {
-            const price = parseInt(priceElement.textContent.replace(/[^\d]/g, ''));
-            const newSubtotal = price * quantity;
+    // Update quantity
+    document.querySelectorAll('.btn-increase, .btn-decrease').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const quantityInput = document.querySelector(`input[data-product-id="${productId}"]`);
+            const isIncrease = this.classList.contains('btn-increase');
             
-            subtotalElement.textContent = new Intl.NumberFormat('vi-VN').format(newSubtotal) + '₫';
-            
-            // Update total
-            updateTotal();
-        }
-    }
-
-    // Update total calculation
-    function updateTotal() {
-        let total = 0;
-        document.querySelectorAll('.cart-item').forEach(item => {
-            const subtotalElement = item.querySelector('.text-success');
-            const subtotal = parseInt(subtotalElement.textContent.replace(/[^\d]/g, ''));
-            total += subtotal;
-        });
-        
-        // Update all total displays
-        const totalElements = document.querySelectorAll('.text-danger h5, .fw-bold');
-        totalElements.forEach(element => {
-            if (element.textContent.includes('₫')) {
-                element.textContent = new Intl.NumberFormat('vi-VN').format(total) + '₫';
+            let currentQty = parseInt(quantityInput.value);
+            if (isIncrease) {
+                currentQty = Math.min(currentQty + 1, 99);
+            } else {
+                currentQty = Math.max(currentQty - 1, 1);
             }
+            
+            quantityInput.value = currentQty;
+            updateItemTotal(productId, currentQty);
         });
+    });
+
+    // Direct quantity input change
+    document.querySelectorAll('.quantity-input').forEach(input => {
+        input.addEventListener('change', function() {
+            const productId = this.dataset.productId;
+            const quantity = parseInt(this.value) || 1;
+            this.value = Math.max(1, Math.min(quantity, 99));
+            updateItemTotal(productId, this.value);
+        });
+    });
+
+    // Update item total
+    function updateItemTotal(productId, quantity) {
+        const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+        const priceText = row.querySelector('td:nth-child(3) span').textContent;
+        const price = parseInt(priceText.replace(/[^\d]/g, ''));
+        const itemTotal = price * quantity;
+        
+        row.querySelector('.item-total').textContent = new Intl.NumberFormat('vi-VN').format(itemTotal) + 'đ';
+        updateCartTotal();
+        
+        // Animate the change
+        row.querySelector('.item-total').classList.add('animate__animated', 'animate__pulse');
+        setTimeout(() => {
+            row.querySelector('.item-total').classList.remove('animate__animated', 'animate__pulse');
+        }, 1000);
     }
 
-    // Remove item from cart
-    function removeFromCart(productId) {
-        Swal.fire({
-            title: 'Xóa sản phẩm',
-            text: 'Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#dc3545',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Xóa',
-            cancelButtonText: 'Hủy'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const cartItem = document.querySelector(`[data-product-id="${productId}"]`);
-                if (cartItem) {
-                    cartItem.style.transition = 'all 0.3s ease';
-                    cartItem.style.opacity = '0';
-                    cartItem.style.transform = 'translateX(-100%)';
-                    
+    // Update cart total
+    function updateCartTotal() {
+        let total = 0;
+        document.querySelectorAll('.item-total').forEach(element => {
+            const amount = parseInt(element.textContent.replace(/[^\d]/g, ''));
+            total += amount;
+        });
+        
+        document.getElementById('cartTotal').textContent = new Intl.NumberFormat('vi-VN').format(total) + 'đ';
+        document.getElementById('subtotal').textContent = new Intl.NumberFormat('vi-VN').format(total) + 'đ';
+        document.getElementById('finalTotal').textContent = new Intl.NumberFormat('vi-VN').format(total) + 'đ';
+    }
+
+    // Remove item
+    document.querySelectorAll('.btn-remove').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+            
+            Swal.fire({
+                title: 'Xác nhận xóa',
+                text: 'Bạn có muốn xóa sản phẩm này khỏi giỏ hàng?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    row.classList.add('animate__animated', 'animate__fadeOut');
                     setTimeout(() => {
-                        cartItem.remove();
-                        updateTotal();
+                        row.remove();
+                        updateCartTotal();
+                        toastr.success('Đã xóa sản phẩm khỏi giỏ hàng');
                         
                         // Check if cart is empty
                         if (document.querySelectorAll('.cart-item').length === 0) {
                             location.reload();
                         }
-                        
-                        toastr.success('Đã xóa sản phẩm khỏi giỏ hàng');
-                    }, 300);
+                    }, 500);
                 }
-            }
+            });
         });
-    }
+    });
 
-    // Clear entire cart
-    function clearCart() {
+    // Select all checkbox
+    document.getElementById('selectAll')?.addEventListener('change', function() {
+        const isChecked = this.checked;
+        document.querySelectorAll('.item-checkbox').forEach(checkbox => {
+            checkbox.checked = isChecked;
+        });
+    });
+
+    // Remove selected items
+    document.getElementById('removeSelected')?.addEventListener('click', function() {
+        const selectedItems = document.querySelectorAll('.item-checkbox:checked');
+        if (selectedItems.length === 0) {
+            toastr.warning('Vui lòng chọn sản phẩm cần xóa');
+            return;
+        }
+        
         Swal.fire({
-            title: 'Xóa toàn bộ giỏ hàng',
-            text: 'Bạn có chắc chắn muốn xóa tất cả sản phẩm trong giỏ hàng?',
+            title: 'Xác nhận xóa',
+            text: `Bạn có muốn xóa ${selectedItems.length} sản phẩm đã chọn?`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#dc3545',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Xóa',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                selectedItems.forEach(checkbox => {
+                    const row = checkbox.closest('tr');
+                    row.classList.add('animate__animated', 'animate__fadeOut');
+                    setTimeout(() => {
+                        row.remove();
+                        updateCartTotal();
+                    }, 500);
+                });
+                toastr.success('Đã xóa các sản phẩm đã chọn');
+            }
+        });
+    });
+
+    // Clear cart
+    document.getElementById('clearCart')?.addEventListener('click', function() {
+        Swal.fire({
+            title: 'Xóa toàn bộ giỏ hàng?',
+            text: 'Hành động này không thể hoàn tác!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
             cancelButtonColor: '#6c757d',
             confirmButtonText: 'Xóa tất cả',
             cancelButtonText: 'Hủy'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Clear cart session via AJAX or form submission
-                showLoading();
-                // Simulate clearing cart
-                setTimeout(() => {
-                    hideLoading();
-                    location.reload();
-                }, 1000);
+                location.href = '/Product/clearCart';
             }
         });
-    }
+    });
 
-    // Apply discount code
-    function applyDiscount() {
-        const discountCode = document.getElementById('discountCode').value.trim();
-        
-        if (!discountCode) {
+    // Apply coupon
+    document.getElementById('applyCoupon')?.addEventListener('click', function() {
+        const couponCode = document.getElementById('couponCode').value.trim();
+        if (!couponCode) {
             toastr.warning('Vui lòng nhập mã giảm giá');
             return;
         }
         
-        showLoading();
+        // Simulate coupon validation
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        this.disabled = true;
         
-        // Simulate discount validation
         setTimeout(() => {
-            hideLoading();
-            
-            // Mock discount codes
-            const validCodes = {
-                'TECHTAFU10': 10,
-                'WELCOME20': 20,
-                'SALE30': 30
-            };
-            
-            if (validCodes[discountCode.toUpperCase()]) {
-                const discount = validCodes[discountCode.toUpperCase()];
-                toastr.success(`Áp dụng thành công mã giảm giá ${discount}%`);
-                
-                // Apply discount to UI
-                const discountRow = document.createElement('div');
-                discountRow.className = 'd-flex justify-content-between mb-2 text-success';
-                discountRow.innerHTML = `
-                    <span>Giảm giá (${discountCode.toUpperCase()}):</span>
-                    <span class="fw-bold">-${discount}%</span>
-                `;
-                
-                const hrElement = document.querySelector('.card-body hr');
-                hrElement.parentNode.insertBefore(discountRow, hrElement);
-                
-                // Disable discount input
-                document.getElementById('discountCode').disabled = true;
-                document.querySelector('button[onclick="applyDiscount()"]').disabled = true;
-                
+            if (couponCode.toLowerCase() === 'save10') {
+                document.getElementById('discount').textContent = '100.000đ';
+                toastr.success('Áp dụng mã giảm giá thành công!');
             } else {
-                toastr.error('Mã giảm giá không hợp lệ hoặc đã hết hạn');
-            }
-        }, 1500);
-    }
-
-    // Update all quantities
-    function updateAllQuantities() {
-        toastr.info('Đã cập nhật giỏ hàng');
-        updateTotal();
-    }
-
-    // Auto-save cart changes
-    let cartUpdateTimeout;
-    document.addEventListener('change', function(e) {
-        if (e.target.classList.contains('quantity-input')) {
-            clearTimeout(cartUpdateTimeout);
-            cartUpdateTimeout = setTimeout(() => {
-                // Auto-save cart changes
-                console.log('Auto-saving cart changes...');
-            }, 2000);
-        }
-    });
-
-    // Checkout validation
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkoutBtn = document.querySelector('a[href="/Product/checkout"]');
-        if (checkoutBtn) {
-            checkoutBtn.addEventListener('click', function(e) {
-                const cartItems = document.querySelectorAll('.cart-item');
-                if (cartItems.length === 0) {
-                    e.preventDefault();
-                    toastr.error('Giỏ hàng trống, không thể thanh toán');
-                }
-            });
-        }
-    });
-
-    // Quantity input validation
-    document.querySelectorAll('.quantity-input').forEach(input => {
-        input.addEventListener('blur', function() {
-            let value = parseInt(this.value);
-            if (isNaN(value) || value < 1) {
-                this.value = 1;
-            } else if (value > 99) {
-                this.value = 99;
+                toastr.error('Mã giảm giá không hợp lệ');
             }
             
-            const productId = this.dataset.productId;
-            updateCartDisplay(productId, parseInt(this.value));
-        });
+            this.innerHTML = 'Áp dụng';
+            this.disabled = false;
+        }, 1500);
+    });
+
+    // Auto-save cart changes (simulate)
+    let saveTimeout;
+    function autoSaveCart() {
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+            // Simulate AJAX save
+            console.log('Auto-saving cart...');
+        }, 2000);
+    }
+
+    // Add auto-save to quantity changes
+    document.querySelectorAll('.quantity-input').forEach(input => {
+        input.addEventListener('change', autoSaveCart);
     });
 </script>
 
-<?php include_once 'app/views/shares/footer.php'; ?>
+<style>
+    .empty-cart-animation {
+        animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-10px);
+        }
+        60% {
+            transform: translateY(-5px);
+        }
+    }
+    
+    .cart-item:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .quantity-input {
+        max-width: 60px;
+    }
+    
+    .product-image img {
+        transition: transform 0.3s ease;
+    }
+    
+    .product-image:hover img {
+        transform: scale(1.1);
+    }
+    
+    .table td {
+        vertical-align: middle;
+    }
+</style>
+
+<?php include 'app/views/shares/footer.php'; ?>

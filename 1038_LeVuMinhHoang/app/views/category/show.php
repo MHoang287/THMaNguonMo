@@ -1,255 +1,284 @@
-<?php
-$title = "Chi tiết danh mục - " . ($category->name ?? 'Không tìm thấy');
-include_once 'app/views/shares/header.php';
+<?php 
+$title = "Chi tiết danh mục: " . htmlspecialchars($category->name) . " - TechTafu";
+include 'app/views/shares/header.php'; 
 ?>
 
-<!-- Page Header -->
-<div class="page-header">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-2">
-                        <li class="breadcrumb-item"><a href="/Product" class="text-white-50">Trang chủ</a></li>
-                        <li class="breadcrumb-item"><a href="/category/list" class="text-white-50">Danh mục</a></li>
-                        <li class="breadcrumb-item active text-white" aria-current="page">Chi tiết</li>
-                    </ol>
-                </nav>
-                <h1 class="h2 mb-0 animate__animated animate__fadeInLeft">
-                    <i class="fas fa-eye me-2"></i>Chi tiết danh mục
-                </h1>
-            </div>
-            <div class="col-md-4 text-md-end">
-                <div class="btn-group animate__animated animate__fadeInRight" role="group">
-                    <a href="/category/list" class="btn btn-outline-light">
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" data-aos="fade-right">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="/category/list" class="text-decoration-none">Danh mục</a></li>
+            <li class="breadcrumb-item active"><?php echo htmlspecialchars($category->name); ?></li>
+        </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-1" data-aos="fade-right">
+                        <i class="fas fa-tag text-primary me-2"></i>
+                        <?php echo htmlspecialchars($category->name); ?>
+                    </h2>
+                    <p class="text-muted mb-0" data-aos="fade-right" data-aos-delay="100">
+                        Chi tiết thông tin danh mục #<?php echo $category->id; ?>
+                    </p>
+                </div>
+                <div data-aos="fade-left">
+                    <a href="/category/list" class="btn btn-outline-secondary me-2">
                         <i class="fas fa-arrow-left me-2"></i>Quay lại
                     </a>
-                    <a href="/category/edit/<?php echo $category->id; ?>" class="btn btn-outline-light">
-                        <i class="fas fa-edit me-2"></i>Chỉnh sửa
-                    </a>
+                    <div class="btn-group">
+                        <a href="/category/edit/<?php echo $category->id; ?>" class="btn btn-warning">
+                            <i class="fas fa-edit me-2"></i>Chỉnh sửa
+                        </a>
+                        <button class="btn btn-danger" onclick="deleteCategory(<?php echo $category->id; ?>)">
+                            <i class="fas fa-trash me-2"></i>Xóa
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="container my-5">
     <div class="row">
-        <!-- Category Information -->
+        <!-- Main Content -->
         <div class="col-lg-8">
-            <div class="card border-0 shadow-lg mb-4" data-aos="fade-right">
-                <div class="card-header bg-primary text-white py-3">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-info-circle me-2"></i>Thông tin danh mục
-                    </h5>
+            <!-- Category Information Card -->
+            <div class="card shadow-lg border-0 mb-4" data-aos="fade-up">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Thông tin chi tiết
+                        </h5>
+                        <span class="badge bg-light text-dark">ID: <?php echo $category->id; ?></span>
+                    </div>
                 </div>
-                
                 <div class="card-body p-4">
-                    <!-- Category Icon and Basic Info -->
-                    <div class="row mb-4">
-                        <div class="col-md-3 text-center">
-                            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
-                                 style="width: 100px; height: 100px;">
-                                <i class="fas fa-tag fa-3x"></i>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <h6 class="text-muted mb-2">
+                                <i class="fas fa-hashtag me-2"></i>Mã danh mục
+                            </h6>
+                            <div class="p-3 bg-light rounded">
+                                <span class="badge bg-primary fs-6">#<?php echo $category->id; ?></span>
                             </div>
-                            <div class="badge bg-primary fs-6">ID: <?php echo $category->id; ?></div>
                         </div>
-                        <div class="col-md-9">
-                            <h2 class="text-primary mb-3"><?php echo htmlspecialchars($category->name); ?></h2>
-                            
+                        <div class="col-md-6 mb-4">
+                            <h6 class="text-muted mb-2">
+                                <i class="fas fa-tag me-2"></i>Tên danh mục
+                            </h6>
+                            <div class="p-3 bg-light rounded">
+                                <h5 class="mb-0 text-primary"><?php echo htmlspecialchars($category->name); ?></h5>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-2">
+                            <i class="fas fa-align-left me-2"></i>Mô tả danh mục
+                        </h6>
+                        <div class="p-3 bg-light rounded">
                             <?php if (!empty($category->description)): ?>
-                                <div class="mb-3">
-                                    <h6 class="text-secondary">
-                                        <i class="fas fa-align-left me-2"></i>Mô tả danh mục
-                                    </h6>
-                                    <p class="text-justify bg-light p-3 rounded">
-                                        <?php echo nl2br(htmlspecialchars($category->description)); ?>
-                                    </p>
-                                </div>
+                                <p class="mb-0"><?php echo nl2br(htmlspecialchars($category->description)); ?></p>
                             <?php else: ?>
-                                <div class="alert alert-info">
+                                <p class="mb-0 text-muted fst-italic">
                                     <i class="fas fa-info-circle me-2"></i>
-                                    Danh mục này chưa có mô tả chi tiết.
-                                </div>
+                                    Danh mục này chưa có mô tả
+                                </p>
                             <?php endif; ?>
-                        </div>
-                    </div>
-                    
-                    <!-- Category Statistics -->
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-3 col-sm-6">
-                            <div class="bg-success text-white p-3 rounded text-center">
-                                <i class="fas fa-box fa-2x mb-2"></i>
-                                <h4 class="mb-1"><?php echo rand(0, 50); ?></h4>
-                                <small>Sản phẩm</small>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="bg-warning text-dark p-3 rounded text-center">
-                                <i class="fas fa-eye fa-2x mb-2"></i>
-                                <h4 class="mb-1"><?php echo rand(100, 1000); ?></h4>
-                                <small>Lượt xem</small>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="bg-info text-white p-3 rounded text-center">
-                                <i class="fas fa-shopping-cart fa-2x mb-2"></i>
-                                <h4 class="mb-1"><?php echo rand(10, 100); ?></h4>
-                                <small>Đã bán</small>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="bg-danger text-white p-3 rounded text-center">
-                                <i class="fas fa-heart fa-2x mb-2"></i>
-                                <h4 class="mb-1"><?php echo rand(5, 50); ?></h4>
-                                <small>Yêu thích</small>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Metadata -->
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">
-                                    <i class="fas fa-calendar-plus me-2"></i>Ngày tạo
-                                </h6>
-                                <strong><?php echo date('d/m/Y H:i:s', strtotime($category->created_at ?? 'now')); ?></strong>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">
-                                    <i class="fas fa-edit me-2"></i>Cập nhật cuối
-                                </h6>
-                                <strong><?php echo date('d/m/Y H:i:s', strtotime($category->updated_at ?? 'now')); ?></strong>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Products in Category -->
-            <div class="card border-0 shadow-lg" data-aos="fade-right" data-aos-delay="100">
-                <div class="card-header bg-success text-white py-3">
+            <div class="card shadow-lg border-0" data-aos="fade-up" data-aos-delay="200">
+                <div class="card-header bg-success text-white">
                     <h5 class="card-title mb-0">
-                        <i class="fas fa-box-open me-2"></i>Sản phẩm trong danh mục
+                        <i class="fas fa-boxes me-2"></i>
+                        Sản phẩm trong danh mục
                     </h5>
                 </div>
-                
-                <div class="card-body p-4">
-                    <div id="categoryProducts">
-                        <div class="text-center py-4">
-                            <div class="spinner-border text-success" role="status">
-                                <span class="visually-hidden">Đang tải...</span>
-                            </div>
-                            <p class="mt-2 text-muted">Đang tải danh sách sản phẩm...</p>
-                        </div>
-                    </div>
+                <div class="card-body">
+                    <?php
+                    // Get products in this category
+                    $db = (new Database())->getConnection();
+                    $stmt = $db->prepare("SELECT * FROM product WHERE category_id = ? ORDER BY id DESC");
+                    $stmt->execute([$category->id]);
+                    $products = $stmt->fetchAll(PDO::FETCH_OBJ);
+                    ?>
                     
-                    <div class="text-center mt-3">
-                        <a href="/Product?category=<?php echo $category->id; ?>" class="btn btn-success">
-                            <i class="fas fa-external-link-alt me-2"></i>Xem tất cả sản phẩm
-                        </a>
-                    </div>
+                    <?php if (empty($products)): ?>
+                        <div class="text-center py-5">
+                            <i class="fas fa-box-open fa-5x text-muted mb-4"></i>
+                            <h4 class="text-muted mb-3">Chưa có sản phẩm nào</h4>
+                            <p class="text-muted mb-4">Danh mục này chưa có sản phẩm nào</p>
+                            <a href="/Product/add" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Thêm sản phẩm đầu tiên
+                            </a>
+                        </div>
+                    <?php else: ?>
+                        <div class="row">
+                            <?php foreach ($products as $index => $product): ?>
+                                <div class="col-md-6 col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="<?php echo 300 + ($index * 100); ?>">
+                                    <div class="card h-100 product-card border-0 shadow-sm">
+                                        <?php if (!empty($product->image)): ?>
+                                            <img src="/<?php echo htmlspecialchars($product->image); ?>" 
+                                                 class="card-img-top product-image" 
+                                                 alt="<?php echo htmlspecialchars($product->name); ?>"
+                                                 onerror="this.src='/public/image/no-image.jpg'">
+                                        <?php else: ?>
+                                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                                <i class="fas fa-image fa-3x text-muted"></i>
+                                            </div>
+                                        <?php endif; ?>
+                                        
+                                        <div class="card-body">
+                                            <h6 class="card-title"><?php echo htmlspecialchars($product->name); ?></h6>
+                                            <p class="card-text text-muted small">
+                                                <?php echo mb_substr(htmlspecialchars($product->description), 0, 80) . '...'; ?>
+                                            </p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="price text-primary fw-bold">
+                                                    <?php echo number_format($product->price, 0) . ' vnđ'; ?>
+                                                </span>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a href="/Product/show/<?php echo $product->id; ?>" class="btn btn-outline-primary btn-sm">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="/Product/edit/<?php echo $product->id; ?>" class="btn btn-outline-warning btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <a href="/Product?category=<?php echo $category->id; ?>" class="btn btn-outline-primary">
+                                <i class="fas fa-eye me-2"></i>Xem tất cả sản phẩm (<?php echo count($products); ?>)
+                            </a>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
 
         <!-- Sidebar -->
         <div class="col-lg-4">
-            <!-- Quick Actions -->
-            <div class="card border-0 shadow-lg mb-4" data-aos="fade-left">
-                <div class="card-header bg-warning text-dark py-3">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-cogs me-2"></i>Thao tác nhanh
-                    </h5>
+            <!-- Quick Stats -->
+            <div class="card border-0 shadow-sm mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Thống kê nhanh
+                    </h6>
                 </div>
-                
-                <div class="card-body p-3">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6 mb-3">
+                            <h3 class="text-primary mb-1"><?php echo count($products); ?></h3>
+                            <small class="text-muted">Sản phẩm</small>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h3 class="text-success mb-1">
+                                <?php echo !empty($category->description) ? '✓' : '✗'; ?>
+                            </h3>
+                            <small class="text-muted">Có mô tả</small>
+                        </div>
+                    </div>
+                    
+                    <?php if (count($products) > 0): ?>
+                        <?php
+                        $totalValue = array_sum(array_column($products, 'price'));
+                        $avgPrice = $totalValue / count($products);
+                        ?>
+                        <hr>
+                        <div class="text-center">
+                            <h5 class="text-warning mb-1">
+                                <?php echo number_format($avgPrice, 0, ',', '.'); ?>đ
+                            </h5>
+                            <small class="text-muted">Giá trung bình</small>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card border-0 shadow-sm mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>
+                        Thao tác nhanh
+                    </h6>
+                </div>
+                <div class="card-body">
                     <div class="d-grid gap-2">
                         <a href="/category/edit/<?php echo $category->id; ?>" class="btn btn-warning">
                             <i class="fas fa-edit me-2"></i>Chỉnh sửa danh mục
                         </a>
-                        <button onclick="confirmDelete('/category/delete/<?php echo $category->id; ?>', 'Bạn có chắc chắn muốn xóa danh mục này?')" 
-                                class="btn btn-danger">
+                        <a href="/Product/add?category=<?php echo $category->id; ?>" class="btn btn-success">
+                            <i class="fas fa-plus me-2"></i>Thêm sản phẩm mới
+                        </a>
+                        <a href="/category/list" class="btn btn-outline-primary">
+                            <i class="fas fa-list me-2"></i>Danh sách danh mục
+                        </a>
+                        <button class="btn btn-outline-danger" onclick="deleteCategory(<?php echo $category->id; ?>)">
                             <i class="fas fa-trash me-2"></i>Xóa danh mục
                         </button>
-                        <a href="/category/create" class="btn btn-success">
-                            <i class="fas fa-plus me-2"></i>Thêm danh mục mới
-                        </a>
-                        <a href="/Product/add" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i>Thêm sản phẩm vào danh mục
-                        </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Category Status -->
-            <div class="card border-0 shadow-lg mb-4" data-aos="fade-left" data-aos-delay="100">
-                <div class="card-header bg-info text-white py-3">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-chart-line me-2"></i>Trạng thái
-                    </h5>
+            <!-- Category Info -->
+            <div class="card border-0 shadow-sm" data-aos="fade-up" data-aos-delay="300">
+                <div class="card-header bg-secondary text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Thông tin bổ sung
+                    </h6>
                 </div>
-                
-                <div class="card-body p-3">
-                    <ul class="list-unstyled mb-0">
-                        <li class="d-flex justify-content-between align-items-center mb-2">
-                            <span>Trạng thái:</span>
-                            <span class="badge bg-success">Hoạt động</span>
-                        </li>
-                        <li class="d-flex justify-content-between align-items-center mb-2">
-                            <span>Hiển thị:</span>
-                            <span class="badge bg-primary">Công khai</span>
-                        </li>
-                        <li class="d-flex justify-content-between align-items-center mb-2">
-                            <span>Thứ tự:</span>
-                            <span class="badge bg-secondary"><?php echo $category->id; ?></span>
-                        </li>
-                        <li class="d-flex justify-content-between align-items-center">
-                            <span>SEO:</span>
-                            <span class="badge bg-warning text-dark">Cần tối ưu</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Related Categories -->
-            <div class="card border-0 shadow-lg" data-aos="fade-left" data-aos-delay="200">
-                <div class="card-header bg-secondary text-white py-3">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-tags me-2"></i>Danh mục liên quan
-                    </h5>
-                </div>
-                
-                <div class="card-body p-3">
-                    <div id="relatedCategories">
-                        <div class="text-center py-3">
-                            <div class="spinner-border text-secondary" role="status">
-                                <span class="visually-hidden">Đang tải...</span>
-                            </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted">Trạng thái:</small>
+                        <div class="mt-1">
+                            <span class="badge bg-success">
+                                <i class="fas fa-check-circle me-1"></i>Hoạt động
+                            </span>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Analytics Chart (Optional) -->
-<div class="container mb-5">
-    <div class="row">
-        <div class="col-12">
-            <div class="card border-0 shadow-lg" data-aos="fade-up">
-                <div class="card-header bg-dark text-white py-3">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-chart-bar me-2"></i>Thống kê danh mục (30 ngày qua)
-                    </h5>
-                </div>
-                
-                <div class="card-body p-4">
-                    <canvas id="categoryChart" height="100"></canvas>
+                    
+                    <div class="mb-3">
+                        <small class="text-muted">Độ dài tên:</small>
+                        <div class="mt-1">
+                            <span class="badge bg-info">
+                                <?php echo mb_strlen($category->name); ?> ký tự
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <?php if (!empty($category->description)): ?>
+                        <div class="mb-3">
+                            <small class="text-muted">Độ dài mô tả:</small>
+                            <div class="mt-1">
+                                <span class="badge bg-info">
+                                    <?php echo mb_strlen($category->description); ?> ký tự
+                                </span>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <div class="alert alert-light mb-0">
+                        <i class="fas fa-lightbulb text-warning me-2"></i>
+                        <small>Danh mục giúp tổ chức sản phẩm hiệu quả hơn</small>
+                    </div>
                 </div>
             </div>
         </div>
@@ -257,310 +286,112 @@ include_once 'app/views/shares/header.php';
 </div>
 
 <script>
-    // Load category products
-    document.addEventListener('DOMContentLoaded', function() {
-        loadCategoryProducts();
-        loadRelatedCategories();
-        initChart();
-    });
-
-    function loadCategoryProducts() {
-        setTimeout(() => {
-            const productsDiv = document.getElementById('categoryProducts');
-            
-            // Mock product data
-            const products = [
-                { id: 1, name: 'iPhone 14 Pro Max', price: 29990000, image: '' },
-                { id: 2, name: 'Samsung Galaxy S23 Ultra', price: 26990000, image: '' },
-                { id: 3, name: 'MacBook Air M2', price: 32990000, image: '' }
-            ];
-            
-            if (products.length > 0) {
-                let html = '<div class="row g-3">';
-                products.forEach(product => {
-                    html += `
-                        <div class="col-md-6">
-                            <div class="card h-100">
-                                <div class="card-body p-3">
-                                    <div class="d-flex align-items-center">
-                                        <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" 
-                                             style="width: 50px; height: 50px;">
-                                            <i class="fas fa-mobile-alt text-muted"></i>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-1">${product.name}</h6>
-                                            <p class="text-success mb-0 small fw-bold">
-                                                ${new Intl.NumberFormat('vi-VN').format(product.price)}₫
-                                            </p>
-                                        </div>
-                                        <a href="/Product/show/${product.id}" class="btn btn-outline-primary btn-sm">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+    // Delete category function
+    function deleteCategory(id) {
+        const productCount = <?php echo count($products); ?>;
+        let message = 'Bạn có chắc chắn muốn xóa danh mục này?';
+        
+        if (productCount > 0) {
+            message = `Danh mục này có ${productCount} sản phẩm. Bạn có chắc chắn muốn xóa? Điều này có thể ảnh hưởng đến các sản phẩm liên quan.`;
+        }
+        
+        confirmDelete(message).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Đang xóa...',
+                    text: 'Vui lòng đợi trong giây lát',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
                 });
-                html += '</div>';
                 
-                productsDiv.innerHTML = html;
-            } else {
-                productsDiv.innerHTML = `
-                    <div class="text-center py-4">
-                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                        <h6 class="text-muted">Chưa có sản phẩm nào</h6>
-                        <p class="text-muted">Hãy thêm sản phẩm đầu tiên cho danh mục này</p>
-                        <a href="/Product/add" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i>Thêm sản phẩm
-                        </a>
-                    </div>
-                `;
+                window.location.href = '/category/delete/' + id;
             }
-        }, 1000);
-    }
-
-    function loadRelatedCategories() {
-        setTimeout(() => {
-            const relatedDiv = document.getElementById('relatedCategories');
-            
-            // Mock related categories
-            const categories = [
-                { id: 2, name: 'Laptop', count: 15 },
-                { id: 3, name: 'Phụ kiện', count: 8 },
-                { id: 4, name: 'Tai nghe', count: 12 }
-            ];
-            
-            if (categories.length > 0) {
-                let html = '';
-                categories.forEach(cat => {
-                    html += `
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <div>
-                                <a href="/category/show/${cat.id}" class="text-decoration-none">
-                                    <i class="fas fa-tag me-2 text-secondary"></i>
-                                    ${cat.name}
-                                </a>
-                            </div>
-                            <span class="badge bg-light text-dark">${cat.count}</span>
-                        </div>
-                    `;
-                });
-                relatedDiv.innerHTML = html;
-            } else {
-                relatedDiv.innerHTML = '<p class="text-muted text-center">Không có danh mục liên quan</p>';
-            }
-        }, 1500);
-    }
-
-    function initChart() {
-        const ctx = document.getElementById('categoryChart').getContext('2d');
-        
-        // Mock chart data
-        const data = {
-            labels: ['Tuần 1', 'Tuần 2', 'Tuần 3', 'Tuần 4'],
-            datasets: [{
-                label: 'Lượt xem',
-                data: [65, 85, 75, 95],
-                borderColor: 'rgb(75, 192, 192)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                tension: 0.1
-            }, {
-                label: 'Đơn hàng',
-                data: [10, 15, 12, 18],
-                borderColor: 'rgb(255, 99, 132)',
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                tension: 0.1
-            }]
-        };
-
-        // Note: In real implementation, you would load Chart.js library
-        // For now, we'll show a placeholder
-        setTimeout(() => {
-            ctx.canvas.parentNode.innerHTML = `
-                <div class="text-center py-4">
-                    <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
-                    <h6 class="text-muted">Biểu đồ thống kê</h6>
-                    <p class="text-muted small">Chức năng biểu đồ sẽ được triển khai với Chart.js</p>
-                </div>
-            `;
-        }, 2000);
-    }
-
-    // Export category data
-    function exportCategoryData() {
-        showLoading();
-        
-        setTimeout(() => {
-            hideLoading();
-            toastr.success('Đã xuất dữ liệu danh mục thành công');
-        }, 2000);
-    }
-
-    // Share category
-    function shareCategory() {
-        const categoryName = '<?php echo addslashes($category->name); ?>';
-        const currentUrl = window.location.href;
-        
-        if (navigator.share) {
-            navigator.share({
-                title: `Danh mục ${categoryName} - TechTafu`,
-                text: `Xem danh mục ${categoryName} tại TechTafu`,
-                url: currentUrl
-            }).then(() => {
-                toastr.success('Đã chia sẻ danh mục!');
-            }).catch((error) => {
-                console.log('Error sharing:', error);
-            });
-        } else {
-            // Fallback copy to clipboard
-            navigator.clipboard.writeText(currentUrl).then(() => {
-                toastr.success('Đã copy link danh mục!');
-            });
-        }
-    }
-
-    // Add floating action buttons
-    document.addEventListener('DOMContentLoaded', function() {
-        const fab = document.createElement('div');
-        fab.className = 'position-fixed bottom-0 end-0 p-3';
-        fab.style.zIndex = '1000';
-        fab.innerHTML = `
-            <div class="d-flex flex-column gap-2">
-                <button class="btn btn-primary rounded-circle" onclick="shareCategory()" title="Chia sẻ danh mục">
-                    <i class="fas fa-share-alt"></i>
-                </button>
-                <button class="btn btn-success rounded-circle" onclick="exportCategoryData()" title="Xuất dữ liệu">
-                    <i class="fas fa-download"></i>
-                </button>
-                <a href="/category/edit/<?php echo $category->id; ?>" class="btn btn-warning rounded-circle" title="Chỉnh sửa">
-                    <i class="fas fa-edit"></i>
-                </a>
-            </div>
-        `;
-        document.body.appendChild(fab);
-    });
-
-    // Auto refresh statistics every 5 minutes
-    setInterval(() => {
-        console.log('Refreshing category statistics...');
-        // In real implementation, you would reload the statistics
-    }, 300000);
-
-    // Print category info
-    function printCategoryInfo() {
-        const printContent = `
-            <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <h1 style="color: #007bff;">TechTafu</h1>
-                    <h2>THÔNG TIN DANH MỤC</h2>
-                </div>
-                
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                    <h3><?php echo htmlspecialchars($category->name); ?></h3>
-                    <p><strong>ID:</strong> <?php echo $category->id; ?></p>
-                    <p><strong>Mô tả:</strong> <?php echo htmlspecialchars($category->description ?: 'Chưa có mô tả'); ?></p>
-                    <p><strong>Ngày tạo:</strong> <?php echo date('d/m/Y H:i:s', strtotime($category->created_at ?? 'now')); ?></p>
-                </div>
-                
-                <div style="text-align: center; margin-top: 30px;">
-                    <p>Báo cáo được tạo lúc: ${new Date().toLocaleString('vi-VN')}</p>
-                </div>
-            </div>
-        `;
-        
-        const newWindow = window.open('', '_blank');
-        newWindow.document.write(`
-            <html>
-                <head>
-                    <title>Thông tin danh mục - TechTafu</title>
-                    <style>
-                        body { margin: 0; padding: 20px; }
-                        @media print { body { margin: 0; } }
-                    </style>
-                </head>
-                <body>
-                    ${printContent}
-                    <script>
-                        window.onload = function() {
-                            window.print();
-                            window.close();
-                        }
-                    </script>
-                </body>
-            </html>
-        `);
-    }
-
-    // Add print button to quick actions
-    document.addEventListener('DOMContentLoaded', function() {
-        const quickActions = document.querySelector('.card-body .d-grid');
-        if (quickActions) {
-            const printBtn = document.createElement('button');
-            printBtn.className = 'btn btn-outline-secondary';
-            printBtn.innerHTML = '<i class="fas fa-print me-2"></i>In thông tin';
-            printBtn.onclick = printCategoryInfo;
-            quickActions.appendChild(printBtn);
-        }
-    });
-
-    // Keyboard shortcuts
-    document.addEventListener('keydown', function(e) {
-        // E: Edit category
-        if (e.key === 'e' || e.key === 'E') {
-            if (!e.target.matches('input, textarea')) {
-                window.location.href = '/category/edit/<?php echo $category->id; ?>';
-            }
-        }
-        
-        // D: Delete category
-        if (e.key === 'd' || e.key === 'D') {
-            if (!e.target.matches('input, textarea')) {
-                confirmDelete('/category/delete/<?php echo $category->id; ?>', 'Bạn có chắc chắn muốn xóa danh mục này?');
-            }
-        }
-        
-        // P: Print
-        if (e.ctrlKey && e.key === 'p') {
-            e.preventDefault();
-            printCategoryInfo();
-        }
-        
-        // Escape: Go back
-        if (e.key === 'Escape') {
-            window.location.href = '/category/list';
-        }
-    });
-
-    // Show keyboard shortcuts help
-    function showKeyboardHelp() {
-        Swal.fire({
-            title: 'Phím tắt',
-            html: `
-                <div class="text-start">
-                    <p><kbd>E</kbd> - Chỉnh sửa danh mục</p>
-                    <p><kbd>D</kbd> - Xóa danh mục</p>
-                    <p><kbd>Ctrl + P</kbd> - In thông tin</p>
-                    <p><kbd>Esc</kbd> - Quay lại danh sách</p>
-                </div>
-            `,
-            icon: 'info',
-            confirmButtonText: 'Đã hiểu'
         });
     }
 
-    // Add help button
-    document.addEventListener('DOMContentLoaded', function() {
-        const helpBtn = document.createElement('button');
-        helpBtn.className = 'btn btn-outline-info btn-sm position-fixed';
-        helpBtn.style.bottom = '20px';
-        helpBtn.style.left = '20px';
-        helpBtn.style.zIndex = '1000';
-        helpBtn.innerHTML = '<i class="fas fa-question-circle"></i>';
-        helpBtn.title = 'Phím tắt';
-        helpBtn.onclick = showKeyboardHelp;
-        document.body.appendChild(helpBtn);
+    // Print category info
+    function printCategory() {
+        window.print();
+    }
+
+    // Copy category info
+    function copyCategory() {
+        const categoryInfo = `
+Danh mục: <?php echo htmlspecialchars($category->name); ?>
+ID: <?php echo $category->id; ?>
+Mô tả: <?php echo htmlspecialchars($category->description); ?>
+        navigator.clipboard.writeText(categoryInfo).then(function() {
+            toastr.success('Đã sao chép thông tin danh mục!');
+        }).catch(function() {
+            toastr.error('Không thể sao chép!');
+        });
+    }
+
+    // Enhanced product card interactions
+    document.querySelectorAll('.product-card').forEach(function(card) {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+            this.style.transition = 'transform 0.3s ease';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+
+    // Lazy loading for product images
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.classList.add('fade-in');
+                observer.unobserve(img);
+            }
+        });
+    });
+
+    document.querySelectorAll('.product-image').forEach(img => {
+        imageObserver.observe(img);
     });
 </script>
 
-<?php include_once 'app/views/shares/footer.php'; ?>
+<style>
+    .product-card {
+        transition: all 0.3s ease;
+        border: none !important;
+    }
+    
+    .product-card:hover {
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .product-image {
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px 8px 0 0;
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @media print {
+        .btn, .card-header, nav {
+            display: none !important;
+        }
+        
+        .card {
+            border: 1px solid #000 !important;
+            box-shadow: none !important;
+        }
+    }
+</style>
+
+<?php include 'app/views/shares/footer.php'; ?>
