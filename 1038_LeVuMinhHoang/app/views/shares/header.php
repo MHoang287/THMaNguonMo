@@ -5,122 +5,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechTafu - Thiết bị điện tử chính hãng</title>
     
-    <!-- Bootstrap 5 CSS -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- Bootswatch Theme (Cyborg) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/cyborg/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootswatch Theme -->
+    <link href="https://bootswatch.com/5/cosmo/bootstrap.min.css" rel="stylesheet">
     
     <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
-    <!-- AOS Animation -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
-    <!-- SweetAlert2 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     
-    <!-- Toastr -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <!-- GLightbox CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
     
-    <!-- Swiper -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
+    <!-- Choices CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
     
-    <!-- GLightbox -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
-    
-    <!-- Select2 -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet">
-    
-    <!-- noUiSlider -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.css">
-    
-    <!-- Dropzone -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css">
-    
-    <!-- Hover.css -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hover.css/2.3.1/css/hover-min.css">
-    
-    <!-- PhotoSwipe -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.8/photoswipe.min.css">
-    
-    <!-- Pace.js -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-flash.min.css">
+    <!-- jQuery UI CSS -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     
     <!-- Custom CSS -->
     <style>
         :root {
-            --primary-color: #00d4ff;
-            --secondary-color: #ff6b35;
-            --dark-bg: #0a0e27;
-            --card-bg: #151a3a;
-            --text-light: #e4e6eb;
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #3498db;
+            --dark-color: #34495e;
+            --light-color: #ecf0f1;
         }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--dark-bg);
-            color: var(--text-light);
         }
         
-        /* Navbar Styles */
         .navbar {
-            background: linear-gradient(135deg, #0a0e27 0%, #151a3a 100%);
-            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.1);
-            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--dark-color) 100%);
         }
         
         .navbar-brand {
-            font-size: 1.8rem;
             font-weight: bold;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            transition: transform 0.3s ease;
+            font-size: 1.5rem;
+            color: #fff !important;
         }
         
-        .navbar-brand:hover {
-            transform: scale(1.05);
+        .navbar-brand i {
+            color: var(--accent-color);
         }
         
         .nav-link {
-            color: var(--text-light) !important;
-            margin: 0 0.5rem;
+            color: #fff !important;
             transition: all 0.3s ease;
             position: relative;
         }
         
-        .nav-link:after {
+        .nav-link:hover {
+            color: var(--accent-color) !important;
+        }
+        
+        .nav-link::after {
             content: '';
             position: absolute;
-            bottom: -5px;
-            left: 0;
+            bottom: -2px;
+            left: 50%;
             width: 0;
             height: 2px;
-            background: var(--primary-color);
-            transition: width 0.3s ease;
-        }
-        
-        .nav-link:hover:after {
-            width: 100%;
-        }
-        
-        .btn-cart {
-            position: relative;
-            background: var(--primary-color);
-            border: none;
+            background: var(--accent-color);
             transition: all 0.3s ease;
+            transform: translateX(-50%);
         }
         
-        .btn-cart:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        .nav-link:hover::after {
+            width: 80%;
         }
         
         .cart-badge {
@@ -139,49 +103,70 @@
             font-weight: bold;
         }
         
-        /* Search Bar */
-        .search-bar {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 25px;
-            padding: 0.5rem 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .search-bar:focus {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: var(--primary-color);
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
-        }
-        
-        /* Dropdown Styles */
         .dropdown-menu {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
         }
         
-        .dropdown-item {
-            color: var(--text-light);
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .search-form {
+            position: relative;
+        }
+        
+        .search-form input {
+            padding-right: 40px;
+            border-radius: 25px;
+            border: 2px solid var(--light-color);
             transition: all 0.3s ease;
         }
         
-        .dropdown-item:hover {
-            background: rgba(0, 212, 255, 0.2);
-            color: var(--primary-color);
-            padding-left: 1.5rem;
+        .search-form input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .search-form button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: none;
+            color: var(--accent-color);
         }
     </style>
 </head>
 <body>
-    <!-- Pace.js Script -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script>
-    
-    <!-- Navigation -->
+    <!-- Top Bar -->
+    <div class="bg-dark text-white py-2">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <small><i class="bi bi-telephone"></i> Hotline: 1900 1234 | <i class="bi bi-envelope"></i> support@techtafu.vn</small>
+                </div>
+                <div class="col-md-6 text-end">
+                    <small>
+                        <i class="bi bi-truck"></i> Miễn phí vận chuyển đơn từ 500k
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="">
-                <i class="fas fa-microchip me-2"></i>TechTafu
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-cpu-fill"></i> TechTafu
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -191,58 +176,109 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="">
-                            <i class="bi bi-house-door me-1"></i>Trang chủ
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Product">
-                            <i class="bi bi-box-seam me-1"></i>Sản phẩm
-                        </a>
+                        <a class="nav-link" href="/"><i class="bi bi-house"></i> Trang chủ</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-tags me-1"></i>Danh mục
+                            <i class="bi bi-grid"></i> Sản phẩm
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/category/list">
-                                <i class="bi bi-list-ul me-2"></i>Tất cả danh mục
-                            </a></li>
+                            <li><a class="dropdown-item" href="/Product"><i class="bi bi-list"></i> Tất cả sản phẩm</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">
-                                <i class="bi bi-laptop me-2"></i>Laptop
-                            </a></li>
-                            <li><a class="dropdown-item" href="#">
-                                <i class="bi bi-phone me-2"></i>Điện thoại
-                            </a></li>
-                            <li><a class="dropdown-item" href="#">
-                                <i class="bi bi-headphones me-2"></i>Phụ kiện
-                            </a></li>
+                            <?php
+                            // Hiển thị danh mục động
+                            $db = (new Database())->getConnection();
+                            $categoryModel = new CategoryModel($db);
+                            $categories = $categoryModel->getCategories();
+                            foreach($categories as $category): ?>
+                                <li><a class="dropdown-item" href="/Product?category=<?= $category->id ?>"><?= htmlspecialchars($category->name) ?></a></li>
+                            <?php endforeach; ?>
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#contact">
-                            <i class="bi bi-envelope me-1"></i>Liên hệ
-                        </a>
+                        <a class="nav-link" href="/category/list"><i class="bi bi-tags"></i> Danh mục</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about"><i class="bi bi-info-circle"></i> Giới thiệu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact"><i class="bi bi-envelope"></i> Liên hệ</a>
                     </li>
                 </ul>
                 
                 <!-- Search Form -->
-                <form class="d-flex me-3" role="search">
-                    <input class="form-control search-bar" type="search" placeholder="Tìm kiếm sản phẩm..." aria-label="Search">
+                <form class="search-form me-3" action="/Product/search" method="GET">
+                    <input class="form-control" type="search" name="q" placeholder="Tìm kiếm sản phẩm..." style="width: 250px;">
+                    <button type="submit"><i class="bi bi-search"></i></button>
                 </form>
                 
-                <!-- Cart Button -->
-                <a href="/Product/cart" class="btn btn-primary btn-cart position-relative">
+                <!-- Cart -->
+                <a href="/Product/cart" class="btn btn-outline-light position-relative">
                     <i class="bi bi-cart3"></i> Giỏ hàng
-                    <?php if(isset($_SESSION['cart']) && count($_SESSION['cart']) > 0): ?>
-                        <span class="cart-badge"><?php echo count($_SESSION['cart']); ?></span>
+                    <?php 
+                    $cartCount = isset($_SESSION['cart']) ? array_sum(array_column($_SESSION['cart'], 'quantity')) : 0;
+                    if($cartCount > 0): ?>
+                        <span class="cart-badge"><?= $cartCount ?></span>
                     <?php endif; ?>
                 </a>
+                
+                <!-- User Menu -->
+                <?php if(isset($_SESSION['user'])): ?>
+                    <div class="dropdown ms-2">
+                        <button class="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> <?= htmlspecialchars($_SESSION['user']['name']) ?>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/profile"><i class="bi bi-person"></i> Tài khoản</a></li>
+                            <li><a class="dropdown-item" href="/orders"><i class="bi bi-bag"></i> Đơn hàng</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                <?php else: ?>
+                    <a href="/login" class="btn btn-outline-light ms-2">
+                        <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
     </nav>
+
+    <!-- Flash Messages -->
+    <?php if(isset($_SESSION['success'])): ?>
+        <div class="alert alert-success alert-dismissible fade show m-0" role="alert">
+            <div class="container">
+                <i class="bi bi-check-circle"></i> <?= htmlspecialchars($_SESSION['success']) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+        <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
     
+    <?php if(isset($_SESSION['error'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show m-0" role="alert">
+            <div class="container">
+                <i class="bi bi-exclamation-circle"></i> <?= htmlspecialchars($_SESSION['error']) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
+    
+    <?php if(isset($_SESSION['errors']) && is_array($_SESSION['errors'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show m-0" role="alert">
+            <div class="container">
+                <i class="bi bi-exclamation-triangle"></i> <strong>Có lỗi xảy ra:</strong>
+                <ul class="mb-0 mt-2">
+                    <?php foreach($_SESSION['errors'] as $error): ?>
+                        <li><?= htmlspecialchars($error) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+        <?php unset($_SESSION['errors']); ?>
+    <?php endif; ?>
+
     <!-- Main Content Container -->
     <main class="min-vh-100">
-        <div class="container py-4">

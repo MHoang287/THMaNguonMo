@@ -1,233 +1,282 @@
-<?php include 'app/views/shares/header.php'; ?>
+<?php require_once 'app/views/shares/header.php'; ?>
 
-<div class="row justify-content-center">
-    <div class="col-lg-10">
-        <div class="card shadow-lg" style="background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);" data-aos="fade-up">
-            <div class="card-header bg-transparent border-bottom border-secondary">
-                <h4 class="mb-0 text-primary">
-                    <i class="bi bi-plus-square me-2"></i>Thêm sản phẩm mới
-                </h4>
-            </div>
-            <div class="card-body">
-                <form action="/Product/save" method="POST" enctype="multipart/form-data" id="addProductForm">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-4">
-                                <label for="name" class="form-label">
-                                    Tên sản phẩm <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-transparent border-secondary">
-                                        <i class="bi bi-box"></i>
-                                    </span>
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="bg-light py-3">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="/Product" class="text-decoration-none">Sản phẩm</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Thêm sản phẩm mới</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Add Product Form -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow" data-aos="fade-up">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Thêm sản phẩm mới</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <?php if(isset($errors) && !empty($errors)): ?>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Có lỗi xảy ra:</h6>
+                                <ul class="mb-0">
+                                    <?php foreach($errors as $field => $error): ?>
+                                        <li><?= htmlspecialchars($error) ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        <?php endif; ?>
+
+                        <form action="/Product/save" method="POST" enctype="multipart/form-data" id="addProductForm">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="name" class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
                                     <input type="text" 
-                                           class="form-control bg-transparent border-secondary text-white <?php echo isset($errors['name']) ? 'is-invalid' : ''; ?>" 
+                                           class="form-control <?= isset($errors['name']) ? 'is-invalid' : '' ?>" 
                                            id="name" 
                                            name="name" 
-                                           placeholder="VD: iPhone 15 Pro Max"
-                                           value="<?php echo $_POST['name'] ?? ''; ?>"
+                                           value="<?= isset($_POST['name']) ? htmlspecialchars($_POST['name']) : '' ?>"
+                                           placeholder="Nhập tên sản phẩm"
                                            required>
                                     <?php if(isset($errors['name'])): ?>
-                                        <div class="invalid-feedback"><?php echo $errors['name']; ?></div>
+                                        <div class="invalid-feedback"><?= $errors['name'] ?></div>
                                     <?php endif; ?>
                                 </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="mb-4">
-                                <label for="price" class="form-label">
-                                    Giá sản phẩm <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-transparent border-secondary">
-                                        <i class="bi bi-currency-dollar"></i>
-                                    </span>
-                                    <input type="number" 
-                                           class="form-control bg-transparent border-secondary text-white <?php echo isset($errors['price']) ? 'is-invalid' : ''; ?>" 
-                                           id="price" 
-                                           name="price" 
-                                           placeholder="VD: 29990000"
-                                           value="<?php echo $_POST['price'] ?? ''; ?>"
-                                           min="0"
-                                           required>
-                                    <span class="input-group-text bg-transparent border-secondary">VNĐ</span>
-                                    <?php if(isset($errors['price'])): ?>
-                                        <div class="invalid-feedback"><?php echo $errors['price']; ?></div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="price" class="form-label">Giá sản phẩm <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">₫</span>
+                                        <input type="number" 
+                                               class="form-control <?= isset($errors['price']) ? 'is-invalid' : '' ?>" 
+                                               id="price" 
+                                               name="price" 
+                                               value="<?= isset($_POST['price']) ? htmlspecialchars($_POST['price']) : '' ?>"
+                                               placeholder="0"
+                                               min="0"
+                                               step="1000"
+                                               required>
+                                        <?php if(isset($errors['price'])): ?>
+                                            <div class="invalid-feedback"><?= $errors['price'] ?></div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <small class="text-muted">Nhập giá bán của sản phẩm</small>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="category_id" class="form-label">Danh mục <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="category_id" name="category_id" required>
+                                        <option value="">-- Chọn danh mục --</option>
+                                        <?php foreach($categories as $category): ?>
+                                            <option value="<?= $category->id ?>" 
+                                                    <?= (isset($_POST['category_id']) && $_POST['category_id'] == $category->id) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($category->name) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <label for="description" class="form-label">Mô tả sản phẩm <span class="text-danger">*</span></label>
+                                    <textarea class="form-control <?= isset($errors['description']) ? 'is-invalid' : '' ?>" 
+                                              id="description" 
+                                              name="description" 
+                                              rows="5" 
+                                              placeholder="Nhập mô tả chi tiết về sản phẩm"
+                                              required><?= isset($_POST['description']) ? htmlspecialchars($_POST['description']) : '' ?></textarea>
+                                    <?php if(isset($errors['description'])): ?>
+                                        <div class="invalid-feedback"><?= $errors['description'] ?></div>
                                     <?php endif; ?>
+                                    <small class="text-muted">Mô tả chi tiết giúp khách hàng hiểu rõ hơn về sản phẩm</small>
                                 </div>
-                                <div class="form-text text-muted">
-                                    Giá hiển thị: <span id="priceDisplay" class="text-primary">0đ</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-4">
-                                <label for="category_id" class="form-label">
-                                    Danh mục <span class="text-danger">*</span>
-                                </label>
-                                <select class="form-select bg-transparent border-secondary text-white select2" 
-                                        id="category_id" 
-                                        name="category_id" 
-                                        required>
-                                    <option value="">-- Chọn danh mục --</option>
-                                    <?php foreach($categories as $category): ?>
-                                        <option value="<?php echo $category->id; ?>" 
-                                                <?php echo (isset($_POST['category_id']) && $_POST['category_id'] == $category->id) ? 'selected' : ''; ?>>
-                                            <?php echo htmlspecialchars($category->name); ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="mb-4">
-                                <label for="image" class="form-label">Hình ảnh sản phẩm</label>
-                                <div class="dropzone" id="productDropzone">
-                                    <div class="dz-message">
-                                        <i class="bi bi-cloud-upload fs-1 d-block mb-2"></i>
-                                        <span>Kéo thả hình ảnh vào đây hoặc click để chọn</span>
-                                        <div class="text-muted small mt-2">
-                                            (JPG, PNG, GIF - Tối đa 10MB)
-                                        </div>
+
+                                <div class="col-md-12 mb-4">
+                                    <label for="image" class="form-label">Hình ảnh sản phẩm</label>
+                                    <div class="input-group">
+                                        <input type="file" 
+                                               class="form-control" 
+                                               id="image" 
+                                               name="image" 
+                                               accept="image/*"
+                                               onchange="previewImage(event)">
+                                        <label class="input-group-text" for="image">
+                                            <i class="bi bi-upload"></i> Tải lên
+                                        </label>
+                                    </div>
+                                    <small class="text-muted">Chấp nhận định dạng: JPG, JPEG, PNG, GIF (Tối đa 10MB)</small>
+                                    
+                                    <!-- Image Preview -->
+                                    <div id="imagePreview" class="mt-3" style="display: none;">
+                                        <p class="mb-2">Xem trước:</p>
+                                        <img id="preview" src="" alt="Preview" class="img-thumbnail" style="max-height: 200px;">
+                                        <button type="button" class="btn btn-sm btn-danger ms-2" onclick="removeImage()">
+                                            <i class="bi bi-trash"></i> Xóa
+                                        </button>
                                     </div>
                                 </div>
-                                <input type="hidden" name="image" id="uploadedImage">
+
+                                <!-- Additional Fields (Optional) -->
+                                <div class="col-12">
+                                    <h5 class="mb-3">Thông tin bổ sung (Tùy chọn)</h5>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label for="brand" class="form-label">Thương hiệu</label>
+                                    <input type="text" class="form-control" id="brand" name="brand" placeholder="VD: Apple, Samsung...">
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label for="warranty" class="form-label">Bảo hành</label>
+                                    <input type="text" class="form-control" id="warranty" name="warranty" placeholder="VD: 12 tháng">
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label for="stock" class="form-label">Số lượng tồn kho</label>
+                                    <input type="number" class="form-control" id="stock" name="stock" min="0" placeholder="0">
+                                </div>
                             </div>
-                        </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-flex justify-content-between">
+                                <a href="/Product" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left"></i> Quay lại
+                                </a>
+                                <div>
+                                    <button type="reset" class="btn btn-outline-secondary">
+                                        <i class="bi bi-x-circle"></i> Đặt lại
+                                    </button>
+                                    <button type="submit" class="btn btn-primary ms-2">
+                                        <i class="bi bi-check-circle"></i> Thêm sản phẩm
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    
-                    <div class="mb-4">
-                        <label for="description" class="form-label">
-                            Mô tả sản phẩm <span class="text-danger">*</span>
-                        </label>
-                        <textarea class="form-control bg-transparent border-secondary text-white <?php echo isset($errors['description']) ? 'is-invalid' : ''; ?>" 
-                                  id="description" 
-                                  name="description" 
-                                  rows="4" 
-                                  placeholder="Mô tả chi tiết về sản phẩm..."
-                                  required><?php echo $_POST['description'] ?? ''; ?></textarea>
-                        <?php if(isset($errors['description'])): ?>
-                            <div class="invalid-feedback"><?php echo $errors['description']; ?></div>
-                        <?php endif; ?>
-                        <div class="form-text text-muted">
-                            <span id="charCount">0</span> ký tự
-                        </div>
-                    </div>
-                    
-                    <div class="d-flex justify-content-between">
-                        <a href="/Product" class="btn btn-secondary hvr-sweep-to-left">
-                            <i class="bi bi-arrow-left me-2"></i>Quay lại
-                        </a>
-                        <button type="submit" class="btn btn-primary hvr-sweep-to-right">
-                            <i class="bi bi-check-circle me-2"></i>Thêm sản phẩm
-                        </button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <style>
-.dropzone {
-    border: 2px dashed rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
+.form-label {
+    font-weight: 600;
+    color: #495057;
 }
 
-.dropzone:hover {
-    border-color: var(--primary-color);
-    background: rgba(0, 212, 255, 0.1);
+.form-control:focus,
+.form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
-.dropzone.dz-drag-hover {
-    border-color: var(--primary-color);
-    background: rgba(0, 212, 255, 0.2);
-}
-
-.dz-preview {
-    margin: 10px;
-}
-
-.dz-image img {
-    border-radius: 5px;
+#imagePreview img {
+    border: 2px solid #dee2e6;
+    border-radius: 0.375rem;
 }
 </style>
 
+<?php
+$additionalScripts = '
 <script>
-// Dropzone configuration
-Dropzone.autoDiscover = false;
-const myDropzone = new Dropzone("#productDropzone", {
-    url: "/Product/uploadImage",
-    maxFilesize: 10,
-    maxFiles: 1,
-    acceptedFiles: "image/*",
-    addRemoveLinks: true,
-    init: function() {
-        this.on("success", function(file, response) {
-            document.getElementById('uploadedImage').value = response.filename;
-            toastr.success('Đã tải lên hình ảnh thành công!');
-        });
-        this.on("error", function(file, errorMessage) {
-            toastr.error('Lỗi khi tải lên: ' + errorMessage);
-        });
+// Initialize Choices.js for category select
+const categorySelect = new Choices("#category_id", {
+    searchEnabled: true,
+    itemSelectText: "",
+    searchPlaceholderValue: "Tìm kiếm danh mục..."
+});
+
+// Preview image before upload
+function previewImage(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById("preview");
+    const previewContainer = document.getElementById("imagePreview");
+    
+    if (file) {
+        // Check file size (10MB limit)
+        if (file.size > 10 * 1024 * 1024) {
+            Swal.fire({
+                icon: "error",
+                title: "File quá lớn",
+                text: "Vui lòng chọn file có kích thước nhỏ hơn 10MB"
+            });
+            event.target.value = "";
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            previewContainer.style.display = "block";
+            
+            // Animate preview
+            anime({
+                targets: previewContainer,
+                opacity: [0, 1],
+                translateY: [20, 0],
+                duration: 500,
+                easing: "easeOutQuad"
+            });
+        }
+        reader.readAsDataURL(file);
     }
-});
+}
 
-// Price formatter
-document.getElementById('price').addEventListener('input', function() {
-    const value = this.value;
-    const formatted = new Intl.NumberFormat('vi-VN').format(value);
-    document.getElementById('priceDisplay').textContent = formatted + 'đ';
-});
-
-// Character counter
-document.getElementById('description').addEventListener('input', function() {
-    document.getElementById('charCount').textContent = this.value.length;
-});
+// Remove selected image
+function removeImage() {
+    document.getElementById("image").value = "";
+    document.getElementById("imagePreview").style.display = "none";
+}
 
 // Form validation
-document.getElementById('addProductForm').addEventListener('submit', function(e) {
-    const name = document.getElementById('name').value.trim();
-    const price = document.getElementById('price').value;
-    const description = document.getElementById('description').value.trim();
-    const category = document.getElementById('category_id').value;
+document.getElementById("addProductForm").addEventListener("submit", function(e) {
+    e.preventDefault();
     
-    let hasError = false;
+    // Show loading
+    Swal.fire({
+        title: "Đang xử lý...",
+        text: "Vui lòng đợi trong giây lát",
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        willOpen: () => {
+            Swal.showLoading();
+        }
+    });
     
-    if (!name) {
-        toastr.error('Vui lòng nhập tên sản phẩm');
-        hasError = true;
+    // Submit form
+    this.submit();
+});
+
+// Auto format price input
+document.getElementById("price").addEventListener("input", function(e) {
+    let value = e.target.value;
+    value = value.replace(/\D/g, "");
+    e.target.value = value;
+});
+
+// Character counter for description
+const description = document.getElementById("description");
+const maxLength = 1000;
+
+description.addEventListener("input", function() {
+    const remaining = maxLength - this.value.length;
+    if (!document.getElementById("charCounter")) {
+        const counter = document.createElement("small");
+        counter.id = "charCounter";
+        counter.className = "text-muted";
+        this.parentElement.appendChild(counter);
     }
-    
-    if (!price || price < 0) {
-        toastr.error('Vui lòng nhập giá hợp lệ');
-        hasError = true;
-    }
-    
-    if (!description) {
-        toastr.error('Vui lòng nhập mô tả sản phẩm');
-        hasError = true;
-    }
-    
-    if (!category) {
-        toastr.error('Vui lòng chọn danh mục');
-        hasError = true;
-    }
-    
-    if (hasError) {
-        e.preventDefault();
-    }
+    document.getElementById("charCounter").textContent = `Còn lại ${remaining} ký tự`;
 });
 </script>
+';
+?>
 
-<?php include 'app/views/shares/footer.php'; ?>
+<?php require_once 'app/views/shares/footer.php'; ?>
