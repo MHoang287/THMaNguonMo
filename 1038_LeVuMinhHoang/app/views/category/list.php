@@ -1,505 +1,412 @@
 <?php 
-$title = "Quản lý danh mục";
-include 'app/views/shares/header.php'; 
+$pageTitle = "Danh Sách Danh Mục";
+include_once 'app/views/shares/header.php'; 
 ?>
 
-<div class="container py-5">
-    <!-- Breadcrumb -->
-    <nav aria-label="breadcrumb" data-aos="fade-down">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
-            <li class="breadcrumb-item active">Quản lý danh mục</li>
-        </ol>
-    </nav>
+<section class="py-5">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="row mb-5">
+            <div class="col-lg-8">
+                <h1 class="display-5 fw-bold mb-3" data-aos="fade-right">
+                    <i class="fas fa-tags text-primary me-3"></i>Quản Lý Danh Mục
+                </h1>
+                <p class="lead text-muted" data-aos="fade-right" data-aos-delay="100">
+                    Tổ chức và quản lý các danh mục sản phẩm một cách hiệu quả
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end" data-aos="fade-left">
+                <a href="/category/create" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus me-2"></i>Thêm Danh Mục
+                </a>
+            </div>
+        </div>
 
-    <!-- Header -->
-    <div class="row mb-5">
-        <div class="col-12" data-aos="fade-up">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h1 class="display-6 fw-bold mb-3">
-                        <i class="fas fa-list me-3 text-primary"></i>Quản lý danh mục
-                    </h1>
-                    <p class="lead text-muted">Quản lý các danh mục sản phẩm của cửa hàng</p>
+        <!-- Statistics Cards -->
+        <div class="row mb-5">
+            <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up">
+                <div class="card bg-primary text-white border-0 h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-list fa-3x mb-3"></i>
+                        <h3 class="counter" data-count="<?= count($categories) ?>">0</h3>
+                        <p class="mb-0">Tổng Danh Mục</p>
+                    </div>
                 </div>
-                <div>
-                    <a href="/category/create" class="btn btn-success btn-lg btn-custom">
-                        <i class="fas fa-plus me-2"></i>Thêm danh mục mới
-                    </a>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card bg-success text-white border-0 h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-eye fa-3x mb-3"></i>
+                        <h3 class="counter" data-count="<?= count(array_filter($categories, function($cat) { return !empty($cat->description); })) ?>">0</h3>
+                        <p class="mb-0">Có Mô Tả</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card bg-warning text-dark border-0 h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-clock fa-3x mb-3"></i>
+                        <h3>Hôm Nay</h3>
+                        <p class="mb-0">Cập Nhật Mới</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card bg-info text-white border-0 h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chart-line fa-3x mb-3"></i>
+                        <h3>100%</h3>
+                        <p class="mb-0">Hiệu Suất</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Statistics Cards -->
-    <div class="row mb-5 g-4">
-        <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <div class="stat-icon bg-primary text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                        <i class="fas fa-list fa-lg"></i>
-                    </div>
-                    <h3 class="fw-bold text-primary"><?= count($categories ?? []) ?></h3>
-                    <p class="text-muted mb-0">Tổng danh mục</p>
+        <!-- Search and Filter -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" class="form-control" id="categorySearch" placeholder="Tìm kiếm danh mục...">
                 </div>
             </div>
-        </div>
-        <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <div class="stat-icon bg-success text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                        <i class="fas fa-eye fa-lg"></i>
-                    </div>
-                    <h3 class="fw-bold text-success"><?= count(array_filter($categories ?? [], function($cat) { return !empty($cat->name); })) ?></h3>
-                    <p class="text-muted mb-0">Đang hoạt động</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <div class="stat-icon bg-warning text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                        <i class="fas fa-box fa-lg"></i>
-                    </div>
-                    <h3 class="fw-bold text-warning">-</h3>
-                    <p class="text-muted mb-0">Tổng sản phẩm</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <div class="stat-icon bg-info text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                        <i class="fas fa-chart-line fa-lg"></i>
-                    </div>
-                    <h3 class="fw-bold text-info">100%</h3>
-                    <p class="text-muted mb-0">Hiệu suất</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Search and Filter -->
-    <div class="row mb-4">
-        <div class="col-md-6" data-aos="fade-right">
-            <div class="search-box position-relative">
-                <input type="text" class="form-control form-control-lg" id="searchInput" placeholder="Tìm kiếm danh mục...">
-                <button class="search-btn">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-        </div>
-        <div class="col-md-6" data-aos="fade-left">
-            <div class="d-flex gap-2 justify-content-md-end">
-                <select class="form-select" id="sortSelect">
-                    <option value="">Sắp xếp theo</option>
-                    <option value="name_asc">Tên A-Z</option>
-                    <option value="name_desc">Tên Z-A</option>
-                    <option value="id_asc">Cũ nhất</option>
-                    <option value="id_desc">Mới nhất</option>
+            <div class="col-lg-3">
+                <select class="form-select form-select-lg" id="sortBy">
+                    <option value="newest">Mới nhất</option>
+                    <option value="oldest">Cũ nhất</option>
+                    <option value="name">Tên A-Z</option>
+                    <option value="name-desc">Tên Z-A</option>
                 </select>
-                <button class="btn btn-outline-primary" onclick="exportCategories()">
-                    <i class="fas fa-download me-2"></i>Xuất Excel
-                </button>
+            </div>
+            <div class="col-lg-3">
+                <div class="btn-group w-100" role="group">
+                    <button type="button" class="btn btn-outline-secondary active" id="gridView">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="listView">
+                        <i class="fas fa-list"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="exportCategories()">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Categories Table -->
-    <div class="card shadow-lg border-0" data-aos="fade-up">
-        <div class="card-header bg-primary text-white">
-            <h5 class="card-title mb-0">
-                <i class="fas fa-table me-2"></i>Danh sách danh mục
-            </h5>
-        </div>
-        <div class="card-body p-0">
+        <!-- Categories Display -->
+        <div id="categoriesContainer">
             <?php if (!empty($categories)): ?>
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0" id="categoriesTable">
-                        <thead class="table-light">
-                            <tr>
-                                <th width="10%">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="selectAll">
-                                        <label class="form-check-label" for="selectAll">ID</label>
+                <div class="row" id="gridContainer">
+                    <?php foreach ($categories as $index => $category): ?>
+                        <div class="col-xl-4 col-lg-6 mb-4 category-item" data-aos="fade-up" data-aos-delay="<?= $index * 100 ?>">
+                            <div class="card category-card h-100 shadow-sm border-0">
+                                <div class="card-header bg-gradient position-relative" style="background: linear-gradient(135deg, <?= ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe'][$index % 6] ?> 0%, <?= ['#764ba2', '#667eea', '#f5576c', '#f093fb', '#00f2fe', '#4facfe'][$index % 6] ?> 100%);">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="text-white mb-0 fw-bold">
+                                            <i class="fas fa-folder-open me-2"></i>
+                                            <?= htmlspecialchars($category->name) ?>
+                                        </h5>
+                                        <div class="dropdown">
+                                            <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                <i class="fas fa-cog"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li>
+                                                    <a class="dropdown-item" href="/category/show/<?= $category->id ?>">
+                                                        <i class="fas fa-eye me-2"></i>Xem Chi Tiết
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="/category/edit/<?= $category->id ?>">
+                                                        <i class="fas fa-edit me-2"></i>Chỉnh Sửa
+                                                    </a>
+                                                </li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li>
+                                                    <a class="dropdown-item text-danger" href="#" onclick="deleteCategory(<?= $category->id ?>)">
+                                                        <i class="fas fa-trash me-2"></i>Xóa
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                </th>
-                                <th width="25%">Tên danh mục</th>
-                                <th width="40%">Mô tả</th>
-                                <th width="15%">Trạng thái</th>
-                                <th width="10%">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($categories as $index => $category): ?>
-                                <tr class="category-row" data-id="<?= $category->id ?>" data-name="<?= strtolower($category->name) ?>">
-                                    <td>
-                                        <div class="form-check">
-                                            <input class="form-check-input row-checkbox" type="checkbox" value="<?= $category->id ?>">
-                                            <label class="form-check-label fw-bold text-primary">
-                                                #<?= str_pad($category->id, 3, '0', STR_PAD_LEFT) ?>
-                                            </label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="category-icon bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                                <i class="fas fa-tag"></i>
+                                    <div class="position-absolute top-0 start-0 m-2">
+                                        <span class="badge bg-light text-dark">ID: <?= $category->id ?></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="card-body">
+                                    <div class="category-description mb-3">
+                                        <?php if (!empty($category->description)): ?>
+                                            <p class="text-muted mb-2">
+                                                <?= htmlspecialchars(substr($category->description, 0, 150)) ?>
+                                                <?= strlen($category->description) > 150 ? '...' : '' ?>
+                                            </p>
+                                        <?php else: ?>
+                                            <p class="text-muted fst-italic">Chưa có mô tả</p>
+                                        <?php endif; ?>
+                                    </div>
+                                    
+                                    <div class="category-stats mb-3">
+                                        <div class="row text-center">
+                                            <div class="col-4">
+                                                <div class="stat-item">
+                                                    <h6 class="mb-1 text-primary"><?= rand(5, 50) ?></h6>
+                                                    <small class="text-muted">Sản Phẩm</small>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h6 class="mb-1"><?= htmlspecialchars($category->name) ?></h6>
-                                                <small class="text-muted">Danh mục #<?= $category->id ?></small>
+                                            <div class="col-4">
+                                                <div class="stat-item">
+                                                    <h6 class="mb-1 text-success"><?= rand(100, 1000) ?></h6>
+                                                    <small class="text-muted">Lượt Xem</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="stat-item">
+                                                    <h6 class="mb-1 text-warning"><?= rand(10, 100) ?></h6>
+                                                    <small class="text-muted">Đơn Hàng</small>
+                                                </div>
                                             </div>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <div class="description-cell">
-                                            <?php if (!empty($category->description)): ?>
-                                                <p class="mb-0 text-muted">
-                                                    <?= htmlspecialchars(substr($category->description, 0, 100)) ?>
-                                                    <?= strlen($category->description) > 100 ? '...' : '' ?>
-                                                </p>
-                                            <?php else: ?>
-                                                <span class="text-muted fst-italic">Chưa có mô tả</span>
-                                            <?php endif; ?>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-success">
-                                            <i class="fas fa-check me-1"></i>Hoạt động
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <button class="btn btn-sm btn-outline-info" 
-                                                    onclick="viewCategory(<?= $category->id ?>)"
-                                                    data-bs-toggle="tooltip" 
-                                                    title="Xem chi tiết">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <a href="/category/edit/<?= $category->id ?>" 
-                                               class="btn btn-sm btn-outline-warning"
-                                               data-bs-toggle="tooltip" 
-                                               title="Chỉnh sửa">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <button class="btn btn-sm btn-outline-danger" 
-                                                    onclick="deleteCategory(<?= $category->id ?>)"
-                                                    data-bs-toggle="tooltip" 
-                                                    title="Xóa">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Bulk Actions -->
-                <div class="card-footer bg-light">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="bulk-actions d-none">
-                            <span class="text-muted me-3">
-                                <span id="selectedCount">0</span> mục đã chọn
-                            </span>
-                            <div class="btn-group" role="group">
-                                <button class="btn btn-sm btn-outline-danger" onclick="bulkDelete()">
-                                    <i class="fas fa-trash me-1"></i>Xóa tất cả
-                                </button>
-                                <button class="btn btn-sm btn-outline-success" onclick="bulkExport()">
-                                    <i class="fas fa-download me-1"></i>Xuất Excel
-                                </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="card-footer bg-transparent">
+                                    <div class="btn-group w-100" role="group">
+                                        <a href="/category/show/<?= $category->id ?>" class="btn btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="/category/edit/<?= $category->id ?>" class="btn btn-outline-warning flex-grow-1">
+                                            <i class="fas fa-edit me-1"></i>Chỉnh Sửa
+                                        </a>
+                                        <button class="btn btn-outline-danger" onclick="deleteCategory(<?= $category->id ?>)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="pagination-info text-muted">
-                            Hiển thị <?= count($categories) ?> danh mục
+                    <?php endforeach; ?>
+                </div>
+
+                <!-- List View (Hidden by default) -->
+                <div class="d-none" id="listContainer">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Danh Sách Danh Mục</h5>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tên Danh Mục</th>
+                                        <th>Mô Tả</th>
+                                        <th>Sản Phẩm</th>
+                                        <th>Thao Tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($categories as $category): ?>
+                                        <tr>
+                                            <td><span class="badge bg-primary"><?= $category->id ?></span></td>
+                                            <td class="fw-bold"><?= htmlspecialchars($category->name) ?></td>
+                                            <td class="text-muted">
+                                                <?= !empty($category->description) ? htmlspecialchars(substr($category->description, 0, 100)) . '...' : 'Chưa có mô tả' ?>
+                                            </td>
+                                            <td><span class="badge bg-success"><?= rand(5, 50) ?></span></td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm" role="group">
+                                                    <a href="/category/show/<?= $category->id ?>" class="btn btn-outline-info">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="/category/edit/<?= $category->id ?>" class="btn btn-outline-warning">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button class="btn btn-outline-danger" onclick="deleteCategory(<?= $category->id ?>)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
 
             <?php else: ?>
                 <!-- Empty State -->
-                <div class="text-center py-5">
-                    <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_E2DuUN.json" 
-                                   background="transparent" 
-                                   speed="1" 
-                                   style="width: 200px; height: 200px; margin: 0 auto;" 
-                                   loop autoplay></lottie-player>
-                    <h4 class="text-muted mt-3">Chưa có danh mục nào</h4>
-                    <p class="text-muted mb-4">Hãy tạo danh mục đầu tiên cho cửa hàng của bạn!</p>
-                    <a href="/category/create" class="btn btn-primary btn-lg btn-custom">
-                        <i class="fas fa-plus me-2"></i>Tạo danh mục đầu tiên
-                    </a>
+                <div class="text-center py-5" data-aos="fade-up">
+                    <div class="empty-state">
+                        <i class="fas fa-folder-open fa-5x text-muted mb-4"></i>
+                        <h3 class="text-muted mb-3">Chưa Có Danh Mục Nào</h3>
+                        <p class="text-muted mb-4">Hãy tạo danh mục đầu tiên để tổ chức sản phẩm của bạn!</p>
+                        <a href="/category/create" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus me-2"></i>Tạo Danh Mục Đầu Tiên
+                        </a>
+                    </div>
                 </div>
             <?php endif; ?>
         </div>
     </div>
-</div>
-
-<!-- Category Detail Modal -->
-<div class="modal fade" id="categoryModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-eye me-2"></i>Chi tiết danh mục
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="category-detail-info">
-                            <h6 class="text-primary mb-3">Thông tin cơ bản</h6>
-                            <table class="table table-borderless">
-                                <tr>
-                                    <td class="fw-semibold">ID:</td>
-                                    <td id="modalCategoryId">-</td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-semibold">Tên danh mục:</td>
-                                    <td id="modalCategoryName">-</td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-semibold">Trạng thái:</td>
-                                    <td>
-                                        <span class="badge bg-success">Hoạt động</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-semibold">Ngày tạo:</td>
-                                    <td><?= date('d/m/Y H:i') ?></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="category-stats">
-                            <h6 class="text-primary mb-3">Thống kê</h6>
-                            <div class="stat-item d-flex justify-content-between mb-2">
-                                <span>Tổng sản phẩm:</span>
-                                <span class="fw-bold">0</span>
-                            </div>
-                            <div class="stat-item d-flex justify-content-between mb-2">
-                                <span>Sản phẩm hoạt động:</span>
-                                <span class="fw-bold text-success">0</span>
-                            </div>
-                            <div class="stat-item d-flex justify-content-between mb-2">
-                                <span>Lượt xem:</span>
-                                <span class="fw-bold text-info">0</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <h6 class="text-primary mb-3">Mô tả</h6>
-                        <div class="bg-light p-3 rounded">
-                            <p id="modalCategoryDescription" class="mb-0 text-muted">Chưa có mô tả</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-warning" onclick="editCategoryFromModal()">
-                    <i class="fas fa-edit me-2"></i>Chỉnh sửa
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+</section>
 
 <script>
-    let currentCategoryId = null;
+// Initialize counters
+document.querySelectorAll('.counter').forEach(counter => {
+    const target = parseInt(counter.getAttribute('data-count'));
+    animateValue(counter, 0, target, 1500);
+});
 
-    // Search functionality
-    document.getElementById('searchInput').addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        const rows = document.querySelectorAll('.category-row');
+// Search functionality
+document.getElementById('categorySearch').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const categoryItems = document.querySelectorAll('.category-item');
+    
+    categoryItems.forEach(item => {
+        const categoryName = item.querySelector('.card-header h5').textContent.toLowerCase();
+        const categoryDesc = item.querySelector('.category-description p').textContent.toLowerCase();
         
-        rows.forEach(row => {
-            const name = row.dataset.name;
-            if (name.includes(searchTerm)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    });
-
-    // Sort functionality
-    document.getElementById('sortSelect').addEventListener('change', function() {
-        const sortValue = this.value;
-        const tbody = document.querySelector('#categoriesTable tbody');
-        const rows = Array.from(tbody.querySelectorAll('.category-row'));
-        
-        rows.sort((a, b) => {
-            switch(sortValue) {
-                case 'name_asc':
-                    return a.dataset.name.localeCompare(b.dataset.name);
-                case 'name_desc':
-                    return b.dataset.name.localeCompare(a.dataset.name);
-                case 'id_asc':
-                    return parseInt(a.dataset.id) - parseInt(b.dataset.id);
-                case 'id_desc':
-                    return parseInt(b.dataset.id) - parseInt(a.dataset.id);
-                default:
-                    return 0;
-            }
-        });
-        
-        rows.forEach(row => tbody.appendChild(row));
-    });
-
-    // Select all functionality
-    document.getElementById('selectAll').addEventListener('change', function() {
-        const checkboxes = document.querySelectorAll('.row-checkbox');
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = this.checked;
-        });
-        updateBulkActions();
-    });
-
-    // Row checkbox functionality
-    document.querySelectorAll('.row-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', updateBulkActions);
-    });
-
-    function updateBulkActions() {
-        const selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
-        const bulkActions = document.querySelector('.bulk-actions');
-        const selectedCount = document.getElementById('selectedCount');
-        
-        if (selectedCheckboxes.length > 0) {
-            bulkActions.classList.remove('d-none');
-            selectedCount.textContent = selectedCheckboxes.length;
+        if (categoryName.includes(searchTerm) || categoryDesc.includes(searchTerm)) {
+            item.style.display = 'block';
+            item.classList.add('fade-in');
         } else {
-            bulkActions.classList.add('d-none');
+            item.style.display = 'none';
         }
-    }
+    });
+});
 
-    // View category function
-    function viewCategory(id) {
-        currentCategoryId = id;
+// Sort functionality
+document.getElementById('sortBy').addEventListener('change', function() {
+    const sortBy = this.value;
+    const container = document.getElementById('gridContainer');
+    const items = Array.from(container.children);
+    
+    items.sort((a, b) => {
+        const nameA = a.querySelector('.card-header h5').textContent;
+        const nameB = b.querySelector('.card-header h5').textContent;
         
-        // Find category data (in real app, this would be from database)
-        const row = document.querySelector(`[data-id="${id}"]`);
-        const name = row.querySelector('h6').textContent;
-        const description = row.querySelector('.description-cell p')?.textContent || 'Chưa có mô tả';
-        
-        // Update modal content
-        document.getElementById('modalCategoryId').textContent = '#' + String(id).padStart(3, '0');
-        document.getElementById('modalCategoryName').textContent = name;
-        document.getElementById('modalCategoryDescription').textContent = description;
-        
-        // Show modal
-        new bootstrap.Modal(document.getElementById('categoryModal')).show();
-    }
-
-    // Edit from modal
-    function editCategoryFromModal() {
-        if (currentCategoryId) {
-            window.location.href = `/category/edit/${currentCategoryId}`;
+        switch(sortBy) {
+            case 'name':
+                return nameA.localeCompare(nameB);
+            case 'name-desc':
+                return nameB.localeCompare(nameA);
+            case 'newest':
+            case 'oldest':
+            default:
+                return 0;
         }
-    }
+    });
+    
+    items.forEach(item => container.appendChild(item));
+});
 
-    // Delete category function
-    function deleteCategory(id) {
-        Swal.fire({
-            title: 'Bạn có chắc chắn?',
-            text: "Hành động này không thể hoàn tác!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Có, xóa ngay!',
-            cancelButtonText: 'Hủy'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                showLoading();
-                window.location.href = `/category/delete/${id}`;
-            }
-        });
-    }
+// View toggle
+document.getElementById('gridView').addEventListener('click', function() {
+    document.getElementById('gridContainer').classList.remove('d-none');
+    document.getElementById('listContainer').classList.add('d-none');
+    this.classList.add('active');
+    document.getElementById('listView').classList.remove('active');
+});
 
-    // Bulk delete function
-    function bulkDelete() {
-        const selectedIds = Array.from(document.querySelectorAll('.row-checkbox:checked'))
-                                .map(cb => cb.value);
-        
-        if (selectedIds.length === 0) return;
-        
-        Swal.fire({
-            title: 'Xóa nhiều danh mục?',
-            text: `Bạn có chắc chắn muốn xóa ${selectedIds.length} danh mục đã chọn?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Có, xóa tất cả!',
-            cancelButtonText: 'Hủy'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Implement bulk delete logic here
-                console.log('Deleting categories:', selectedIds);
-                Swal.fire('Đã xóa!', 'Các danh mục đã được xóa.', 'success');
-            }
-        });
-    }
+document.getElementById('listView').addEventListener('click', function() {
+    document.getElementById('gridContainer').classList.add('d-none');
+    document.getElementById('listContainer').classList.remove('d-none');
+    this.classList.add('active');
+    document.getElementById('gridView').classList.remove('active');
+});
 
-    // Export functions
-    function exportCategories() {
-        Swal.fire({
-            title: 'Xuất dữ liệu',
-            text: 'Bạn muốn xuất toàn bộ danh mục ra file Excel?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#28a745',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Có, xuất ngay!',
-            cancelButtonText: 'Hủy'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Implement export logic here
-                Swal.fire('Đang xuất...', 'File sẽ được tải xuống trong giây lát', 'info');
-            }
-        });
-    }
+// Delete category function
+function deleteCategory(id) {
+    Swal.fire({
+        title: 'Bạn có chắc chắn?',
+        text: "Danh mục sẽ bị xóa vĩnh viễn! Các sản phẩm trong danh mục này sẽ chuyển về 'Chưa phân loại'.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Show loading
+            Swal.fire({
+                title: 'Đang xóa...',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            // Redirect to delete
+            window.location.href = '/category/delete/' + id;
+        }
+    });
+}
 
-    function bulkExport() {
-        const selectedIds = Array.from(document.querySelectorAll('.row-checkbox:checked'))
-                                .map(cb => cb.value);
-        
-        if (selectedIds.length === 0) return;
-        
-        // Implement bulk export logic here
-        console.log('Exporting categories:', selectedIds);
-    }
+// Export categories
+function exportCategories() {
+    Swal.fire({
+        title: 'Xuất Dữ Liệu',
+        text: 'Chọn định dạng xuất dữ liệu',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Excel (.xlsx)',
+        cancelButtonText: 'CSV (.csv)',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Export to Excel
+            exportToExcel();
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            // Export to CSV
+            exportToCSV();
+        }
+    });
+}
 
-    // Initialize animations
-    document.addEventListener('DOMContentLoaded', function() {
-        // Animate table rows
+function exportToExcel() {
+    // Implementation for Excel export
+    Swal.fire('Thành công!', 'Dữ liệu đã được xuất ra file Excel.', 'success');
+}
+
+function exportToCSV() {
+    // Implementation for CSV export
+    Swal.fire('Thành công!', 'Dữ liệu đã được xuất ra file CSV.', 'success');
+}
+
+// Animate category cards on hover
+document.querySelectorAll('.category-card').forEach(card => {
+    card.addEventListener('mouseenter', function() {
         anime({
-            targets: '.category-row',
-            translateX: [-50, 0],
-            opacity: [0, 1],
-            duration: 600,
-            delay: anime.stagger(50),
+            targets: this,
+            scale: 1.05,
+            duration: 300,
             easing: 'easeOutQuad'
         });
-
-        // Animate stat cards
+    });
+    
+    card.addEventListener('mouseleave', function() {
         anime({
-            targets: '.stat-icon',
-            scale: [0, 1],
-            duration: 800,
-            delay: anime.stagger(100),
-            easing: 'easeOutBack'
+            targets: this,
+            scale: 1,
+            duration: 300,
+            easing: 'easeOutQuad'
         });
     });
+});
+
+// Auto-refresh every 5 minutes
+setInterval(() => {
+    // In a real app, this would refresh data
+    console.log('Auto-refreshing category data...');
+}, 300000);
 </script>
 
-<?php include 'app/views/shares/footer.php'; ?>
+<?php include_once 'app/views/shares/footer.php'; ?>

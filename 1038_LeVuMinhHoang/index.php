@@ -1,9 +1,9 @@
 <?php
-
 session_start();
-
 require_once 'app/models/ProductModel.php';
+require_once 'app/helpers/SessionHelper.php';
 
+// Product/add
 $url = $_GET['url'] ?? '';
 $url = rtrim($url, '/');
 $url = filter_var($url, FILTER_SANITIZE_URL);
@@ -28,8 +28,8 @@ require_once 'app/controllers/' . $controllerName . '.php';
 $controller = new $controllerName();
 
 if (!method_exists($controller, $action)) {
-// Xử lý không tìm thấy action
-die('Action not found');
+    // Xử lý không tìm thấy action
+    die('Action not found');
 }
 
 // Gọi action với các tham số còn lại (nếu có)

@@ -1,229 +1,250 @@
 <?php 
-$pageTitle = "Thêm danh mục mới";
-include 'app/views/shares/app/views/shares/header.php'; 
+$pageTitle = "Thêm Danh Mục";
+include_once 'app/views/shares/header.php'; 
 ?>
 
-<div class="container mt-4">
-    <!-- Breadcrumb -->
-    <nav aria-label="breadcrumb" data-aos="fade-right">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
-            <li class="breadcrumb-item"><a href="/category/list">Danh mục</a></li>
-            <li class="breadcrumb-item active">Thêm mới</li>
-        </ol>
-    </nav>
+<section class="py-5">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Trang Chủ</a></li>
+                <li class="breadcrumb-item"><a href="/category/list" class="text-decoration-none">Danh Mục</a></li>
+                <li class="breadcrumb-item active">Thêm Danh Mục</li>
+            </ol>
+        </nav>
 
-    <!-- Page Header -->
-    <div class="row mb-4">
-        <div class="col-12" data-aos="fade-down">
-            <h1 class="display-6 fw-bold">
-                <i class="fas fa-plus-circle text-success me-3"></i>Thêm Danh Mục Mới
-            </h1>
-            <p class="text-muted">Tạo danh mục mới để phân loại sản phẩm trong cửa hàng</p>
-        </div>
-    </div>
-
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow-lg border-0" data-aos="fade-up">
-                <div class="card-header bg-gradient-success text-white">
-                    <h4 class="card-title mb-0">
-                        <i class="fas fa-info-circle me-2"></i>Thông Tin Danh Mục
-                    </h4>
-                </div>
-                
-                <div class="card-body p-4">
-                    <form action="/category/store" method="POST" id="categoryForm" enctype="multipart/form-data">
-                        <!-- Category Name -->
-                        <div class="mb-4">
-                            <label for="name" class="form-label fw-semibold">
-                                <i class="fas fa-tag text-primary me-2"></i>Tên danh mục
-                                <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" 
-                                   class="form-control form-control-lg" 
-                                   id="name" 
-                                   name="name" 
-                                   placeholder="Ví dụ: Điện thoại, Laptop, Phụ kiện..."
-                                   value="<?php echo isset($_SESSION['old_data']['name']) ? htmlspecialchars($_SESSION['old_data']['name']) : ''; ?>"
-                                   required>
-                            <div class="form-text">Tên danh mục nên ngắn gọn và dễ hiểu</div>
-                            <div class="invalid-feedback">Vui lòng nhập tên danh mục</div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Main Form Card -->
+                <div class="card shadow-lg border-0" data-aos="fade-up">
+                    <div class="card-header bg-gradient text-white position-relative" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <h4 class="card-title mb-0">
+                            <i class="fas fa-folder-plus me-2"></i>Tạo Danh Mục Mới
+                        </h4>
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <span class="badge bg-light text-dark">
+                                <i class="fas fa-calendar me-1"></i><?= date('d/m/Y') ?>
+                            </span>
                         </div>
-
-                        <!-- Category Description -->
-                        <div class="mb-4">
-                            <label for="description" class="form-label fw-semibold">
-                                <i class="fas fa-align-left text-info me-2"></i>Mô tả danh mục
-                            </label>
-                            <textarea class="form-control" 
-                                      id="description" 
-                                      name="description" 
-                                      rows="4" 
-                                      placeholder="Mô tả chi tiết về danh mục sản phẩm..."><?php echo isset($_SESSION['old_data']['description']) ? htmlspecialchars($_SESSION['old_data']['description']) : ''; ?></textarea>
-                            <div class="form-text">Mô tả ngắn gọn về các sản phẩm trong danh mục này</div>
-                        </div>
-
-                        <!-- Category Icon -->
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold">
-                                <i class="fas fa-icons text-purple me-2"></i>Biểu tượng danh mục
-                            </label>
-                            <div class="icon-selector">
-                                <div class="row g-2">
-                                    <div class="col-auto">
-                                        <input type="radio" class="btn-check" name="icon" id="icon-phone" value="fas fa-mobile-alt" autocomplete="off">
-                                        <label class="btn btn-outline-primary icon-btn" for="icon-phone">
-                                            <i class="fas fa-mobile-alt fa-2x"></i>
-                                            <span>Điện thoại</span>
-                                        </label>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        <!-- Progress Steps -->
+                        <div class="progress-steps mb-4">
+                            <div class="d-flex justify-content-center">
+                                <div class="step active">
+                                    <div class="step-icon">
+                                        <i class="fas fa-edit"></i>
                                     </div>
-                                    <div class="col-auto">
-                                        <input type="radio" class="btn-check" name="icon" id="icon-laptop" value="fas fa-laptop" autocomplete="off">
-                                        <label class="btn btn-outline-primary icon-btn" for="icon-laptop">
-                                            <i class="fas fa-laptop fa-2x"></i>
-                                            <span>Laptop</span>
-                                        </label>
+                                    <span>Thông Tin</span>
+                                </div>
+                                <div class="step-line"></div>
+                                <div class="step">
+                                    <div class="step-icon">
+                                        <i class="fas fa-check"></i>
                                     </div>
-                                    <div class="col-auto">
-                                        <input type="radio" class="btn-check" name="icon" id="icon-tablet" value="fas fa-tablet-alt" autocomplete="off">
-                                        <label class="btn btn-outline-primary icon-btn" for="icon-tablet">
-                                            <i class="fas fa-tablet-alt fa-2x"></i>
-                                            <span>Tablet</span>
-                                        </label>
+                                    <span>Xác Nhận</span>
+                                </div>
+                                <div class="step-line"></div>
+                                <div class="step">
+                                    <div class="step-icon">
+                                        <i class="fas fa-save"></i>
                                     </div>
-                                    <div class="col-auto">
-                                        <input type="radio" class="btn-check" name="icon" id="icon-headphones" value="fas fa-headphones" autocomplete="off">
-                                        <label class="btn btn-outline-primary icon-btn" for="icon-headphones">
-                                            <i class="fas fa-headphones fa-2x"></i>
-                                            <span>Âm thanh</span>
-                                        </label>
-                                    </div>
-                                    <div class="col-auto">
-                                        <input type="radio" class="btn-check" name="icon" id="icon-camera" value="fas fa-camera" autocomplete="off">
-                                        <label class="btn btn-outline-primary icon-btn" for="icon-camera">
-                                            <i class="fas fa-camera fa-2x"></i>
-                                            <span>Camera</span>
-                                        </label>
-                                    </div>
-                                    <div class="col-auto">
-                                        <input type="radio" class="btn-check" name="icon" id="icon-gamepad" value="fas fa-gamepad" autocomplete="off">
-                                        <label class="btn btn-outline-primary icon-btn" for="icon-gamepad">
-                                            <i class="fas fa-gamepad fa-2x"></i>
-                                            <span>Gaming</span>
-                                        </label>
-                                    </div>
+                                    <span>Hoàn Tất</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Category Image -->
-                        <div class="mb-4">
-                            <label for="image" class="form-label fw-semibold">
-                                <i class="fas fa-image text-purple me-2"></i>Hình ảnh danh mục
-                            </label>
-                            <div class="upload-area" onclick="document.getElementById('image').click()">
-                                <div class="upload-content">
-                                    <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
-                                    <h5>Kéo thả hoặc click để chọn ảnh</h5>
-                                    <p class="text-muted">Hỗ trợ: JPG, JPEG, PNG (tối đa 5MB)</p>
+                        <form action="/category/store" method="POST" id="categoryForm">
+                            <!-- Category Name -->
+                            <div class="mb-4">
+                                <label for="name" class="form-label fw-bold">
+                                    <i class="fas fa-tag text-primary me-2"></i>Tên Danh Mục *
+                                </label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-folder"></i>
+                                    </span>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="name" 
+                                           name="name" 
+                                           value="<?= htmlspecialchars($_SESSION['old_data']['name'] ?? '') ?>"
+                                           placeholder="Nhập tên danh mục..."
+                                           required
+                                           maxlength="100">
+                                    <div class="input-group-text">
+                                        <span id="nameCounter" class="small text-muted">0/100</span>
+                                    </div>
                                 </div>
-                                <input type="file" 
-                                       class="form-control d-none" 
-                                       id="image" 
-                                       name="image" 
-                                       accept="image/*"
-                                       onchange="previewImage(this)">
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Tên danh mục nên ngắn gọn, dễ hiểu và không trùng lặp.
+                                </div>
+                                <div class="invalid-feedback" id="nameError"></div>
+                                <div class="valid-feedback" id="nameSuccess">
+                                    <i class="fas fa-check-circle me-1"></i>Tên danh mục hợp lệ!
+                                </div>
                             </div>
-                            <div id="imagePreview" class="mt-3" style="display: none;">
-                                <img id="preview" src="" alt="Preview" class="img-thumbnail" style="max-width: 200px;">
-                                <button type="button" class="btn btn-sm btn-danger ms-2" onclick="removeImage()">
-                                    <i class="fas fa-times"></i> Xóa
-                                </button>
-                            </div>
-                        </div>
 
-                        <!-- Action Buttons -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a href="/category/list" class="btn btn-secondary btn-lg">
-                                <i class="fas fa-arrow-left me-2"></i>Quay lại
-                            </a>
-                            <button type="reset" class="btn btn-outline-warning btn-lg">
-                                <i class="fas fa-undo me-2"></i>Làm mới
-                            </button>
-                            <button type="submit" class="btn btn-success btn-lg">
-                                <i class="fas fa-save me-2"></i>Lưu danh mục
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quick Tips -->
-        <div class="col-lg-4">
-            <div class="card shadow-sm" data-aos="fade-up" data-aos-delay="200">
-                <div class="card-header bg-light">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-lightbulb text-warning me-2"></i>Gợi ý hữu ích
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="tip-item mb-3">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        <strong>Tên danh mục</strong>
-                        <p class="text-muted small mb-0">Nên đặt tên ngắn gọn, dễ hiểu và phù hợp với sản phẩm</p>
-                    </div>
-                    <div class="tip-item mb-3">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        <strong>Mô tả chi tiết</strong>
-                        <p class="text-muted small mb-0">Viết mô tả rõ ràng để khách hàng hiểu về danh mục</p>
-                    </div>
-                    <div class="tip-item mb-3">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        <strong>Chọn biểu tượng</strong>
-                        <p class="text-muted small mb-0">Biểu tượng giúp nhận diện danh mục dễ dàng hơn</p>
-                    </div>
-                    <div class="tip-item">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        <strong>Hình ảnh chất lượng</strong>
-                        <p class="text-muted small mb-0">Sử dụng ảnh có độ phân giải cao và liên quan</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Category Examples -->
-            <div class="card shadow-sm mt-4" data-aos="fade-up" data-aos-delay="300">
-                <div class="card-header bg-light">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-example text-info me-2"></i>Ví dụ danh mục
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="example-category mb-3">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-mobile-alt fa-2x text-primary me-3"></i>
-                            <div>
-                                <strong>Điện thoại thông minh</strong>
-                                <p class="text-muted small mb-0">iPhone, Samsung, Xiaomi...</p>
+                            <!-- Category Description -->
+                            <div class="mb-4">
+                                <label for="description" class="form-label fw-bold">
+                                    <i class="fas fa-align-left text-success me-2"></i>Mô Tả Danh Mục
+                                </label>
+                                <textarea class="form-control form-control-lg" 
+                                          id="description" 
+                                          name="description" 
+                                          rows="6" 
+                                          placeholder="Nhập mô tả chi tiết về danh mục này...&#10;&#10;Ví dụ:&#10;- Đặc điểm chính của danh mục&#10;- Loại sản phẩm sẽ có trong danh mục&#10;- Mục đích sử dụng..."
+                                          maxlength="1000"><?= htmlspecialchars($_SESSION['old_data']['description'] ?? '') ?></textarea>
+                                <div class="d-flex justify-content-between">
+                                    <div class="form-text">
+                                        <i class="fas fa-lightbulb me-1"></i>
+                                        Mô tả giúp khách hàng hiểu rõ hơn về danh mục này.
+                                    </div>
+                                    <small class="text-muted">
+                                        <span id="descCounter">0</span>/1000 ký tự
+                                    </small>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="example-category mb-3">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-laptop fa-2x text-success me-3"></i>
-                            <div>
-                                <strong>Laptop & Máy tính</strong>
-                                <p class="text-muted small mb-0">MacBook, Dell, HP, Asus...</p>
+
+                            <!-- Category Icon Selection -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-icons text-warning me-2"></i>Biểu Tượng Danh Mục
+                                </label>
+                                <div class="icon-selection">
+                                    <div class="row">
+                                        <?php 
+                                        $icons = [
+                                            'fa-laptop' => 'Laptop',
+                                            'fa-mobile-alt' => 'Điện Thoại', 
+                                            'fa-tablet-alt' => 'Tablet',
+                                            'fa-headphones' => 'Tai Nghe',
+                                            'fa-camera' => 'Camera',
+                                            'fa-gamepad' => 'Gaming',
+                                            'fa-tv' => 'TV & Monitor',
+                                            'fa-keyboard' => 'Phụ Kiện',
+                                            'fa-mouse' => 'Chuột',
+                                            'fa-usb' => 'USB & Lưu Trữ',
+                                            'fa-wifi' => 'Mạng & Kết Nối',
+                                            'fa-battery-full' => 'Pin & Sạc'
+                                        ];
+                                        
+                                        foreach ($icons as $iconClass => $iconName): 
+                                        ?>
+                                            <div class="col-lg-3 col-md-4 col-6 mb-3">
+                                                <div class="icon-option" data-icon="<?= $iconClass ?>">
+                                                    <div class="icon-preview">
+                                                        <i class="fas <?= $iconClass ?> fa-2x"></i>
+                                                    </div>
+                                                    <small class="icon-name"><?= $iconName ?></small>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <input type="hidden" name="icon" id="selectedIcon" value="">
+                                </div>
                             </div>
-                        </div>
+
+                            <!-- Category Color -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-palette text-info me-2"></i>Màu Sắc Danh Mục
+                                </label>
+                                <div class="color-selection">
+                                    <div class="row">
+                                        <?php 
+                                        $colors = [
+                                            '#667eea' => 'Xanh Tím',
+                                            '#764ba2' => 'Tím Đậm',
+                                            '#f093fb' => 'Hồng Nhạt',
+                                            '#f5576c' => 'Đỏ Coral',
+                                            '#4facfe' => 'Xanh Dương',
+                                            '#00f2fe' => 'Xanh Cyan',
+                                            '#43e97b' => 'Xanh Lá',
+                                            '#38f9d7' => 'Xanh Mint',
+                                            '#ffecd2' => 'Vàng Nhạt',
+                                            '#fcb69f' => 'Cam Nhạt',
+                                            '#a8edea' => 'Xanh Pastel',
+                                            '#fed6e3' => 'Hồng Pastel'
+                                        ];
+                                        
+                                        foreach ($colors as $colorCode => $colorName): 
+                                        ?>
+                                            <div class="col-lg-2 col-md-3 col-4 mb-3">
+                                                <div class="color-option" data-color="<?= $colorCode ?>" style="background: <?= $colorCode ?>;">
+                                                    <div class="color-check">
+                                                        <i class="fas fa-check"></i>
+                                                    </div>
+                                                    <small class="color-name"><?= $colorName ?></small>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <input type="hidden" name="color" id="selectedColor" value="">
+                                </div>
+                            </div>
+
+                            <!-- Preview Section -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-eye text-secondary me-2"></i>Xem Trước
+                                </label>
+                                <div class="category-preview">
+                                    <div class="preview-card">
+                                        <div class="preview-header" id="previewHeader">
+                                            <i class="fas fa-folder preview-icon" id="previewIcon"></i>
+                                            <span class="preview-name" id="previewName">Tên Danh Mục</span>
+                                        </div>
+                                        <div class="preview-body">
+                                            <p class="preview-description" id="previewDescription">Mô tả danh mục sẽ hiển thị ở đây...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="row">
+                                <div class="col-md-6 d-grid mb-2">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-save me-2"></i>Tạo Danh Mục
+                                    </button>
+                                </div>
+                                <div class="col-md-6 d-grid mb-2">
+                                    <a href="/category/list" class="btn btn-outline-secondary btn-lg">
+                                        <i class="fas fa-arrow-left me-2"></i>Quay Lại
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <div class="example-category">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-headphones fa-2x text-warning me-3"></i>
-                            <div>
-                                <strong>Phụ kiện âm thanh</strong>
-                                <p class="text-muted small mb-0">Tai nghe, loa, micro...</p>
+                </div>
+
+                <!-- Help Card -->
+                <div class="card mt-4 border-0 bg-light" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <i class="fas fa-question-circle text-info me-2"></i>Hướng Dẫn Tạo Danh Mục
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="small fw-bold text-primary">Tên Danh Mục:</h6>
+                                <ul class="list-unstyled small mb-3">
+                                    <li><i class="fas fa-check text-success me-2"></i>Nên ngắn gọn (3-50 ký tự)</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Dễ hiểu và dễ nhớ</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Không trùng lặp</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="small fw-bold text-success">Mô Tả:</h6>
+                                <ul class="list-unstyled small mb-3">
+                                    <li><i class="fas fa-check text-success me-2"></i>Mô tả rõ ràng về danh mục</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Liệt kê loại sản phẩm</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Sử dụng ngôn ngữ thân thiện</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -231,119 +252,298 @@ include 'app/views/shares/app/views/shares/header.php';
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <style>
-.bg-gradient-success {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+.progress-steps {
+    max-width: 400px;
+    margin: 0 auto;
 }
 
-.upload-area {
-    border: 2px dashed #dee2e6;
-    border-radius: 8px;
-    padding: 40px 20px;
+.progress-steps .d-flex {
+    align-items: center;
+}
+
+.step {
     text-align: center;
+    position: relative;
+}
+
+.step-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #dee2e6;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.step.active .step-icon {
+    background: #0d6efd;
+    color: white;
+}
+
+.step-line {
+    flex: 1;
+    height: 2px;
+    background: #dee2e6;
+    margin: 0 15px;
+}
+
+.icon-option {
+    text-align: center;
+    padding: 15px;
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
-    background: #f8f9fa;
 }
 
-.upload-area:hover {
-    border-color: var(--success-color);
-    background: rgba(40, 167, 69, 0.05);
+.icon-option:hover {
+    border-color: #0d6efd;
+    background-color: #f8f9ff;
 }
 
-.upload-area.dragover {
-    border-color: var(--success-color);
-    background: rgba(40, 167, 69, 0.1);
+.icon-option.selected {
+    border-color: #0d6efd;
+    background-color: #e7f1ff;
 }
 
-.icon-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 15px;
-    width: 100px;
-    height: 100px;
-    justify-content: center;
+.icon-preview {
+    margin-bottom: 8px;
+    color: #6c757d;
+}
+
+.icon-option.selected .icon-preview {
+    color: #0d6efd;
+}
+
+.color-option {
+    height: 60px;
+    border-radius: 10px;
+    cursor: pointer;
+    position: relative;
+    border: 3px solid transparent;
     transition: all 0.3s ease;
-}
-
-.icon-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.icon-btn span {
-    font-size: 0.8rem;
-    margin-top: 8px;
-}
-
-.tip-item {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
 }
 
-.tip-item i {
-    margin-top: 2px;
+.color-option:hover {
+    transform: scale(1.1);
+    border-color: #fff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
-.example-category {
-    padding: 10px;
-    border-radius: 8px;
-    background: #f8f9fa;
+.color-option.selected {
+    border-color: #000;
+    transform: scale(1.1);
 }
 
-.form-check-input:checked + .icon-btn {
-    background-color: var(--primary-color);
+.color-check {
     color: white;
-    border-color: var(--primary-color);
+    font-size: 1.2rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.color-option.selected .color-check {
+    opacity: 1;
+}
+
+.color-name {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    white-space: nowrap;
+}
+
+.category-preview {
+    border: 2px dashed #dee2e6;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.preview-card {
+    max-width: 300px;
+    margin: 0 auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.preview-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.preview-icon {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.preview-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.preview-body {
+    background: white;
+    padding: 15px;
+}
+
+.preview-description {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin: 0;
 }
 </style>
 
 <script>
-// Image preview function
-function previewImage(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('preview').src = e.target.result;
-            document.getElementById('imagePreview').style.display = 'block';
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-// Remove image function
-function removeImage() {
-    document.getElementById('image').value = '';
-    document.getElementById('imagePreview').style.display = 'none';
-    document.getElementById('preview').src = '';
-}
-
-// Drag and drop functionality
-const uploadArea = document.querySelector('.upload-area');
-
-uploadArea.addEventListener('dragover', function(e) {
-    e.preventDefault();
-    uploadArea.classList.add('dragover');
-});
-
-uploadArea.addEventListener('dragleave', function(e) {
-    e.preventDefault();
-    uploadArea.classList.remove('dragover');
-});
-
-uploadArea.addEventListener('drop', function(e) {
-    e.preventDefault();
-    uploadArea.classList.remove('dragover');
+// Character counters
+function updateCharCounter(inputId, counterId, maxLength) {
+    const input = document.getElementById(inputId);
+    const counter = document.getElementById(counterId);
     
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-        document.getElementById('image').files = files;
-        previewImage(document.getElementById('image'));
+    function update() {
+        const length = input.value.length;
+        counter.textContent = length;
+        
+        if (length > maxLength * 0.8) {
+            counter.className = 'text-warning';
+        } else if (length === maxLength) {
+            counter.className = 'text-danger';
+        } else {
+            counter.className = 'text-muted';
+        }
     }
+    
+    input.addEventListener('input', update);
+    update();
+}
+
+updateCharCounter('name', 'nameCounter', 100);
+updateCharCounter('description', 'descCounter', 1000);
+
+// Real-time validation for category name
+document.getElementById('name').addEventListener('input', function() {
+    const name = this.value.trim();
+    const nameError = document.getElementById('nameError');
+    const nameSuccess = document.getElementById('nameSuccess');
+    
+    if (name.length === 0) {
+        this.classList.remove('is-invalid', 'is-valid');
+        nameError.textContent = '';
+        nameSuccess.style.display = 'none';
+        return;
+    }
+    
+    if (name.length < 3) {
+        this.classList.add('is-invalid');
+        this.classList.remove('is-valid');
+        nameError.textContent = 'Tên danh mục phải có ít nhất 3 ký tự';
+        nameSuccess.style.display = 'none';
+    } else {
+        // Check for duplicate name via AJAX
+        checkCategoryName(name);
+    }
+    
+    updatePreview();
 });
+
+function checkCategoryName(name) {
+    const nameInput = document.getElementById('name');
+    const nameError = document.getElementById('nameError');
+    const nameSuccess = document.getElementById('nameSuccess');
+    
+    // Simulate AJAX call to check duplicate
+    fetch('/category/checkName', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: name })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.exists) {
+            nameInput.classList.add('is-invalid');
+            nameInput.classList.remove('is-valid');
+            nameError.textContent = 'Tên danh mục đã tồn tại';
+            nameSuccess.style.display = 'none';
+        } else {
+            nameInput.classList.remove('is-invalid');
+            nameInput.classList.add('is-valid');
+            nameError.textContent = '';
+            nameSuccess.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+// Icon selection
+document.querySelectorAll('.icon-option').forEach(option => {
+    option.addEventListener('click', function() {
+        document.querySelectorAll('.icon-option').forEach(opt => opt.classList.remove('selected'));
+        this.classList.add('selected');
+        document.getElementById('selectedIcon').value = this.dataset.icon;
+        updatePreview();
+    });
+});
+
+// Color selection
+document.querySelectorAll('.color-option').forEach(option => {
+    option.addEventListener('click', function() {
+        document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+        this.classList.add('selected');
+        document.getElementById('selectedColor').value = this.dataset.color;
+        updatePreview();
+    });
+});
+
+// Description change
+document.getElementById('description').addEventListener('input', updatePreview);
+
+// Update preview
+function updatePreview() {
+    const name = document.getElementById('name').value || 'Tên Danh Mục';
+    const description = document.getElementById('description').value || 'Mô tả danh mục sẽ hiển thị ở đây...';
+    const icon = document.getElementById('selectedIcon').value || 'fa-folder';
+    const color = document.getElementById('selectedColor').value || '#667eea';
+    
+    document.getElementById('previewName').textContent = name;
+    document.getElementById('previewDescription').textContent = description;
+    document.getElementById('previewIcon').className = `fas ${icon} preview-icon`;
+    
+    const previewHeader = document.getElementById('previewHeader');
+    previewHeader.style.background = `linear-gradient(135deg, ${color} 0%, ${adjustColor(color, -20)} 100%)`;
+}
+
+function adjustColor(color, amount) {
+    const usePound = color[0] === "#";
+    const col = usePound ? color.slice(1) : color;
+    const num = parseInt(col, 16);
+    let r = (num >> 16) + amount;
+    let g = (num >> 8 & 0x00FF) + amount;
+    let b = (num & 0x0000FF) + amount;
+    r = r > 255 ? 255 : r < 0 ? 0 : r;
+    g = g > 255 ? 255 : g < 0 ? 0 : g;
+    b = b > 255 ? 255 : b < 0 ? 0 : b;
+    return (usePound ? "#" : "") + (r << 16 | g << 8 | b).toString(16).padStart(6, '0');
+}
 
 // Form validation
 document.getElementById('categoryForm').addEventListener('submit', function(e) {
@@ -351,112 +551,82 @@ document.getElementById('categoryForm').addEventListener('submit', function(e) {
     
     if (!name) {
         e.preventDefault();
-        document.getElementById('name').classList.add('is-invalid');
-        document.getElementById('name').focus();
-        
         Swal.fire({
             icon: 'error',
             title: 'Lỗi!',
-            text: 'Vui lòng nhập tên danh mục'
+            text: 'Vui lòng nhập tên danh mục.',
         });
         return;
     }
     
-    // Check if name already exists (AJAX call)
-    checkCategoryName(name, function(exists) {
-        if (exists) {
-            e.preventDefault();
-            document.getElementById('name').classList.add('is-invalid');
-            
-            Swal.fire({
-                icon: 'error',
-                title: 'Tên danh mục đã tồn tại!',
-                text: 'Vui lòng chọn tên khác cho danh mục'
-            });
-        } else {
-            showLoading();
+    if (name.length < 3) {
+        e.preventDefault();
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi!',
+            text: 'Tên danh mục phải có ít nhất 3 ký tự.',
+        });
+        return;
+    }
+    
+    // Show loading
+    Swal.fire({
+        title: 'Đang tạo danh mục...',
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        willOpen: () => {
+            Swal.showLoading();
         }
     });
 });
 
-// Check category name exists
-function checkCategoryName(name, callback) {
-    fetch('/category/checkName', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'name=' + encodeURIComponent(name)
-    })
-    .then(response => response.json())
-    .then(data => {
-        callback(data.exists);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        callback(false);
-    });
-}
+// Initialize preview
+updatePreview();
 
-// Real-time validation
-document.getElementById('name').addEventListener('input', function() {
-    const name = this.value.trim();
+// Auto-save draft functionality
+setInterval(() => {
+    const formData = {
+        name: document.getElementById('name').value,
+        description: document.getElementById('description').value,
+        icon: document.getElementById('selectedIcon').value,
+        color: document.getElementById('selectedColor').value
+    };
     
-    if (name) {
-        this.classList.remove('is-invalid');
-        this.classList.add('is-valid');
+    localStorage.setItem('categoryDraft', JSON.stringify(formData));
+}, 30000); // Save every 30 seconds
+
+// Load draft on page load
+window.addEventListener('load', () => {
+    const draft = localStorage.getItem('categoryDraft');
+    if (draft) {
+        const data = JSON.parse(draft);
         
-        // Check name availability after 500ms delay
-        clearTimeout(this.timeoutId);
-        this.timeoutId = setTimeout(() => {
-            checkCategoryName(name, (exists) => {
-                if (exists) {
-                    this.classList.remove('is-valid');
-                    this.classList.add('is-invalid');
-                    this.nextElementSibling.textContent = 'Tên danh mục đã tồn tại';
-                } else {
-                    this.classList.remove('is-invalid');
-                    this.classList.add('is-valid');
-                }
-            });
-        }, 500);
-    } else {
-        this.classList.remove('is-valid', 'is-invalid');
+        if (confirm('Bạn có muốn khôi phục bản nháp đã lưu không?')) {
+            document.getElementById('name').value = data.name || '';
+            document.getElementById('description').value = data.description || '';
+            
+            if (data.icon) {
+                document.querySelector(`[data-icon="${data.icon}"]`)?.click();
+            }
+            
+            if (data.color) {
+                document.querySelector(`[data-color="${data.color}"]`)?.click();
+            }
+            
+            updatePreview();
+        }
     }
 });
 
-// Auto-resize textarea
-document.getElementById('description').addEventListener('input', function() {
-    this.style.height = 'auto';
-    this.style.height = this.scrollHeight + 'px';
+// Clear draft on successful submit
+document.getElementById('categoryForm').addEventListener('submit', () => {
+    localStorage.removeItem('categoryDraft');
 });
 
-// Initialize animations
-document.addEventListener('DOMContentLoaded', function() {
-    // Animate form fields
-    anime({
-        targets: '.mb-4',
-        translateY: [30, 0],
-        opacity: [0, 1],
-        delay: anime.stagger(100),
-        duration: 600,
-        easing: 'easeOutExpo'
-    });
-    
-    // Animate icon buttons
-    anime({
-        targets: '.icon-btn',
-        scale: [0.8, 1],
-        opacity: [0, 1],
-        delay: anime.stagger(50, {start: 800}),
-        duration: 400,
-        easing: 'easeOutExpo'
-    });
-});
+<?php if (isset($_SESSION['old_data'])): ?>
+// Clear old data from session
+<?php unset($_SESSION['old_data']); ?>
+<?php endif; ?>
 </script>
 
-<?php 
-// Clear old data from session
-unset($_SESSION['old_data']);
-include 'app/views/shares/app/views/shares/footer.php'; 
-?>
+<?php include_once 'app/views/shares/footer.php'; ?>
