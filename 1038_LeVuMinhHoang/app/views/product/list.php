@@ -16,9 +16,11 @@ include_once 'app/views/shares/header.php';
                     Từ smartphone đến laptop, tất cả đều có tại TechTafu.
                 </p>
                 <div class="d-flex gap-3">
+                    <?php if (SessionHelper::isAdmin()): ?>
                     <a href="/Product/add" class="btn btn-warning btn-lg">
                         <i class="fas fa-plus me-2"></i>Thêm Sản Phẩm
                     </a>
+                    <?php endif; ?>
                     <a href="#products" class="btn btn-outline-light btn-lg">
                         <i class="fas fa-arrow-down me-2"></i>Xem Sản Phẩm
                     </a>
@@ -28,15 +30,15 @@ include_once 'app/views/shares/header.php';
                 <div class="swiper hero-swiper">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide">
-                            <img src="https://via.placeholder.com/600x400/3498db/ffffff?text=Laptop+Gaming" 
+                            <img src="https://product.hstatic.net/200000722513/product/-gaming-asus-tuf-a15-fa507rc-hn051w-1_c5df613e590d466696cd74ed2f30ce2d_559d2e06c42b4fdd8b64e5e32a6123b7.jpg" 
                                  alt="Laptop Gaming" class="img-fluid rounded-3">
                         </div>
                         <div class="swiper-slide">
-                            <img src="https://via.placeholder.com/600x400/e74c3c/ffffff?text=Smartphone" 
+                            <img src="https://images-na.ssl-images-amazon.com/images/I/417sDBMOxVL.jpg" 
                                  alt="Smartphone" class="img-fluid rounded-3">
                         </div>
                         <div class="swiper-slide">
-                            <img src="https://via.placeholder.com/600x400/27ae60/ffffff?text=Tablet" 
+                            <img src="https://images-na.ssl-images-amazon.com/images/I/71k7Ssjzo7L.jpg" 
                                  alt="Tablet" class="img-fluid rounded-3">
                         </div>
                     </div>
@@ -145,6 +147,7 @@ include_once 'app/views/shares/header.php';
                                     <a href="/Product/addToCart/<?= $product->id ?>" class="btn btn-primary flex-grow-1">
                                         <i class="fas fa-cart-plus me-1"></i>Thêm vào giỏ
                                     </a>
+                                    <?php if (SessionHelper::isAdmin()): ?>
                                     <div class="btn-group" role="group">
                                         <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
                                             <i class="fas fa-cog"></i>
@@ -159,6 +162,7 @@ include_once 'app/views/shares/header.php';
                                             </a></li>
                                         </ul>
                                     </div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -170,9 +174,11 @@ include_once 'app/views/shares/header.php';
                         <i class="fas fa-box-open fa-5x text-muted mb-4"></i>
                         <h3 class="text-muted">Chưa có sản phẩm nào</h3>
                         <p class="text-muted mb-4">Hãy thêm sản phẩm đầu tiên để bắt đầu!</p>
+                        <?php if (SessionHelper::isAdmin()): ?>
                         <a href="/Product/add" class="btn btn-primary btn-lg">
                             <i class="fas fa-plus me-2"></i>Thêm Sản Phẩm
                         </a>
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endif; ?>

@@ -66,7 +66,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" /></pattern></defs></svg>');
             opacity: 0.5;
         }
         
@@ -179,6 +179,70 @@
             color: white;
         }
 
+        /* User Avatar */
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, var(--secondary-color), #5dade2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .user-info {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+        }
+
+        .admin-badge {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 5px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+            70% { box-shadow: 0 0 0 5px rgba(231, 76, 60, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+
+        .admin-only {
+            border-left: 3px solid var(--accent-color);
+            background: rgba(231, 76, 60, 0.05);
+        }
+
+        /* Notification badges */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 18px;
+            height: 18px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-5px); }
+            60% { transform: translateY(-3px); }
+        }
+
         /* Swiper Styles */
         .hero-swiper {
             width: 100%;
@@ -201,6 +265,19 @@
     </style>
 </head>
 <body>
+    <?php
+    // Start session if not already started
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    
+    // Get user info
+    $isLoggedIn = isset($_SESSION['username']);
+    $username = $isLoggedIn ? $_SESSION['username'] : '';
+    $userRole = $isLoggedIn ? ($_SESSION['role'] ?? 'user') : '';
+    $isAdmin = $userRole === 'admin';
+    ?>
+
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
         <div class="container">
@@ -217,54 +294,238 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Trang Chủ</a>
                     </li>
+                    
+                    <!-- Sản phẩm menu -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="productsDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-laptop me-1"></i>Sản Phẩm
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="/Product"><i class="fas fa-list me-2"></i>Tất Cả Sản Phẩm</a></li>
-                            <li><a class="dropdown-item" href="/Product/add"><i class="fas fa-plus me-2"></i>Thêm Sản Phẩm</a></li>
+                            <li><a class="dropdown-item" href="/Product/featured"><i class="fas fa-star me-2"></i>Sản Phẩm Nổi Bật</a></li>
+                            <li><a class="dropdown-item" href="/Product/sale"><i class="fas fa-fire me-2"></i>Khuyến Mại</a></li>
+                            
+                            <?php if ($isAdmin): ?>
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="admin-only">
+                                    <a class="dropdown-item" href="/Product/add">
+                                        <i class="fas fa-plus me-2 text-danger"></i>Thêm Sản Phẩm
+                                    </a>
+                                </li>
+                                <li class="admin-only">
+                                    <a class="dropdown-item" href="/Product/manage">
+                                        <i class="fas fa-cogs me-2 text-danger"></i>Quản Lý Sản Phẩm
+                                    </a>
+                                </li>
+                            <?php endif; ?>
                         </ul>
                     </li>
+                    
+                    <!-- Danh mục menu -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-tags me-1"></i>Danh Mục
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="/category/list"><i class="fas fa-list me-2"></i>Tất Cả Danh Mục</a></li>
-                            <li><a class="dropdown-item" href="/category/create"><i class="fas fa-plus me-2"></i>Thêm Danh Mục</a></li>
+                            <li><a class="dropdown-item" href="/category/show/1"><i class="fas fa-laptop me-2"></i>Laptop</a></li>
+                            <li><a class="dropdown-item" href="/category/show/2"><i class="fas fa-mobile-alt me-2"></i>Điện Thoại</a></li>
+                            <li><a class="dropdown-item" href="/category/show/3"><i class="fas fa-tablet-alt me-2"></i>Tablet</a></li>
+                            <li><a class="dropdown-item" href="/category/show/8"><i class="fas fa-headphones me-2"></i>Phụ Kiện</a></li>
+                            
+                            <?php if ($isAdmin): ?>
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="admin-only">
+                                    <a class="dropdown-item" href="/category/create">
+                                        <i class="fas fa-plus me-2 text-danger"></i>Thêm Danh Mục
+                                    </a>
+                                </li>
+                                <li class="admin-only">
+                                    <a class="dropdown-item" href="/category/manage">
+                                        <i class="fas fa-cogs me-2 text-danger"></i>Quản Lý Danh Mục
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+                        </ul>
+                    </li>
+
+                    <!-- Admin menu (chỉ hiển thị với admin) -->
+                    <?php if ($isAdmin): ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-danger fw-bold" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-shield-alt me-1"></i>Quản Trị
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="admin-only">
+                                    <a class="dropdown-item" href="/admin/dashboard">
+                                        <i class="fas fa-tachometer-alt me-2 text-danger"></i>Bảng Điều Khiển
+                                    </a>
+                                </li>
+                                <li class="admin-only">
+                                    <a class="dropdown-item" href="/admin/users">
+                                        <i class="fas fa-users me-2 text-danger"></i>Quản Lý Người Dùng
+                                    </a>
+                                </li>
+                                <li class="admin-only">
+                                    <a class="dropdown-item" href="/admin/orders">
+                                        <i class="fas fa-shopping-bag me-2 text-danger"></i>Quản Lý Đơn Hàng
+                                    </a>
+                                </li>
+                                <li class="admin-only">
+                                    <a class="dropdown-item" href="/admin/statistics">
+                                        <i class="fas fa-chart-bar me-2 text-danger"></i>Thống Kê
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="admin-only">
+                                    <a class="dropdown-item" href="/admin/settings">
+                                        <i class="fas fa-cog me-2 text-danger"></i>Cài Đặt Hệ Thống
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
+
+                    <!-- Support menu -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="supportDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-question-circle me-1"></i>Hỗ Trợ
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/support/contact"><i class="fas fa-envelope me-2"></i>Liên Hệ</a></li>
+                            <li><a class="dropdown-item" href="/support/faq"><i class="fas fa-question me-2"></i>FAQ</a></li>
+                            <li><a class="dropdown-item" href="/support/warranty"><i class="fas fa-shield me-2"></i>Bảo Hành</a></li>
+                            <li><a class="dropdown-item" href="/support/return"><i class="fas fa-undo me-2"></i>Đổi Trả</a></li>
                         </ul>
                     </li>
                 </ul>
                 
                 <div class="d-flex align-items-center">
+                    <!-- Search bar -->
                     <div class="me-3">
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Tìm kiếm sản phẩm..." id="searchInput">
-                            <button class="btn btn-outline-secondary" type="button">
+                            <button class="btn btn-outline-secondary" type="button" id="searchBtn">
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
                     </div>
                     
-                    <a href="/Product/cart" class="btn btn-outline-primary position-relative me-2">
+                    <!-- Shopping cart -->
+                    <a href="/Product/cart" class="btn btn-outline-primary position-relative me-3" title="Giỏ hàng">
                         <i class="fas fa-shopping-cart"></i>
                         <span class="cart-badge" id="cartCount">
                             <?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>
                         </span>
                     </a>
                     
-                    <div class="dropdown">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-circle me-2"></i>Tài Khoản</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Cài Đặt</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Đăng Xuất</a></li>
-                        </ul>
-                    </div>
+                    <?php if ($isLoggedIn): ?>
+                        <!-- Notifications (only for logged in users) -->
+                        <div class="dropdown me-3">
+                            <button class="btn btn-outline-info position-relative" type="button" data-bs-toggle="dropdown" title="Thông báo">
+                                <i class="fas fa-bell"></i>
+                                <span class="notification-badge">3</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" style="width: 300px;">
+                                <li class="px-3 py-2 bg-light">
+                                    <h6 class="mb-0">Thông Báo</h6>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-gift text-success me-2"></i>
+                                        <small>Bạn có voucher giảm giá 20%</small>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-shipping-fast text-info me-2"></i>
+                                        <small>Đơn hàng #123 đang được giao</small>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-star text-warning me-2"></i>
+                                        <small>Sản phẩm mới cập nhật</small>
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="text-center">
+                                    <a class="dropdown-item" href="/notifications">Xem tất cả</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- User menu -->
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                                <div class="user-avatar me-2">
+                                    <?= strtoupper(substr($username, 0, 1)) ?>
+                                </div>
+                                <div class="d-none d-md-block text-start">
+                                    <small class="text-muted d-block">Xin chào</small>
+                                    <span class="fw-semibold">
+                                        <?= htmlspecialchars($username) ?>
+                                        <?php if ($isAdmin): ?>
+                                            <span class="admin-badge">ADMIN</span>
+                                        <?php endif; ?>
+                                    </span>
+                                </div>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li class="px-3 py-2">
+                                    <div class="user-info">
+                                        <div class="fw-semibold"><?= htmlspecialchars($username) ?></div>
+                                        <small class="text-muted">
+                                            <?= $isAdmin ? 'Quản trị viên' : 'Người dùng' ?>
+                                        </small>
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/account/profile"><i class="fas fa-user-circle me-2"></i>Thông Tin Tài Khoản</a></li>
+                                <li><a class="dropdown-item" href="/account/orders"><i class="fas fa-shopping-bag me-2"></i>Đơn Hàng Của Tôi</a></li>
+                                <li><a class="dropdown-item" href="/account/wishlist"><i class="fas fa-heart me-2"></i>Sản Phẩm Yêu Thích</a></li>
+                                <li><a class="dropdown-item" href="/account/addresses"><i class="fas fa-map-marker-alt me-2"></i>Địa Chỉ Giao Hàng</a></li>
+                                
+                                <?php if ($isAdmin): ?>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li class="admin-only">
+                                        <a class="dropdown-item" href="/admin/dashboard">
+                                            <i class="fas fa-tachometer-alt me-2 text-danger"></i>Bảng Điều Khiển
+                                        </a>
+                                    </li>
+                                    <li class="admin-only">
+                                        <a class="dropdown-item" href="/admin/users">
+                                            <i class="fas fa-users me-2 text-danger"></i>Quản Lý Người Dùng
+                                        </a>
+                                    </li>
+                                    <li class="admin-only">
+                                        <a class="dropdown-item" href="/admin/reports">
+                                            <i class="fas fa-chart-line me-2 text-danger"></i>Báo Cáo
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                                
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/account/settings"><i class="fas fa-cog me-2"></i>Cài Đặt</a></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="/account/logout" onclick="return confirmLogout()">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Đăng Xuất
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    <?php else: ?>
+                        <!-- Not logged in -->
+                        <div class="d-flex gap-2">
+                            <a href="/account/login" class="btn btn-outline-primary">
+                                <i class="fas fa-sign-in-alt me-1"></i>Đăng Nhập
+                            </a>
+                            <a href="/account/register" class="btn btn-primary">
+                                <i class="fas fa-user-plus me-1"></i>Đăng Ký
+                            </a>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -321,6 +582,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
     <script>
+        // Confirm logout
+        function confirmLogout() {
+            return Swal.fire({
+                title: 'Xác nhận đăng xuất',
+                text: 'Bạn có chắc chắn muốn đăng xuất?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#e74c3c',
+                cancelButtonColor: '#95a5a6',
+                confirmButtonText: 'Đăng xuất',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/account/logout';
+                }
+                return false;
+            });
+        }
+
         // Wait for DOM to be fully loaded
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize AOS
@@ -371,10 +651,35 @@
                 console.log('Searching for:', searchTerm);
             });
 
+            // Search button click
+            $('#searchBtn').click(function() {
+                const searchTerm = $('#searchInput').val().trim();
+                if (searchTerm) {
+                    window.location.href = `/Product/search?q=${encodeURIComponent(searchTerm)}`;
+                }
+            });
+
+            // Search on Enter key
+            $('#searchInput').keypress(function(e) {
+                if (e.which === 13) {
+                    $('#searchBtn').click();
+                }
+            });
+
             // Auto-hide alerts
             setTimeout(function() {
                 $('.alert').fadeOut();
             }, 5000);
+
+            // Admin menu highlight
+            $('.admin-only').hover(
+                function() {
+                    $(this).addClass('bg-light');
+                },
+                function() {
+                    $(this).removeClass('bg-light');
+                }
+            );
         });
 
         // Animate numbers function
