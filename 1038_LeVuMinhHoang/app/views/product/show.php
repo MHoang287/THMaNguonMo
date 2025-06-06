@@ -111,6 +111,7 @@ include_once 'app/views/shares/header.php';
                             </button>
                         </div>
 
+                        <?php if (SessionHelper::isAdmin()): ?>
                         <div class="row mt-3">
                             <div class="col-6 d-grid">
                                 <a href="/Product/edit/<?= $product->id ?>" class="btn btn-outline-warning">
@@ -123,6 +124,7 @@ include_once 'app/views/shares/header.php';
                                 </button>
                             </div>
                         </div>
+                        <?php endif; ?>
                     </div>
 
                     <!-- Share -->

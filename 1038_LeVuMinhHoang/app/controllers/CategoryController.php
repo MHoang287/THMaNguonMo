@@ -2,6 +2,7 @@
 // Require SessionHelper and other necessary files
 require_once('app/config/database.php');
 require_once('app/models/CategoryModel.php');
+require_once('app/helpers/SessionHelper.php');
 
 class CategoryController
 {
@@ -13,6 +14,11 @@ class CategoryController
         $this->db = (new Database())->getConnection();
         $this->categoryModel = new CategoryModel($this->db);
     }
+    
+    private function isAdmin() {
+        return SessionHelper::isAdmin();
+    }
+
 
     // READ - Hiển thị danh sách tất cả danh mục
     public function list()
@@ -24,12 +30,20 @@ class CategoryController
     // READ - Hiển thị form thêm danh mục mới
     public function create()
     {
+        if (!$this->isAdmin()) {
+            echo "Bạn không có quyền truy cập chức năng này!";
+            exit;
+        }
         include 'app/views/category/create.php';
     }
 
     // CREATE - Xử lý thêm danh mục mới
     public function store()
     {
+        if (!$this->isAdmin()) {
+            echo "Bạn không có quyền truy cập chức năng này!";
+            exit;
+        }
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $name = trim($_POST['name'] ?? '');
             $description = trim($_POST['description'] ?? '');
@@ -66,6 +80,10 @@ class CategoryController
     // READ - Hiển thị form chỉnh sửa danh mục
     public function edit($id)
     {
+        if (!$this->isAdmin()) {
+            echo "Bạn không có quyền truy cập chức năng này!";
+            exit;
+        }
         $category = $this->categoryModel->getCategoryById($id);
         if (!$category) {
             $_SESSION['error'] = "Không tìm thấy danh mục";
@@ -79,6 +97,10 @@ class CategoryController
     // UPDATE - Xử lý cập nhật danh mục
     public function update($id)
     {
+        if (!$this->isAdmin()) {
+            echo "Bạn không có quyền truy cập chức năng này!";
+            exit;
+        }
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $name = trim($_POST['name'] ?? '');
             $description = trim($_POST['description'] ?? '');
@@ -136,6 +158,10 @@ class CategoryController
     // DELETE - Xóa danh mục
     public function delete($id)
     {
+        if (!$this->isAdmin()) {
+            echo "Bạn không có quyền truy cập chức năng này!";
+            exit;
+        }
         // Kiểm tra danh mục có tồn tại không
         $category = $this->categoryModel->getCategoryById($id);
         if (!$category) {

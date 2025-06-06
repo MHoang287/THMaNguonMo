@@ -70,12 +70,14 @@ include_once 'app/views/shares/header.php';
                         <!-- Action Buttons -->
                         <div class="hero-actions">
                             <div class="btn-group" role="group">
+                                <?php if (SessionHelper::isAdmin()): ?>
                                 <a href="/category/edit/<?= $category->id ?>" class="btn btn-warning btn-lg">
                                     <i class="fas fa-edit me-2"></i>Chỉnh Sửa
                                 </a>
                                 <button class="btn btn-danger btn-lg" onclick="deleteCategory(<?= $category->id ?>)">
                                     <i class="fas fa-trash me-2"></i>Xóa
                                 </button>
+                                <?php endif; ?>
                                 <button class="btn btn-info btn-lg" onclick="shareCategory()">
                                     <i class="fas fa-share me-2"></i>Chia Sẻ
                                 </button>
@@ -145,6 +147,7 @@ include_once 'app/views/shares/header.php';
                                     <i class="fas fa-box me-2"></i>Sản Phẩm (<?= rand(5, 50) ?>)
                                 </button>
                             </li>
+                            <?php if (SessionHelper::isAdmin()): ?>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="analytics-tab" data-bs-toggle="tab" data-bs-target="#analytics" type="button" role="tab">
                                     <i class="fas fa-chart-line me-2"></i>Thống Kê
@@ -160,6 +163,7 @@ include_once 'app/views/shares/header.php';
                                     <i class="fas fa-history me-2"></i>Lịch Sử
                                 </button>
                             </li>
+                            <?php endif; ?>
                         </ul>
                     </div>
                     <div class="card-body">
@@ -168,9 +172,11 @@ include_once 'app/views/shares/header.php';
                             <div class="tab-pane fade show active" id="products" role="tabpanel">
                                 <div class="d-flex justify-content-between align-items-center mb-4">
                                     <h5 class="mb-0">Sản Phẩm Trong Danh Mục</h5>
+                                    <?php if (SessionHelper::isAdmin()): ?>
                                     <a href="/Product/add" class="btn btn-primary">
                                         <i class="fas fa-plus me-2"></i>Thêm Sản Phẩm
                                     </a>
+                                    <?php endif; ?>
                                 </div>
 
                                 <!-- Sample Products (since we don't have real product data) -->
@@ -189,9 +195,11 @@ include_once 'app/views/shares/header.php';
                                                             <button class="btn btn-outline-primary">
                                                                 <i class="fas fa-eye"></i>
                                                             </button>
+                                                            <?php if (SessionHelper::isAdmin()): ?>
                                                             <button class="btn btn-outline-warning">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
+                                                            <?php endif; ?>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -422,6 +430,7 @@ include_once 'app/views/shares/header.php';
         </div>
 
         <!-- Quick Actions -->
+         <?php if (SessionHelper::isAdmin()): ?>
         <div class="row mt-5">
             <div class="col-12">
                 <div class="card border-0 bg-light" data-aos="fade-up">
@@ -450,6 +459,7 @@ include_once 'app/views/shares/header.php';
                 </div>
             </div>
         </div>
+        <?php endif; ?>
     </div>
 </section>
 

@@ -15,11 +15,13 @@ include_once 'app/views/shares/header.php';
                     Tổ chức và quản lý các danh mục sản phẩm một cách hiệu quả
                 </p>
             </div>
+            <?php if (SessionHelper::isAdmin()): ?>
             <div class="col-lg-4 text-lg-end" data-aos="fade-left">
                 <a href="/category/create" class="btn btn-primary btn-lg">
                     <i class="fas fa-plus me-2"></i>Thêm Danh Mục
                 </a>
             </div>
+            <?php endif; ?>
         </div>
 
         <!-- Statistics Cards -->
@@ -80,6 +82,7 @@ include_once 'app/views/shares/header.php';
                     <option value="name-desc">Tên Z-A</option>
                 </select>
             </div>
+            <?php if (SessionHelper::isAdmin()): ?>
             <div class="col-lg-3">
                 <div class="btn-group w-100" role="group">
                     <button type="button" class="btn btn-outline-secondary active" id="gridView">
@@ -93,6 +96,7 @@ include_once 'app/views/shares/header.php';
                     </button>
                 </div>
             </div>
+            <?php endif; ?>
         </div>
 
         <!-- Categories Display -->
@@ -108,6 +112,7 @@ include_once 'app/views/shares/header.php';
                                             <i class="fas fa-folder-open me-2"></i>
                                             <?= htmlspecialchars($category->name) ?>
                                         </h5>
+                                        <?php if (SessionHelper::isAdmin()): ?>
                                         <div class="dropdown">
                                             <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                                 <i class="fas fa-cog"></i>
@@ -131,6 +136,7 @@ include_once 'app/views/shares/header.php';
                                                 </li>
                                             </ul>
                                         </div>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="position-absolute top-0 start-0 m-2">
                                         <span class="badge bg-light text-dark">ID: <?= $category->id ?></span>
@@ -178,12 +184,14 @@ include_once 'app/views/shares/header.php';
                                         <a href="/category/show/<?= $category->id ?>" class="btn btn-outline-primary">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        <?php if (SessionHelper::isAdmin()): ?>
                                         <a href="/category/edit/<?= $category->id ?>" class="btn btn-outline-warning flex-grow-1">
                                             <i class="fas fa-edit me-1"></i>Chỉnh Sửa
                                         </a>
                                         <button class="btn btn-outline-danger" onclick="deleteCategory(<?= $category->id ?>)">
                                             <i class="fas fa-trash"></i>
                                         </button>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
