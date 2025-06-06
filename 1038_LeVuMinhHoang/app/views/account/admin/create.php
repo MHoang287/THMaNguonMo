@@ -1,46 +1,71 @@
 <?php
-$pageTitle = "Đăng Ký Tài Khoản";
+$pageTitle = "Thêm Người Dùng";
 require_once 'app/views/shares/header.php';
 ?>
 
-<div class="min-vh-100 d-flex align-items-center py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 col-md-10">
-                <div class="card shadow-lg border-0" data-aos="fade-up">
-                    <div class="card-body p-5">
-                        <div class="text-center mb-4">
-                            <div class="feature-icon mx-auto mb-3">
-                                <i class="fas fa-user-plus"></i>
-                            </div>
-                            <h2 class="fw-bold text-dark">Đăng Ký Tài Khoản</h2>
-                            <p class="text-muted">Tạo tài khoản để trải nghiệm mua sắm tuyệt vời</p>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4" data-aos="fade-right">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/account/admin" class="text-decoration-none">
+                            <i class="fas fa-users me-1"></i>Quản Lý Người Dùng
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">Thêm Người Dùng</li>
+                </ol>
+            </nav>
+
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-up">
+                <div>
+                    <h2 class="text-dark fw-bold mb-1">
+                        <i class="fas fa-user-plus text-primary me-2"></i>Thêm Người Dùng Mới
+                    </h2>
+                    <p class="text-muted mb-0">Tạo tài khoản mới cho người dùng trong hệ thống</p>
+                </div>
+                <a href="/account/admin" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Quay Lại
+                </a>
+            </div>
+
+            <!-- Form Card -->
+            <div class="card border-0 shadow-lg" data-aos="fade-up">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-edit me-2"></i>Thông Tin Người Dùng
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <?php if (isset($errors) && count($errors) > 0): ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Có lỗi xảy ra:</strong>
+                            <ul class="mb-0 mt-2">
+                                <?php foreach ($errors as $error): ?>
+                                    <li><?= htmlspecialchars($error) ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
+                    <?php endif; ?>
 
-                        <?php if (isset($errors) && count($errors) > 0): ?>
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                <strong>Có lỗi xảy ra:</strong>
-                                <ul class="mb-0 mt-2">
-                                    <?php foreach ($errors as $error): ?>
-                                        <li><?= htmlspecialchars($error) ?></li>
-                                    <?php endforeach; ?>
-                                </ul>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        <?php endif; ?>
+                    <form action="/account/store" method="POST" id="createUserForm" enctype="multipart/form-data">
+                        <div class="row">
+                            <!-- Basic Information -->
+                            <div class="col-md-6">
+                                <h6 class="text-primary fw-bold mb-3">
+                                    <i class="fas fa-user me-2"></i>Thông Tin Cơ Bản
+                                </h6>
 
-                        <form action="/account/save" method="POST" id="registerForm" novalidate enctype="multipart/form-data">
-                            <!-- Hidden role field - default to user -->
-                            <input type="hidden" name="role" value="user">
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
+                                <div class="mb-3">
                                     <label for="username" class="form-label fw-semibold">
-                                        <i class="fas fa-user me-2 text-primary"></i>Tên đăng nhập <span class="text-danger">*</span>
+                                        Tên đăng nhập <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" 
-                                           class="form-control form-control-lg <?= isset($errors['username']) ? 'is-invalid' : '' ?>" 
+                                           class="form-control <?= isset($errors['username']) ? 'is-invalid' : '' ?>" 
                                            id="username" 
                                            name="username" 
                                            value="<?= isset($_POST['username']) ? htmlspecialchars($_POST['username']) : '' ?>"
@@ -51,17 +76,15 @@ require_once 'app/views/shares/header.php';
                                             <?= htmlspecialchars($errors['username']) ?>
                                         </div>
                                     <?php endif; ?>
-                                    <div class="form-text">
-                                        <small class="text-muted">3-20 ký tự, chỉ chứa chữ cái, số và dấu gạch dưới</small>
-                                    </div>
+                                    <div class="form-text">3-20 ký tự, chỉ chứa chữ cái, số và dấu gạch dưới</div>
                                 </div>
 
-                                <div class="col-md-6 mb-3">
+                                <div class="mb-3">
                                     <label for="fullname" class="form-label fw-semibold">
-                                        <i class="fas fa-id-card me-2 text-primary"></i>Họ và tên <span class="text-danger">*</span>
+                                        Họ và tên <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" 
-                                           class="form-control form-control-lg <?= isset($errors['fullname']) ? 'is-invalid' : '' ?>" 
+                                           class="form-control <?= isset($errors['fullname']) ? 'is-invalid' : '' ?>" 
                                            id="fullname" 
                                            name="fullname" 
                                            value="<?= isset($_POST['fullname']) ? htmlspecialchars($_POST['fullname']) : '' ?>"
@@ -73,15 +96,59 @@ require_once 'app/views/shares/header.php';
                                         </div>
                                     <?php endif; ?>
                                 </div>
+
+                                <div class="mb-3">
+                                    <label for="role" class="form-label fw-semibold">
+                                        Vai trò <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select <?= isset($errors['role']) ? 'is-invalid' : '' ?>" 
+                                            id="role" name="role" required>
+                                        <option value="">Chọn vai trò</option>
+                                        <option value="user" <?= (isset($_POST['role']) && $_POST['role'] === 'user') ? 'selected' : '' ?>>
+                                            Người dùng
+                                        </option>
+                                        <option value="admin" <?= (isset($_POST['role']) && $_POST['role'] === 'admin') ? 'selected' : '' ?>>
+                                            Quản trị viên
+                                        </option>
+                                    </select>
+                                    <?php if (isset($errors['role'])): ?>
+                                        <div class="invalid-feedback">
+                                            <?= htmlspecialchars($errors['role']) ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="avatar" class="form-label fw-semibold">Ảnh đại diện</label>
+                                    <input type="file" 
+                                           class="form-control <?= isset($errors['avatar']) ? 'is-invalid' : '' ?>" 
+                                           id="avatar" 
+                                           name="avatar" 
+                                           accept="image/*">
+                                    <?php if (isset($errors['avatar'])): ?>
+                                        <div class="invalid-feedback">
+                                            <?= htmlspecialchars($errors['avatar']) ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    <div class="form-text">Chọn file ảnh (JPG, PNG, GIF) không quá 2MB</div>
+                                    
+                                    <!-- Preview area -->
+                                    <div id="avatarPreview" class="mt-3" style="display: none;">
+                                        <img id="previewImage" src="" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="phone" class="form-label fw-semibold">
-                                        <i class="fas fa-phone me-2 text-primary"></i>Số điện thoại
-                                    </label>
+                            <!-- Contact Information -->
+                            <div class="col-md-6">
+                                <h6 class="text-primary fw-bold mb-3">
+                                    <i class="fas fa-address-book me-2"></i>Thông Tin Liên Hệ
+                                </h6>
+
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label fw-semibold">Số điện thoại</label>
                                     <input type="tel" 
-                                           class="form-control form-control-lg <?= isset($errors['phone']) ? 'is-invalid' : '' ?>" 
+                                           class="form-control <?= isset($errors['phone']) ? 'is-invalid' : '' ?>" 
                                            id="phone" 
                                            name="phone" 
                                            value="<?= isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : '' ?>"
@@ -93,12 +160,10 @@ require_once 'app/views/shares/header.php';
                                     <?php endif; ?>
                                 </div>
 
-                                <div class="col-md-6 mb-3">
-                                    <label for="email" class="form-label fw-semibold">
-                                        <i class="fas fa-envelope me-2 text-primary"></i>Email
-                                    </label>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label fw-semibold">Email</label>
                                     <input type="email" 
-                                           class="form-control form-control-lg <?= isset($errors['email']) ? 'is-invalid' : '' ?>" 
+                                           class="form-control <?= isset($errors['email']) ? 'is-invalid' : '' ?>" 
                                            id="email" 
                                            name="email" 
                                            value="<?= isset($_POST['email']) ? htmlspecialchars($_POST['email']) : '' ?>"
@@ -109,39 +174,18 @@ require_once 'app/views/shares/header.php';
                                         </div>
                                     <?php endif; ?>
                                 </div>
-                            </div>
 
-                            <div class="mb-3">
-                                <label for="avatar" class="form-label fw-semibold">
-                                    <i class="fas fa-camera me-2 text-primary"></i>Ảnh đại diện
-                                </label>
-                                <input type="file" 
-                                       class="form-control form-control-lg <?= isset($errors['avatar']) ? 'is-invalid' : '' ?>" 
-                                       id="avatar" 
-                                       name="avatar" 
-                                       accept="image/*">
-                                <?php if (isset($errors['avatar'])): ?>
-                                    <div class="invalid-feedback">
-                                        <?= htmlspecialchars($errors['avatar']) ?>
-                                    </div>
-                                <?php endif; ?>
-                                <div class="form-text">
-                                    <small class="text-muted">Chọn file ảnh (JPG, PNG, GIF) không quá 2MB</small>
-                                </div>
-                                <!-- Preview area -->
-                                <div id="avatarPreview" class="mt-2" style="display: none;">
-                                    <img id="previewImage" src="" class="img-thumbnail" style="max-width: 150px; max-height: 150px;">
-                                </div>
-                            </div>
+                                <h6 class="text-primary fw-bold mb-3 mt-4">
+                                    <i class="fas fa-lock me-2"></i>Mật Khẩu
+                                </h6>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
+                                <div class="mb-3">
                                     <label for="password" class="form-label fw-semibold">
-                                        <i class="fas fa-lock me-2 text-primary"></i>Mật khẩu <span class="text-danger">*</span>
+                                        Mật khẩu <span class="text-danger">*</span>
                                     </label>
                                     <div class="input-group">
                                         <input type="password" 
-                                               class="form-control form-control-lg <?= isset($errors['password']) ? 'is-invalid' : '' ?>" 
+                                               class="form-control <?= isset($errors['password']) ? 'is-invalid' : '' ?>" 
                                                id="password" 
                                                name="password" 
                                                placeholder="Nhập mật khẩu" 
@@ -155,18 +199,16 @@ require_once 'app/views/shares/header.php';
                                             </div>
                                         <?php endif; ?>
                                     </div>
-                                    <div class="form-text">
-                                        <small class="text-muted">Mật khẩu phải có ít nhất 6 ký tự</small>
-                                    </div>
+                                    <div class="form-text">Mật khẩu phải có ít nhất 6 ký tự</div>
                                 </div>
 
-                                <div class="col-md-6 mb-3">
+                                <div class="mb-3">
                                     <label for="confirmpassword" class="form-label fw-semibold">
-                                        <i class="fas fa-lock me-2 text-primary"></i>Xác nhận mật khẩu <span class="text-danger">*</span>
+                                        Xác nhận mật khẩu <span class="text-danger">*</span>
                                     </label>
                                     <div class="input-group">
                                         <input type="password" 
-                                               class="form-control form-control-lg <?= isset($errors['confirmPass']) ? 'is-invalid' : '' ?>" 
+                                               class="form-control <?= isset($errors['confirmPass']) ? 'is-invalid' : '' ?>" 
                                                id="confirmpassword" 
                                                name="confirmpassword" 
                                                placeholder="Nhập lại mật khẩu" 
@@ -182,64 +224,20 @@ require_once 'app/views/shares/header.php';
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="mb-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="agreeTerms" required>
-                                    <label class="form-check-label" for="agreeTerms">
-                                        Tôi đồng ý với <a href="#" class="text-primary">Điều khoản dịch vụ</a> 
-                                        và <a href="#" class="text-primary">Chính sách bảo mật</a>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="d-grid mb-3">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="fas fa-user-plus me-2"></i>Đăng Ký Tài Khoản
-                                </button>
-                            </div>
-
-                            <div class="text-center">
-                                <p class="text-muted">
-                                    Đã có tài khoản? 
-                                    <a href="/account/login" class="text-primary text-decoration-none fw-semibold">
-                                        Đăng nhập ngay
-                                    </a>
-                                </p>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Additional Info Cards -->
-                <div class="row mt-4">
-                    <div class="col-md-4 mb-3" data-aos="fade-up" data-aos-delay="100">
-                        <div class="card bg-transparent border-0 text-white text-center">
-                            <div class="card-body">
-                                <i class="fas fa-shield-alt fa-2x mb-2 text-warning"></i>
-                                <h6>Bảo mật cao</h6>
-                                <small>Thông tin được mã hóa an toàn</small>
-                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4 mb-3" data-aos="fade-up" data-aos-delay="200">
-                        <div class="card bg-transparent border-0 text-white text-center">
-                            <div class="card-body">
-                                <i class="fas fa-gift fa-2x mb-2 text-success"></i>
-                                <h6>Ưu đãi đặc biệt</h6>
-                                <small>Nhận ngay voucher 100K</small>
-                            </div>
+
+                        <hr class="my-4">
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="/account/admin" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-times me-2"></i>Hủy
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save me-2"></i>Tạo Tài Khoản
+                            </button>
                         </div>
-                    </div>
-                    <div class="col-md-4 mb-3" data-aos="fade-up" data-aos-delay="300">
-                        <div class="card bg-transparent border-0 text-white text-center">
-                            <div class="card-body">
-                                <i class="fas fa-headset fa-2x mb-2 text-info"></i>
-                                <h6>Hỗ trợ 24/7</h6>
-                                <small>Luôn sẵn sàng hỗ trợ bạn</small>
-                            </div>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -306,13 +304,21 @@ $(document).ready(function() {
         }
     });
 
+    // Initialize Choices.js for role select
+    if (typeof Choices !== 'undefined') {
+        const roleSelect = new Choices('#role', {
+            searchEnabled: false,
+            itemSelectText: 'Chọn vai trò'
+        });
+    }
+
     // Form validation
-    $('#registerForm').on('submit', function(e) {
+    $('#createUserForm').on('submit', function(e) {
         const password = $('#password').val();
         const confirmPassword = $('#confirmpassword').val();
-        const agreeTerms = $('#agreeTerms').is(':checked');
         const username = $('#username').val().trim();
         const fullname = $('#fullname').val().trim();
+        const role = $('#role').val();
 
         // Validate required fields
         if (!username) {
@@ -337,12 +343,13 @@ $(document).ready(function() {
             return;
         }
 
-        if (!agreeTerms) {
+        if (!role) {
             e.preventDefault();
+            $('#role').addClass('is-invalid');
             Swal.fire({
-                icon: 'warning',
-                title: 'Thông báo',
-                text: 'Bạn cần đồng ý với điều khoản dịch vụ để tiếp tục!'
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Vui lòng chọn vai trò!'
             });
             return;
         }
@@ -397,7 +404,7 @@ $(document).ready(function() {
     });
 
     // Remove validation classes on input
-    $('#username, #fullname, #password, #phone, #email').on('input', function() {
+    $('#username, #fullname, #password, #phone, #email, #role').on('input change', function() {
         $(this).removeClass('is-invalid is-valid');
     });
 

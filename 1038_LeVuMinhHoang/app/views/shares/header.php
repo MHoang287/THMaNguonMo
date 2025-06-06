@@ -66,7 +66,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" /></pattern></defs></svg>');
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)" /></svg>');
             opacity: 0.5;
         }
         
@@ -301,19 +301,19 @@
                             <i class="fas fa-laptop me-1"></i>Sản Phẩm
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/Product"><i class="fas fa-list me-2"></i>Tất Cả Sản Phẩm</a></li>
-                            <li><a class="dropdown-item" href="/Product/featured"><i class="fas fa-star me-2"></i>Sản Phẩm Nổi Bật</a></li>
-                            <li><a class="dropdown-item" href="/Product/sale"><i class="fas fa-fire me-2"></i>Khuyến Mại</a></li>
+                            <li><a class="dropdown-item" href="/product"><i class="fas fa-list me-2"></i>Tất Cả Sản Phẩm</a></li>
+                            <li><a class="dropdown-item" href="/product/featured"><i class="fas fa-star me-2"></i>Sản Phẩm Nổi Bật</a></li>
+                            <li><a class="dropdown-item" href="/product/sale"><i class="fas fa-fire me-2"></i>Khuyến Mại</a></li>
                             
                             <?php if ($isAdmin): ?>
                                 <li><hr class="dropdown-divider"></li>
                                 <li class="admin-only">
-                                    <a class="dropdown-item" href="/Product/add">
+                                    <a class="dropdown-item" href="/product/add">
                                         <i class="fas fa-plus me-2 text-danger"></i>Thêm Sản Phẩm
                                     </a>
                                 </li>
                                 <li class="admin-only">
-                                    <a class="dropdown-item" href="/Product/manage">
+                                    <a class="dropdown-item" href="/product/manage">
                                         <i class="fas fa-cogs me-2 text-danger"></i>Quản Lý Sản Phẩm
                                     </a>
                                 </li>
@@ -357,26 +357,31 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="admin-only">
-                                    <a class="dropdown-item" href="/admin/dashboard">
-                                        <i class="fas fa-tachometer-alt me-2 text-danger"></i>Bảng Điều Khiển
-                                    </a>
-                                </li>
-                                <li class="admin-only">
-                                    <a class="dropdown-item" href="/admin/users">
+                                    <a class="dropdown-item" href="/account/admin">
                                         <i class="fas fa-users me-2 text-danger"></i>Quản Lý Người Dùng
                                     </a>
                                 </li>
                                 <li class="admin-only">
-                                    <a class="dropdown-item" href="/admin/orders">
+                                    <a class="dropdown-item" href="/product/admin">
+                                        <i class="fas fa-boxes me-2 text-danger"></i>Quản Lý Sản Phẩm
+                                    </a>
+                                </li>
+                                <li class="admin-only">
+                                    <a class="dropdown-item" href="/category/admin">
+                                        <i class="fas fa-tags me-2 text-danger"></i>Quản Lý Danh Mục
+                                    </a>
+                                </li>
+                                <li class="admin-only">
+                                    <a class="dropdown-item" href="/order/admin">
                                         <i class="fas fa-shopping-bag me-2 text-danger"></i>Quản Lý Đơn Hàng
                                     </a>
                                 </li>
+                                <li><hr class="dropdown-divider"></li>
                                 <li class="admin-only">
                                     <a class="dropdown-item" href="/admin/statistics">
                                         <i class="fas fa-chart-bar me-2 text-danger"></i>Thống Kê
                                     </a>
                                 </li>
-                                <li><hr class="dropdown-divider"></li>
                                 <li class="admin-only">
                                     <a class="dropdown-item" href="/admin/settings">
                                         <i class="fas fa-cog me-2 text-danger"></i>Cài Đặt Hệ Thống
@@ -412,7 +417,7 @@
                     </div>
                     
                     <!-- Shopping cart -->
-                    <a href="/Product/cart" class="btn btn-outline-primary position-relative me-3" title="Giỏ hàng">
+                    <a href="/product/cart" class="btn btn-outline-primary position-relative me-3" title="Giỏ hàng">
                         <i class="fas fa-shopping-cart"></i>
                         <span class="cart-badge" id="cartCount">
                             <?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>
@@ -459,9 +464,16 @@
                         <!-- User menu -->
                         <div class="dropdown">
                             <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown">
-                                <div class="user-avatar me-2">
-                                    <?= strtoupper(substr($username, 0, 1)) ?>
-                                </div>
+                                <?php if (isset($_SESSION['avatar']) && $_SESSION['avatar'] && file_exists($_SESSION['avatar'])): ?>
+                                    <img src="/<?= htmlspecialchars($_SESSION['avatar']) ?>" 
+                                         class="rounded-circle me-2" 
+                                         style="width: 35px; height: 35px; object-fit: cover;" 
+                                         alt="Avatar">
+                                <?php else: ?>
+                                    <div class="user-avatar me-2">
+                                        <?= strtoupper(substr($username, 0, 1)) ?>
+                                    </div>
+                                <?php endif; ?>
                                 <div class="d-none d-md-block text-start">
                                     <small class="text-muted d-block">Xin chào</small>
                                     <span class="fw-semibold">
@@ -483,24 +495,19 @@
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="/account/profile"><i class="fas fa-user-circle me-2"></i>Thông Tin Tài Khoản</a></li>
-                                <li><a class="dropdown-item" href="/account/orders"><i class="fas fa-shopping-bag me-2"></i>Đơn Hàng Của Tôi</a></li>
+                                <li><a class="dropdown-item" href="/order/my-orders"><i class="fas fa-shopping-bag me-2"></i>Đơn Hàng Của Tôi</a></li>
                                 <li><a class="dropdown-item" href="/account/wishlist"><i class="fas fa-heart me-2"></i>Sản Phẩm Yêu Thích</a></li>
                                 <li><a class="dropdown-item" href="/account/addresses"><i class="fas fa-map-marker-alt me-2"></i>Địa Chỉ Giao Hàng</a></li>
                                 
                                 <?php if ($isAdmin): ?>
                                     <li><hr class="dropdown-divider"></li>
                                     <li class="admin-only">
-                                        <a class="dropdown-item" href="/admin/dashboard">
-                                            <i class="fas fa-tachometer-alt me-2 text-danger"></i>Bảng Điều Khiển
-                                        </a>
-                                    </li>
-                                    <li class="admin-only">
-                                        <a class="dropdown-item" href="/admin/users">
+                                        <a class="dropdown-item" href="/account/admin">
                                             <i class="fas fa-users me-2 text-danger"></i>Quản Lý Người Dùng
                                         </a>
                                     </li>
                                     <li class="admin-only">
-                                        <a class="dropdown-item" href="/admin/reports">
+                                        <a class="dropdown-item" href="/admin/statistics">
                                             <i class="fas fa-chart-line me-2 text-danger"></i>Báo Cáo
                                         </a>
                                     </li>
@@ -546,6 +553,14 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['message'])): ?>
+        <div class="alert alert-info alert-dismissible fade show m-0" role="alert">
+            <i class="fas fa-info-circle me-2"></i><?= $_SESSION['message'] ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <?php unset($_SESSION['message']); ?>
     <?php endif; ?>
 
     <?php if (isset($_SESSION['errors'])): ?>
@@ -655,7 +670,7 @@
             $('#searchBtn').click(function() {
                 const searchTerm = $('#searchInput').val().trim();
                 if (searchTerm) {
-                    window.location.href = `/Product/search?q=${encodeURIComponent(searchTerm)}`;
+                    window.location.href = `/product/search?q=${encodeURIComponent(searchTerm)}`;
                 }
             });
 
@@ -726,7 +741,7 @@
 
         // Cart functions
         function updateCartCount() {
-            fetch('/Product/getCartInfo', {
+            fetch('/product/getCartInfo', {
                 method: 'GET',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -745,7 +760,7 @@
 
         // Add to cart function
         function addToCart(productId) {
-            fetch(`/Product/addToCart/${productId}`, {
+            fetch(`/product/addToCart/${productId}`, {
                 method: 'POST',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'

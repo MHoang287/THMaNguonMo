@@ -19,7 +19,6 @@ class AccountController {
 
     // Kiểm tra quyền admin
     private function checkAdminAuth() {
-        session_start();
         if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
             header('Location: /account/login');
             exit;
