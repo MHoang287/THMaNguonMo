@@ -1,6 +1,28 @@
 <?php 
 $pageTitle = htmlspecialchars($product->name);
 include_once 'app/views/shares/header.php'; 
+
+// Function để xử lý đường dẫn hình ảnh
+function getImageUrl($imagePath) {
+    if (empty($imagePath)) {
+        return 'https://via.placeholder.com/600x500/f8f9fa/6c757d?text=No+Image';
+    }
+    
+    // Nếu đường dẫn bắt đầu bằng http hoặc https
+    if (strpos($imagePath, 'http') === 0) {
+        return $imagePath;
+    }
+    
+    // Nếu đường dẫn bắt đầu bằng uploads/
+    if (strpos($imagePath, 'uploads/') === 0) {
+        return '/' . $imagePath;
+    }
+    
+    // Nếu đường dẫn không có uploads/
+    return '/uploads/' . $imagePath;
+}
+
+$imageUrl = getImageUrl($product->image);
 ?>
 
 <section class="py-5">
@@ -18,35 +40,46 @@ include_once 'app/views/shares/header.php';
             <!-- Product Image -->
             <div class="col-lg-6 mb-4" data-aos="fade-right">
                 <div class="product-image-container">
-                    <img src="<?= !empty($product->image) ? $product->image : 'https://via.placeholder.com/600x500/f8f9fa/6c757d?text=No+Image' ?>" 
-                         class="img-fluid rounded-3 shadow glightbox" 
+                    <img src="<?= $imageUrl ?>" 
+                         class="img-fluid rounded-3 shadow glightbox main-product-image" 
                          alt="<?= htmlspecialchars($product->name) ?>"
-                         data-gallery="product-gallery">
+                         data-gallery="product-gallery"
+                         onerror="this.src='https://via.placeholder.com/600x500/f8f9fa/6c757d?text=No+Image'">
                 </div>
                 
                 <!-- Thumbnail Gallery -->
                 <div class="row mt-3">
                     <div class="col-3">
-                        <img src="<?= !empty($product->image) ? $product->image : 'https://via.placeholder.com/150x120/f8f9fa/6c757d?text=1' ?>" 
-                             class="img-fluid rounded-2 border" alt="Thumbnail 1">
+                        <img src="<?= $imageUrl ?>" 
+                             class="img-fluid rounded-2 border thumbnail-img" 
+                             alt="Thumbnail 1"
+                             onclick="changeMainImage(this.src)"
+                             onerror="this.src='https://via.placeholder.com/150x120/f8f9fa/6c757d?text=1'">
                     </div>
                     <div class="col-3">
                         <img src="https://via.placeholder.com/150x120/e9ecef/6c757d?text=2" 
-                             class="img-fluid rounded-2 border" alt="Thumbnail 2">
+                             class="img-fluid rounded-2 border thumbnail-img" 
+                             alt="Thumbnail 2"
+                             onclick="changeMainImage(this.src)">
                     </div>
                     <div class="col-3">
                         <img src="https://via.placeholder.com/150x120/e9ecef/6c757d?text=3" 
-                             class="img-fluid rounded-2 border" alt="Thumbnail 3">
+                             class="img-fluid rounded-2 border thumbnail-img" 
+                             alt="Thumbnail 3"
+                             onclick="changeMainImage(this.src)">
                     </div>
                     <div class="col-3">
                         <img src="https://via.placeholder.com/150x120/e9ecef/6c757d?text=4" 
-                             class="img-fluid rounded-2 border" alt="Thumbnail 4">
+                             class="img-fluid rounded-2 border thumbnail-img" 
+                             alt="Thumbnail 4"
+                             onclick="changeMainImage(this.src)">
                     </div>
                 </div>
             </div>
 
             <!-- Product Details -->
             <div class="col-lg-6" data-aos="fade-left">
+                <!-- Phần còn lại giữ nguyên -->
                 <div class="product-details">
                     <div class="mb-3">
                         <span class="badge bg-primary fs-6"><?= htmlspecialchars($product->category_name ?? 'Chưa phân loại') ?></span>
@@ -177,7 +210,7 @@ include_once 'app/views/shares/header.php';
                             <div class="tab-pane fade show active" id="description" role="tabpanel">
                                 <h5 class="mb-3">Mô Tả Sản Phẩm</h5>
                                 <p class="lead"><?= nl2br(htmlspecialchars($product->description)) ?></p>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
                             </div>
                             <div class="tab-pane fade" id="specifications" role="tabpanel">
                                 <h5 class="mb-3">Thông Số Kỹ Thuật</h5>
@@ -232,6 +265,23 @@ include_once 'app/views/shares/header.php';
     </div>
 </section>
 
+<style>
+.thumbnail-img {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.thumbnail-img:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+}
+
+.main-product-image {
+    max-height: 500px;
+    object-fit: cover;
+}
+</style>
+
 <script>
 function increaseQuantity() {
     const qty = document.getElementById('quantity');
@@ -243,6 +293,10 @@ function decreaseQuantity() {
     if (parseInt(qty.value) > 1) {
         qty.value = parseInt(qty.value) - 1;
     }
+}
+
+function changeMainImage(src) {
+    document.querySelector('.main-product-image').src = src;
 }
 
 function deleteProduct(id) {
@@ -262,10 +316,10 @@ function deleteProduct(id) {
     });
 }
 
-// Thumbnail click handlers
-document.querySelectorAll('.row img').forEach(img => {
+// Thumbnail click handlers - Cập nhật để sử dụng function mới
+document.querySelectorAll('.thumbnail-img').forEach(img => {
     img.addEventListener('click', function() {
-        document.querySelector('.product-image-container img').src = this.src;
+        changeMainImage(this.src);
     });
 });
 </script>

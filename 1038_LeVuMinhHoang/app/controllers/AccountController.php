@@ -27,7 +27,6 @@ class AccountController {
 
     // Kiểm tra đăng nhập
     private function checkAuth() {
-        session_start();
         if (!isset($_SESSION['username'])) {
             header('Location: /account/login');
             exit;

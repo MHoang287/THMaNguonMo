@@ -533,6 +533,42 @@ $currentPage = max(1, (int)($_GET['page'] ?? 1));
         margin-bottom: 1rem;
     }
 }
+
+/* Thêm vào CSS của bạn */
+#quickViewModal .modal-dialog {
+    max-width: 900px;
+}
+
+#quickViewModal .modal-body {
+    padding: 1.5rem;
+}
+
+.quick-view-image {
+    transition: transform 0.3s ease;
+}
+
+.quick-view-image:hover {
+    transform: scale(1.05);
+}
+
+.stars {
+    font-size: 0.9rem;
+}
+
+.price-section h3 {
+    font-size: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    #quickViewModal .modal-dialog {
+        max-width: 95%;
+        margin: 1rem;
+    }
+    
+    #quickViewModal .modal-body {
+        padding: 1rem;
+    }
+}
 </style>
 
 <script>
@@ -679,36 +715,48 @@ function addToCartQuick(productId) {
     });
 }
 
-// Show product modal
+// Cập nhật function showProductModal trong list.php
 function showProductModal(productId) {
     const modal = new bootstrap.Modal(document.getElementById('quickViewModal'));
     
     // Reset modal content
     document.getElementById('quickViewContent').innerHTML = `
-        <div class="text-center">
+        <div class="text-center py-5">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Đang tải...</span>
             </div>
+            <div class="mt-2">Đang tải thông tin sản phẩm...</div>
         </div>
     `;
     
     modal.show();
     
-    // Load product details
-    fetch(`/product/show/${productId}?ajax=1`, {
+    // Load product details với endpoint mới
+    fetch(`/product/quickView/${productId}`, {
+        method: 'GET',
         headers: {
             'X-Requested-With': 'XMLHttpRequest'
         }
     })
-    .then(response => response.text())
-    .then(html => {
-        document.getElementById('quickViewContent').innerHTML = html;
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('quickViewContent').innerHTML = data.data.html;
+        } else {
+            document.getElementById('quickViewContent').innerHTML = `
+                <div class="alert alert-danger text-center">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    ${data.message || 'Có lỗi xảy ra khi tải thông tin sản phẩm.'}
+                </div>
+            `;
+        }
     })
     .catch(error => {
+        console.error('Error:', error);
         document.getElementById('quickViewContent').innerHTML = `
-            <div class="alert alert-danger">
+            <div class="alert alert-danger text-center">
                 <i class="fas fa-exclamation-triangle"></i>
-                Có lỗi xảy ra khi tải thông tin sản phẩm.
+                Có lỗi xảy ra khi tải thông tin sản phẩm. Vui lòng thử lại sau.
             </div>
         `;
     });

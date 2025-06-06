@@ -142,7 +142,38 @@ class ProductController {
         $categories = $this->categoryModel->getCategories();
         include 'app/views/product/sale.php';
     }
+    
+    public function quickView($id) {
+        $product = $this->productModel->getProductById($id);
+        
+        if (!$product) {
+            if ($this->isAjaxRequest()) {
+                $this->returnJsonResponse(false, 'Không tìm thấy sản phẩm.');
+                return;
+            }
+            header('Location: /product');
+            exit;
+        }
 
+        // Nếu là AJAX request, trả về HTML content cho modal
+        if ($this->isAjaxRequest()) {
+            ob_start();
+            include 'app/views/product/quickview.php';
+            $html = ob_get_clean();
+            
+            $this->returnJsonResponse(true, 'Product loaded', [
+                'html' => $html,
+                'product' => $product
+            ]);
+            return;
+        }
+        
+        // Nếu không phải AJAX, chuyển hướng đến trang chi tiết
+        header("Location: /product/show/{$id}");
+        exit;
+    }
+
+    // Cập nhật method show để hỗ trợ AJAX
     public function show($id) {
         $product = $this->productModel->getProductById($id);
 
@@ -155,6 +186,20 @@ class ProductController {
                 $relatedProducts = array_filter($relatedProducts, function($p) use ($id) {
                     return $p->id != $id;
                 });
+            }
+
+            // Nếu là AJAX request cho quick view
+            if ($this->isAjaxRequest() && isset($_GET['ajax'])) {
+                ob_start();
+                include 'app/views/product/quickview.php';
+                $html = ob_get_clean();
+                
+                $this->returnJsonResponse(true, 'Product loaded', [
+                    'html' => $html,
+                    'product' => $product,
+                    'related_products' => $relatedProducts
+                ]);
+                return;
             }
 
             include 'app/views/product/show.php';
@@ -276,8 +321,11 @@ class ProductController {
             mkdir($target_dir, 0777, true);
         }
 
-        $target_file = $target_dir . basename($file["name"]);
-        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+        // Tạo tên file unique để tránh trùng lặp
+        $file_extension = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
+        $unique_filename = uniqid() . '_' . time() . '.' . $file_extension;
+        $target_file = $target_dir . $unique_filename;
+        
         $check = getimagesize($file["tmp_name"]);
 
         if ($check === false) {
@@ -288,7 +336,7 @@ class ProductController {
             throw new Exception("Hình ảnh có kích thước quá lớn.");
         }
 
-        if (!in_array($imageFileType, ["jpg", "jpeg", "png", "gif"])) {
+        if (!in_array($file_extension, ["jpg", "jpeg", "png", "gif"])) {
             throw new Exception("Chỉ cho phép các định dạng JPG, JPEG, PNG và GIF.");
         }
         
