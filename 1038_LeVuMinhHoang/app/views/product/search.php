@@ -7,6 +7,26 @@ $searchTerm = $_GET['q'] ?? $_GET['search'] ?? '';
 $selectedCategory = $_GET['category'] ?? '';
 $selectedSort = $_GET['sort'] ?? 'newest';
 $currentPage = max(1, (int)($_GET['page'] ?? 1));
+
+// Helper function to get correct image path
+function getImagePath($imagePath) {
+    if (empty($imagePath)) {
+        return 'https://via.placeholder.com/300x250/f8f9fa/6c757d?text=No+Image';
+    }
+    
+    // If image path already starts with http/https, return as is
+    if (strpos($imagePath, 'http') === 0) {
+        return $imagePath;
+    }
+    
+    // If image path starts with uploads/, add leading slash
+    if (strpos($imagePath, 'uploads/') === 0) {
+        return '/' . $imagePath;
+    }
+    
+    // If no uploads/ prefix, assume it's in uploads folder
+    return '/uploads/' . $imagePath;
+}
 ?>
 
 <!-- Search Hero Section -->
@@ -179,11 +199,15 @@ $currentPage = max(1, (int)($_GET['page'] ?? 1));
                     <div class="col-xl-3 col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="<?= $index * 50 ?>">
                         <div class="card product-card h-100 border-0 shadow-sm">
                             <div class="position-relative overflow-hidden">
-                                <img src="<?= !empty($product->image) ? $product->image : 'https://via.placeholder.com/300x250/f8f9fa/6c757d?text=No+Image' ?>" 
+                                <?php 
+                                $imagePath = getImagePath($product->image);
+                                ?>
+                                <img src="<?= $imagePath ?>" 
                                      class="card-img-top" 
                                      alt="<?= htmlspecialchars($product->name) ?>"
                                      style="height: 250px; object-fit: cover; cursor: pointer;"
-                                     onclick="window.location.href='/product/show/<?= $product->id ?>'">
+                                     onclick="window.location.href='/product/show/<?= $product->id ?>'"
+                                     onerror="this.src='https://via.placeholder.com/300x250/f8f9fa/6c757d?text=<?= urlencode($product->name) ?>'">
                                 
                                 <!-- Highlight search term in product badges -->
                                 <div class="position-absolute top-0 end-0 m-2">
@@ -200,6 +224,16 @@ $currentPage = max(1, (int)($_GET['page'] ?? 1));
                                         </span>
                                     </div>
                                 <?php endif; ?>
+
+                                <!-- Product overlay on hover -->
+                                <div class="product-overlay position-absolute w-100 h-100 d-flex align-items-center justify-content-center">
+                                    <button class="btn btn-light btn-sm me-2" onclick="event.stopPropagation(); window.location.href='/product/show/<?= $product->id ?>'" title="Xem chi tiết">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); addToCartQuick(<?= $product->id ?>)" title="Thêm vào giỏ">
+                                        <i class="fas fa-cart-plus"></i>
+                                    </button>
+                                </div>
                             </div>
                             
                             <div class="card-body d-flex flex-column">
@@ -354,6 +388,20 @@ $currentPage = max(1, (int)($_GET['page'] ?? 1));
     box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
 }
 
+.product-card:hover .product-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+.product-overlay {
+    background: rgba(0,0,0,0.7);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    top: 0;
+    left: 0;
+}
+
 mark {
     background-color: #fff3cd;
     padding: 0.1em 0.2em;
@@ -365,6 +413,26 @@ mark {
     padding: 0.1em 0.2em;
     border-radius: 0.2em;
     font-weight: 600;
+}
+
+/* Image loading animation */
+.card-img-top {
+    transition: opacity 0.3s ease;
+}
+
+.card-img-top[src*="placeholder"] {
+    background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
+                linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
+                linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    animation: slide 2s infinite linear;
+}
+
+@keyframes slide {
+    0% { background-position: 0 0, 0 10px, 10px -10px, -10px 0px; }
+    100% { background-position: 20px 20px, 20px 30px, 30px 10px, 10px 20px; }
 }
 </style>
 
@@ -454,6 +522,19 @@ document.addEventListener('DOMContentLoaded', function() {
     if (searchInput && !searchInput.value) {
         searchInput.focus();
     }
+    
+    // Preload images
+    const images = document.querySelectorAll('.card-img-top');
+    images.forEach(img => {
+        const newImg = new Image();
+        newImg.onload = function() {
+            img.style.opacity = '1';
+        };
+        newImg.onerror = function() {
+            img.src = `https://via.placeholder.com/300x250/f8f9fa/6c757d?text=${encodeURIComponent(img.alt)}`;
+        };
+        newImg.src = img.src;
+    });
 });
 
 <?php

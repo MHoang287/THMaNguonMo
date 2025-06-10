@@ -4,40 +4,57 @@ require_once('app/models/ProductModel.php');
 require_once('app/models/CategoryModel.php');
 require_once('app/helpers/SessionHelper.php');
 
+/**
+ * Controller quản lý sản phẩm
+ * Bao gồm hiển thị, tìm kiếm, thêm/sửa/xóa sản phẩm và quản lý giỏ hàng
+ */
 class ProductController {
     private $productModel;
     private $categoryModel;
     private $db;
     
     public function __construct() {
+        // Khởi tạo kết nối database và các model
         $this->db = (new Database())->getConnection();
         $this->productModel = new ProductModel($this->db);
         $this->categoryModel = new CategoryModel($this->db);
     }
 
-    // Kiểm tra quyền Admin
+    /**
+     * Kiểm tra quyền Admin
+     */
     private function isAdmin() {
         return SessionHelper::isAdmin();
     }
 
+    /**
+     * Hiển thị danh sách sản phẩm với các tính năng:
+     * - Tìm kiếm theo tên/mô tả
+     * - Lọc theo danh mục
+     * - Lọc theo khoảng giá
+     * - Sắp xếp theo nhiều tiêu chí
+     * - Phân trang
+     * - Hỗ trợ AJAX
+     */
     public function index() {
-        // Get filter parameters
+        // Lấy các tham số lọc và tìm kiếm từ URL
         $search = $_GET['search'] ?? '';
         $categoryId = $_GET['category'] ?? '';
         $sortBy = $_GET['sort'] ?? 'newest';
         $minPrice = $_GET['min_price'] ?? '';
         $maxPrice = $_GET['max_price'] ?? '';
         $page = max(1, (int)($_GET['page'] ?? 1));
-        $limit = 12; // Products per page
+        $limit = 12; // Số sản phẩm trên mỗi trang
         $offset = ($page - 1) * $limit;
 
-        // Build options for filtering
+        // Xây dựng options cho việc lọc
         $options = [
             'limit' => $limit,
             'offset' => $offset,
             'sort' => $sortBy
         ];
 
+        // Thêm các điều kiện lọc nếu có
         if (!empty($search)) {
             $options['search'] = $search;
         }
@@ -54,22 +71,22 @@ class ProductController {
             $options['max_price'] = $maxPrice;
         }
 
-        // Get products and pagination info
+        // Lấy dữ liệu sản phẩm và thông tin phân trang
         $products = $this->productModel->getProducts($options);
         $totalProducts = $this->productModel->getTotalProducts($options);
         $totalPages = ceil($totalProducts / $limit);
 
-        // Get categories for filter dropdown
+        // Lấy danh mục cho dropdown lọc
         $categories = $this->categoryModel->getCategories();
 
-        // Get price range for filter
+        // Lấy khoảng giá để hiển thị trong filter
         $priceRange = $this->productModel->getPriceRange();
 
-        // Pagination helper
+        // Thông tin phân trang
         require_once 'app/helpers/PaginationHelper.php';
         $paginationInfo = PaginationHelper::getPaginationInfo($page, $totalPages, $totalProducts, $limit);
 
-        // If AJAX request, return JSON
+        // Nếu là AJAX request, trả về JSON
         if ($this->isAjaxRequest()) {
             $this->returnJsonResponse(true, 'Products loaded', [
                 'products' => $products,
@@ -88,10 +105,17 @@ class ProductController {
         include 'app/views/product/list.php';
     }
 
+    /**
+     * Alias cho index() - hiển thị danh sách sản phẩm
+     */
     public function list() {
         return $this->index();
     }
 
+    /**
+     * Tìm kiếm sản phẩm
+     * Tương tự index() nhưng tập trung vào chức năng search
+     */
     public function search() {
         $searchTerm = $_GET['q'] ?? '';
         $categoryId = $_GET['category'] ?? '';
@@ -120,20 +144,26 @@ class ProductController {
         $categories = $this->categoryModel->getCategories();
         $priceRange = $this->productModel->getPriceRange();
 
-        // Set search term for display
+        // Set search term để hiển thị trong view
         $_GET['search'] = $searchTerm;
 
         include 'app/views/product/search.php';
     }
 
+    /**
+     * Hiển thị sản phẩm nổi bật
+     */
     public function featured() {
         $products = $this->productModel->getFeaturedProducts(12);
         $categories = $this->categoryModel->getCategories();
         include 'app/views/product/featured.php';
     }
 
+    /**
+     * Hiển thị sản phẩm khuyến mãi
+     */
     public function sale() {
-        // For now, just show all products sorted by price
+        // Hiện tại chỉ hiển thị sản phẩm sắp xếp theo giá
         $options = [
             'sort' => 'price_asc',
             'limit' => 20
@@ -143,6 +173,10 @@ class ProductController {
         include 'app/views/product/sale.php';
     }
     
+    /**
+     * Xem nhanh sản phẩm (Quick View) - hỗ trợ AJAX
+     * @param int $id - ID sản phẩm
+     */
     public function quickView($id) {
         $product = $this->productModel->getProductById($id);
         
@@ -173,16 +207,19 @@ class ProductController {
         exit;
     }
 
-    // Cập nhật method show để hỗ trợ AJAX
+    /**
+     * Hiển thị chi tiết sản phẩm
+     * @param int $id - ID sản phẩm
+     */
     public function show($id) {
         $product = $this->productModel->getProductById($id);
 
         if ($product) {
-            // Get related products from same category
+            // Lấy sản phẩm liên quan từ cùng danh mục
             $relatedProducts = [];
             if ($product->category_id) {
                 $relatedProducts = $this->productModel->getProductsByCategory($product->category_id, 4);
-                // Remove current product from related products
+                // Loại bỏ sản phẩm hiện tại khỏi danh sách liên quan
                 $relatedProducts = array_filter($relatedProducts, function($p) use ($id) {
                     return $p->id != $id;
                 });
@@ -210,6 +247,9 @@ class ProductController {
         }
     }
 
+    /**
+     * Hiển thị form thêm sản phẩm (chỉ admin)
+     */
     public function add() {
         if (!$this->isAdmin()) {
             $_SESSION['error'] = "Bạn không có quyền truy cập chức năng này!";
@@ -220,23 +260,31 @@ class ProductController {
         include_once 'app/views/product/add.php';
     }
 
+    /**
+     * Lưu sản phẩm mới (chỉ admin)
+     */
     public function save() {
         if (!$this->isAdmin()) {
             $_SESSION['error'] = "Bạn không có quyền truy cập chức năng này!";
             header('Location: /product');
             exit;
         }
+        
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Lấy dữ liệu từ form
             $name = $_POST['name'] ?? '';
             $description = $_POST['description'] ?? '';
             $price = $_POST['price'] ?? '';
             $category_id = $_POST['category_id'] ?? null;
 
+            // Xử lý upload hình ảnh
             $image = (isset($_FILES['image']) && $_FILES['image']['error'] == 0) ? $this->uploadImage($_FILES['image']) : "";
 
+            // Thêm sản phẩm vào database
             $result = $this->productModel->addProduct($name, $description, $price, $category_id, $image);
 
             if (is_array($result)) {
+                // Có lỗi validation - hiển thị lại form
                 $errors = $result;
                 $categories = $this->categoryModel->getCategories();
                 include 'app/views/product/add.php';
@@ -248,12 +296,16 @@ class ProductController {
         }
     }
 
+    /**
+     * Hiển thị form chỉnh sửa sản phẩm (chỉ admin)
+     */
     public function edit($id) {
         if (!$this->isAdmin()) {
             $_SESSION['error'] = "Bạn không có quyền truy cập chức năng này!";
             header('Location: /product');
             exit;
         }
+        
         $product = $this->productModel->getProductById($id);
         $categories = $this->categoryModel->getCategories();
         
@@ -266,12 +318,16 @@ class ProductController {
         }
     }
 
+    /**
+     * Cập nhật sản phẩm (chỉ admin)
+     */
     public function update() {
         if (!$this->isAdmin()) {
             $_SESSION['error'] = "Bạn không có quyền truy cập chức năng này!";
             header('Location: /product');
             exit;
         }
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'];
             $name = $_POST['name'];
@@ -279,12 +335,14 @@ class ProductController {
             $price = $_POST['price'];
             $category_id = $_POST['category_id'];
 
+            // Xử lý hình ảnh - giữ hình cũ nếu không upload hình mới
             if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
                 $image = $this->uploadImage($_FILES['image']);
             } else {
                 $image = $_POST['existing_image'];
             } 
 
+            // Cập nhật sản phẩm trong database
             $edit = $this->productModel->updateProduct($id, $name, $description, $price, $category_id, $image);
 
             if ($edit) {
@@ -299,12 +357,16 @@ class ProductController {
         }
     }
 
+    /**
+     * Xóa sản phẩm (chỉ admin)
+     */
     public function delete($id) {
         if (!$this->isAdmin()) {
             $_SESSION['error'] = "Bạn không có quyền truy cập chức năng này!";
             header('Location: /product');
             exit;
         }
+        
         if ($this->productModel->deleteProduct($id)) {
             $_SESSION['success'] = "Xóa sản phẩm thành công!";
         } else {
@@ -314,9 +376,16 @@ class ProductController {
         exit;
     }
 
+    /**
+     * Xử lý upload hình ảnh sản phẩm
+     * @param array $file - File từ $_FILES
+     * @return string - Đường dẫn file đã upload
+     * @throws Exception - Nếu có lỗi trong quá trình upload
+     */
     private function uploadImage($file) {
         $target_dir = "uploads/";
 
+        // Tạo thư mục upload nếu chưa tồn tại
         if (!is_dir($target_dir)) {
             mkdir($target_dir, 0777, true);
         }
@@ -326,20 +395,23 @@ class ProductController {
         $unique_filename = uniqid() . '_' . time() . '.' . $file_extension;
         $target_file = $target_dir . $unique_filename;
         
+        // Kiểm tra file có phải là hình ảnh không
         $check = getimagesize($file["tmp_name"]);
-
         if ($check === false) {
             throw new Exception("File không phải là hình ảnh.");
         }
 
+        // Kiểm tra kích thước file (tối đa 10MB)
         if ($file["size"] > 10 * 1024 * 1024) {
             throw new Exception("Hình ảnh có kích thước quá lớn.");
         }
 
+        // Kiểm tra định dạng file cho phép
         if (!in_array($file_extension, ["jpg", "jpeg", "png", "gif"])) {
             throw new Exception("Chỉ cho phép các định dạng JPG, JPEG, PNG và GIF.");
         }
         
+        // Thực hiện upload
         if (!move_uploaded_file($file["tmp_name"], $target_file)) {
             throw new Exception("Có lỗi xảy ra khi tải lên hình ảnh.");
         }
@@ -347,6 +419,12 @@ class ProductController {
         return $target_file;
     }
 
+    // ========== CHỨC NĂNG GIỎ HÀNG ==========
+
+    /**
+     * Thêm sản phẩm vào giỏ hàng
+     * @param int $id - ID sản phẩm
+     */
     public function addToCart($id)
     {
         $product = $this->productModel->getProductById($id);
@@ -361,10 +439,12 @@ class ProductController {
             return;
         }
 
+        // Khởi tạo giỏ hàng nếu chưa có
         if (!isset($_SESSION['cart'])) {
             $_SESSION['cart'] = [];
         }
 
+        // Thêm sản phẩm vào giỏ hàng hoặc tăng số lượng
         if (isset($_SESSION['cart'][$id])) {
             $_SESSION['cart'][$id]['quantity']++;
         } else {
@@ -376,6 +456,7 @@ class ProductController {
             ];
         }
 
+        // Trả về response cho AJAX
         if ($this->isAjaxRequest()) {
             $cartInfo = $this->calculateCartTotal();
             $this->returnJsonResponse(true, 'Đã thêm sản phẩm vào giỏ hàng.', [
@@ -391,6 +472,9 @@ class ProductController {
         exit;
     }
 
+    /**
+     * Hiển thị giỏ hàng
+     */
     public function cart()
     {
         $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
@@ -415,6 +499,7 @@ class ProductController {
         $productId = $_POST['product_id'] ?? null;
         $quantity = (int)($_POST['quantity'] ?? 0);
 
+        // Validation dữ liệu đầu vào
         if (!$productId || $quantity < 1) {
             if ($this->isAjaxRequest()) {
                 $this->returnJsonResponse(false, 'Dữ liệu không hợp lệ.');
@@ -424,6 +509,7 @@ class ProductController {
             return;
         }
 
+        // Kiểm tra sản phẩm có trong giỏ hàng không
         if (!isset($_SESSION['cart']) || !isset($_SESSION['cart'][$productId])) {
             if ($this->isAjaxRequest()) {
                 $this->returnJsonResponse(false, 'Sản phẩm không có trong giỏ hàng.');
@@ -433,8 +519,8 @@ class ProductController {
             return;
         }
 
-        // Kiểm tra số lượng tối đa (có thể lấy từ database)
-        $maxQuantity = 99; // Hoặc lấy từ product model
+        // Kiểm tra số lượng tối đa
+        $maxQuantity = 99;
         if ($quantity > $maxQuantity) {
             if ($this->isAjaxRequest()) {
                 $this->returnJsonResponse(false, "Số lượng tối đa là {$maxQuantity}.");
@@ -447,6 +533,7 @@ class ProductController {
         // Cập nhật số lượng
         $_SESSION['cart'][$productId]['quantity'] = $quantity;
 
+        // Trả về thông tin cập nhật cho AJAX
         if ($this->isAjaxRequest()) {
             $cartInfo = $this->calculateCartTotal();
             $itemTotal = $_SESSION['cart'][$productId]['price'] * $_SESSION['cart'][$productId]['quantity'];
@@ -538,7 +625,12 @@ class ProductController {
     }
 
     /**
-     * Tính tổng tiền giỏ hàng
+     * Tính tổng tiền giỏ hàng bao gồm:
+     * - Subtotal (tổng tiền hàng)
+     * - Phí vận chuyển
+     * - Thuế VAT
+     * - Giảm giá
+     * - Tổng cuối cùng
      */
     private function calculateCartTotal()
     {
@@ -546,6 +638,7 @@ class ProductController {
         $subtotal = 0;
         $itemCount = 0;
 
+        // Tính tổng tiền hàng
         foreach ($cart as $item) {
             $subtotal += $item['price'] * $item['quantity'];
             $itemCount += $item['quantity'];
@@ -609,6 +702,7 @@ class ProductController {
 
         $cartInfo = $this->calculateCartTotal();
 
+        // Kiểm tra mã có hợp lệ không
         if (!isset($validCoupons[$couponCode])) {
             if ($this->isAjaxRequest()) {
                 $this->returnJsonResponse(false, 'Mã giảm giá không hợp lệ.');
@@ -620,6 +714,7 @@ class ProductController {
 
         $coupon = $validCoupons[$couponCode];
 
+        // Kiểm tra đơn hàng tối thiểu
         if ($cartInfo['subtotal'] < $coupon['min_amount']) {
             $minAmountFormatted = number_format($coupon['min_amount']);
             if ($this->isAjaxRequest()) {
@@ -707,7 +802,7 @@ class ProductController {
     }
 
     /**
-     * Trả về JSON response
+     * Trả về JSON response cho AJAX
      */
     private function returnJsonResponse($success, $message, $data = [])
     {
@@ -720,9 +815,14 @@ class ProductController {
         exit;
     }
 
+    // ========== CHỨC NĂNG THANH TOÁN ==========
+
+    /**
+     * Hiển thị trang thanh toán
+     */
     public function checkout()
     {
-        // Kiểm tra giỏ hàng
+        // Kiểm tra giỏ hàng có sản phẩm không
         if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
             header('Location: /product/cart');
             return;
@@ -732,9 +832,13 @@ class ProductController {
         include 'app/views/product/checkout.php';
     }
 
+    /**
+     * Xử lý đặt hàng
+     */
     public function processCheckout()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Lấy thông tin khách hàng
             $name = $_POST['name'] ?? '';
             $phone = $_POST['phone'] ?? '';
             $address = $_POST['address'] ?? '';
@@ -745,7 +849,7 @@ class ProductController {
                 return;
             }
 
-            // Bắt đầu giao dịch
+            // Bắt đầu transaction để đảm bảo tính toàn vẹn dữ liệu
             $this->db->beginTransaction();
 
             try {
@@ -789,19 +893,22 @@ class ProductController {
                 unset($_SESSION['cart']);
                 unset($_SESSION['applied_coupon']);
 
-                // Commit giao dịch
+                // Commit transaction
                 $this->db->commit();
 
                 // Chuyển hướng đến trang xác nhận đơn hàng
                 header('Location: /product/orderConfirmation');
             } catch (Exception $e) {
-                // Rollback giao dịch nếu có lỗi
+                // Rollback transaction nếu có lỗi
                 $this->db->rollBack();
                 echo "Đã xảy ra lỗi khi xử lý đơn hàng: " . $e->getMessage();
             }
         }
     }
 
+    /**
+     * Hiển thị trang xác nhận đơn hàng
+     */
     public function orderConfirmation()
     {
         include 'app/views/product/orderConfirmation.php';

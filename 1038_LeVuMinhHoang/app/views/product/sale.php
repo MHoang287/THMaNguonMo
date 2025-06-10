@@ -1,6 +1,33 @@
 <?php 
 $pageTitle = "Sản Phẩm Khuyến Mại";
 include_once 'app/views/shares/header.php'; 
+
+// Helper function để xử lý đường dẫn hình ảnh
+function getImageUrl($imagePath) {
+    if (empty($imagePath)) {
+        return 'https://via.placeholder.com/300x250/f8f9fa/6c757d?text=No+Image';
+    }
+    
+    // Kiểm tra nếu là URL đầy đủ
+    if (filter_var($imagePath, FILTER_VALIDATE_URL)) {
+        return $imagePath;
+    }
+    
+    // Xử lý đường dẫn tương đối
+    $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'];
+    
+    // Loại bỏ dấu / ở đầu nếu có
+    $imagePath = ltrim($imagePath, '/');
+    
+    // Kiểm tra file có tồn tại không
+    $fullPath = $_SERVER['DOCUMENT_ROOT'] . '/' . $imagePath;
+    if (file_exists($fullPath)) {
+        return $baseUrl . '/' . $imagePath;
+    }
+    
+    // Nếu không tìm thấy, trả về placeholder
+    return 'https://via.placeholder.com/300x250/f8f9fa/6c757d?text=Image+Not+Found';
+}
 ?>
 
 <!-- Sale Hero Section -->
@@ -71,9 +98,10 @@ include_once 'app/views/shares/header.php';
                         <?php if (!empty($products)): ?>
                             <?php foreach (array_slice($products, 0, 3) as $index => $product): ?>
                                 <div class="sale-product-item" style="animation-delay: <?= $index * 0.2 ?>s">
-                                    <img src="<?= !empty($product->image) ? $product->image : 'https://via.placeholder.com/200x150/f8f9fa/6c757d?text=Sale' ?>" 
+                                    <img src="<?= getImageUrl($product->image) ?>" 
                                          alt="<?= htmlspecialchars($product->name) ?>" 
-                                         class="img-fluid rounded shadow">
+                                         class="img-fluid rounded shadow"
+                                         onerror="this.src='https://via.placeholder.com/200x150/f8f9fa/6c757d?text=<?= urlencode($product->name) ?>'">
                                     <div class="sale-badge">-<?= rand(20, 50) ?>%</div>
                                 </div>
                             <?php endforeach; ?>
@@ -120,7 +148,7 @@ include_once 'app/views/shares/header.php';
                     </div>
                     <h5 class="fw-bold">Điện Thoại</h5>
                     <div class="discount-tag">Giảm đến 35%</div>
-                                        <a href="/product?category=2" class="btn btn-danger btn-sm">Mua Ngay</a>
+                    <a href="/product?category=2" class="btn btn-danger btn-sm">Mua Ngay</a>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
@@ -261,10 +289,11 @@ include_once 'app/views/shares/header.php';
                             <?php endif; ?>
                             
                             <div class="position-relative overflow-hidden">
-                                <img src="<?= !empty($product->image) ? $product->image : 'https://via.placeholder.com/300x250/f8f9fa/6c757d?text=Sale+Product' ?>" 
+                                <img src="<?= getImageUrl($product->image) ?>" 
                                      class="card-img-top sale-product-image" 
                                      alt="<?= htmlspecialchars($product->name) ?>"
-                                     style="height: 250px; object-fit: cover;">
+                                     style="height: 250px; object-fit: cover;"
+                                     onerror="this.src='https://via.placeholder.com/300x250/f8f9fa/6c757d?text=<?= urlencode($product->name) ?>'">
                                 
                                 <!-- Category Badge -->
                                 <div class="position-absolute top-0 end-0 m-3" style="margin-top: 60px !important;">
@@ -734,6 +763,8 @@ include_once 'app/views/shares/header.php';
 
 .sale-product-image {
     transition: transform 0.3s ease;
+    background: #f8f9fa;
+    object-fit: cover;
 }
 
 .sale-product-card:hover .sale-product-image {
@@ -765,6 +796,36 @@ include_once 'app/views/shares/header.php';
     padding: 1rem;
     border-radius: 10px;
     text-align: center;
+}
+
+/* Image loading states */
+.sale-product-image {
+    position: relative;
+}
+
+.sale-product-image::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%, transparent 75%, #f8f9fa 75%, #f8f9fa), 
+                linear-gradient(45deg, #f8f9fa 25%, transparent 25%, transparent 75%, #f8f9fa 75%, #f8f9fa);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+    opacity: 0.1;
+    z-index: -1;
+}
+
+/* Lazy loading for images */
+.sale-product-image[data-src] {
+    opacity: 0.5;
+    transition: opacity 0.3s;
+}
+
+.sale-product-image[data-src].loaded {
+    opacity: 1;
 }
 
 @media (max-width: 768px) {
@@ -809,6 +870,25 @@ $(document).ready(function() {
         
         const discount = $(this).data('discount');
         filterByDiscount(discount);
+    });
+
+    // Lazy loading for images
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                if (img.dataset.src) {
+                    img.src = img.dataset.src;
+                    img.classList.add('loaded');
+                    imageObserver.unobserve(img);
+                }
+            }
+        });
+    });
+
+    // Observe all images with data-src
+    document.querySelectorAll('img[data-src]').forEach(img => {
+        imageObserver.observe(img);
     });
 });
 

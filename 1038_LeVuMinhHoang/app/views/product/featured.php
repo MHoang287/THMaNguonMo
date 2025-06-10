@@ -1,6 +1,33 @@
 <?php 
 $pageTitle = "Sản Phẩm Nổi Bật";
 include_once 'app/views/shares/header.php'; 
+
+// Helper function để xử lý đường dẫn hình ảnh
+function getImageUrl($imagePath) {
+    if (empty($imagePath)) {
+        return 'https://via.placeholder.com/300x250/f8f9fa/6c757d?text=No+Image';
+    }
+    
+    // Kiểm tra nếu là URL đầy đủ
+    if (filter_var($imagePath, FILTER_VALIDATE_URL)) {
+        return $imagePath;
+    }
+    
+    // Xử lý đường dẫn tương đối
+    $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'];
+    
+    // Loại bỏ dấu / ở đầu nếu có
+    $imagePath = ltrim($imagePath, '/');
+    
+    // Kiểm tra file có tồn tại không
+    $fullPath = $_SERVER['DOCUMENT_ROOT'] . '/' . $imagePath;
+    if (file_exists($fullPath)) {
+        return $baseUrl . '/' . $imagePath;
+    }
+    
+    // Nếu không tìm thấy, trả về placeholder
+    return 'https://via.placeholder.com/300x250/f8f9fa/6c757d?text=Image+Not+Found';
+}
 ?>
 
 <!-- Featured Hero Section -->
@@ -60,9 +87,10 @@ include_once 'app/views/shares/header.php';
                                 <?php foreach (array_slice($products, 0, 3) as $product): ?>
                                     <div class="swiper-slide">
                                         <div class="featured-product-card">
-                                            <img src="<?= !empty($product->image) ? $product->image : 'https://via.placeholder.com/400x300/f8f9fa/6c757d?text=Featured+Product' ?>" 
+                                            <img src="<?= getImageUrl($product->image) ?>" 
                                                  alt="<?= htmlspecialchars($product->name) ?>" 
-                                                 class="img-fluid rounded-3 shadow-lg">
+                                                 class="img-fluid rounded-3 shadow-lg"
+                                                 onerror="this.src='https://via.placeholder.com/400x300/f8f9fa/6c757d?text=<?= urlencode($product->name) ?>'">
                                             <div class="featured-overlay">
                                                 <h5 class="text-white fw-bold"><?= htmlspecialchars($product->name) ?></h5>
                                                 <p class="text-warning fs-4 fw-bold"><?= number_format($product->price) ?> đ</p>
@@ -182,10 +210,11 @@ include_once 'app/views/shares/header.php';
                             </div>
                             
                             <div class="position-relative overflow-hidden">
-                                <img src="<?= !empty($product->image) ? $product->image : 'https://via.placeholder.com/300x250/f8f9fa/6c757d?text=Featured+Product' ?>" 
+                                <img src="<?= getImageUrl($product->image) ?>" 
                                      class="card-img-top product-image" 
                                      alt="<?= htmlspecialchars($product->name) ?>"
-                                     style="height: 250px; object-fit: cover;">
+                                     style="height: 250px; object-fit: cover;"
+                                     onerror="this.src='https://via.placeholder.com/300x250/f8f9fa/6c757d?text=<?= urlencode($product->name) ?>'">
                                 
                                 <!-- Category Badge -->
                                 <div class="position-absolute top-0 end-0 m-3">
@@ -489,6 +518,28 @@ include_once 'app/views/shares/header.php';
     text-align: right;
 }
 
+/* Image loading states */
+.product-image {
+    background: #f8f9fa;
+    display: block;
+}
+
+.product-image::before {
+    content: "";
+    display: block;
+    padding-top: 75%; /* 4:3 aspect ratio */
+}
+
+/* Lazy loading */
+.product-image[data-src] {
+    opacity: 0.3;
+    transition: opacity 0.3s;
+}
+
+.product-image[data-src].loaded {
+    opacity: 1;
+}
+
 @media (max-width: 768px) {
     .product-card-featured {
         margin-bottom: 2rem;
@@ -537,6 +588,23 @@ $(document).ready(function() {
             productsGrid.find('.col-12').removeClass('col-12').addClass('col-xl-3 col-lg-4 col-md-6');
             productsGrid.find('.product-card-featured').removeClass('list-view');
         }
+    });
+
+    // Lazy loading for images
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.add('loaded');
+                imageObserver.unobserve(img);
+            }
+        });
+    });
+
+    // Observe all images with data-src
+    document.querySelectorAll('img[data-src]').forEach(img => {
+        imageObserver.observe(img);
     });
 });
 

@@ -5,6 +5,33 @@ include_once 'app/views/shares/header.php';
 // Sử dụng thông tin từ session
 $currentUser = $_SESSION['user_login'] ?? 'Guest';
 $currentDate = date('d/m/Y H:i');
+
+// Helper function để xử lý đường dẫn hình ảnh
+function getImageUrl($imagePath) {
+    if (empty($imagePath)) {
+        return 'https://via.placeholder.com/100x80/f8f9fa/6c757d?text=No+Image';
+    }
+    
+    // Kiểm tra nếu là URL đầy đủ
+    if (filter_var($imagePath, FILTER_VALIDATE_URL)) {
+        return $imagePath;
+    }
+    
+    // Xử lý đường dẫn tương đối
+    $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'];
+    
+    // Loại bỏ dấu / ở đầu nếu có
+    $imagePath = ltrim($imagePath, '/');
+    
+    // Kiểm tra file có tồn tại không
+    $fullPath = $_SERVER['DOCUMENT_ROOT'] . '/' . $imagePath;
+    if (file_exists($fullPath)) {
+        return $baseUrl . '/' . $imagePath;
+    }
+    
+    // Nếu không tìm thấy, trả về placeholder với tên sản phẩm
+    return 'https://via.placeholder.com/100x80/e9ecef/6c757d?text=' . urlencode('No Image');
+}
 ?>
 
 <section class="py-5">
@@ -104,10 +131,16 @@ $currentDate = date('d/m/Y H:i');
                                     <div class="row align-items-center">
                                         <div class="col-md-2">
                                             <div class="position-relative">
-                                                <img src="<?= !empty($item['image']) ? $item['image'] : 'https://via.placeholder.com/100x80/f8f9fa/6c757d?text=No+Image' ?>" 
-                                                     class="img-fluid rounded shadow-sm" 
-                                                     alt="<?= htmlspecialchars($item['name']) ?>"
-                                                     style="max-height: 80px; object-fit: cover;">
+                                                <div class="image-container">
+                                                    <img src="<?= getImageUrl($item['image']) ?>" 
+                                                         class="img-fluid rounded shadow-sm cart-product-image" 
+                                                         alt="<?= htmlspecialchars($item['name']) ?>"
+                                                         style="max-height: 80px; width: 100%; object-fit: cover;"
+                                                         onerror="this.src='https://via.placeholder.com/100x80/f8f9fa/6c757d?text=<?= urlencode($item['name']) ?>'">
+                                                    <div class="image-overlay">
+                                                        <i class="fas fa-image text-white"></i>
+                                                    </div>
+                                                </div>
                                                 <span class="position-absolute top-0 start-0 badge bg-secondary rounded-pill" style="font-size: 0.7rem;">
                                                     #<?= $itemIndex ?>
                                                 </span>
@@ -118,9 +151,14 @@ $currentDate = date('d/m/Y H:i');
                                             <p class="text-muted mb-1 small">
                                                 <i class="fas fa-tag me-1"></i>Mã SP: #<?= $id ?>
                                             </p>
-                                            <small class="text-success">
-                                                <i class="fas fa-check-circle me-1"></i>Còn hàng
-                                            </small>
+                                            <div class="product-meta">
+                                                <small class="text-success">
+                                                    <i class="fas fa-check-circle me-1"></i>Còn hàng
+                                                </small>
+                                                <small class="text-muted ms-2">
+                                                    <i class="fas fa-truck me-1"></i>Giao hàng nhanh
+                                                </small>
+                                            </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="text-center">
@@ -813,7 +851,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 .customer-info {
-    border-left: 4px solid var(--primary-color);
+    border-left: 4px solid var(--bs-primary);
 }
 
 .order-summary {
@@ -827,6 +865,74 @@ document.addEventListener('DOMContentLoaded', function() {
     background: #f8f9fa;
 }
 
+/* Image styling for cart items */
+.image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #f8f9fa;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-product-image {
+    transition: transform 0.3s ease;
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.cart-product-image:hover {
+    transform: scale(1.05);
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-container:hover .image-overlay {
+    opacity: 1;
+}
+
+.product-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* Loading state for images */
+.cart-product-image[src*="placeholder"] {
+    background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%, transparent 75%, #f8f9fa 75%, #f8f9fa), 
+                linear-gradient(45deg, #f8f9fa 25%, transparent 25%, transparent 75%, #f8f9fa 75%, #f8f9fa);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+    border: 1px solid #dee2e6;
+}
+
+/* Cart item animations */
+.cart-item {
+    transition: all 0.3s ease;
+}
+
+.cart-item:hover {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Responsive adjustments */
 @media print {
     .btn, .coupon-section, .card:last-child, nav {
         display: none !important;
@@ -847,6 +953,46 @@ document.addEventListener('DOMContentLoaded', function() {
     .cart-item .row > div {
         margin-bottom: 0.5rem;
     }
+    
+    .image-container {
+        min-height: 60px;
+    }
+    
+    .cart-product-image {
+        max-height: 60px !important;
+    }
+}
+
+/* Enhanced visual feedback */
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+}
+
+/* Success/Error states */
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+
+.alert-success {
+    background: linear-gradient(45deg, #d4edda, #c3e6cb);
+}
+
+.alert-warning {
+    background: linear-gradient(45deg, #fff3cd, #ffeaa7);
+}
+
+.alert-info {
+    background: linear-gradient(45deg, #d1ecf1, #bee5eb);
 }
 </style>
 
